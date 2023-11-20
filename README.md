@@ -48,11 +48,18 @@ Pengguna dapat meminta pengelola kafe untuk menambahkan buku-buku yang dirasa me
 | Member membuat *request* buku dan menyukai *request* buku| Employee dapat menyetujui *request* buku | Guest tidak bisa mengakses halaman *book request*.
 
 ## 👱‍♂️ Role Pengguna Aplikasi 👩
+Karena aplikasi yang dibuat adalah aplikasi Cafe Library, terdapat tiga role yang dapat dibuat pada penggunaan aplikasi ini.
 ### 1. Seluruh Pelanggan Cafe (Guest)
+Guest adalah role pengguna aplikasi yang tidak melakukan register dan login ke aplikasi. Guest dapat memperoleh akses ke beberapa fitur aplikasi secara terbatas.
 ### 2. Pelanggan Cafe yang Mendaftar pada Aplikasi (Member)
+Member adalah role pengguna aplikasi yang melakukan register sebagai member dan login ke aplikasi. Member dapat memperoleh akses ke seluruh fitur aplikasi dan memiliki beberapa keuntungan dibandingkan Guest.
 ### 3. Pengelola Cafe (Employee)
+Employee adalah role pengguna aplikasi yang melakukan register sebagai employee dan login ke aplikasi. Employee dapat memperoleh akses ke seluruh fitur aplikasi seperti Member. Namun, Employee berperan sebagai produsen yang mengatur data pada aplikasi sementara Member sebagai konsumen.
 
 ## 🔗 Alur Integrasi dengan Aplikasi Web 🔗
+- Pada aplikasi website, membuat beberapa fungsi baru untuk menerima request dan mengirimkan respon ke aplikasi mobile.
+- Pada aplikasi mobile, melakukan request ke url fungsi tersebut.
+- Fungsi tersebut meberikan respon yang disesuaikan dengan kebutuhan data yang diperlukan pada mobile app.
 
 ## 🗞️ Tautan Berita Acara 🗞️
 Tautan berita acara pengerjaan TK PAS dapat diakses di [sini](https://docs.google.com/spreadsheets/d/1o5-FuryeDXj9a6EmaVzszS1mZXWoRaus/edit#gid=427391982).
