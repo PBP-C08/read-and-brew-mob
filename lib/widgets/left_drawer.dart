@@ -43,7 +43,7 @@ class LeftDrawer extends StatelessWidget {
           // TODO: Bagian routing
           ListTile(
             leading: const Icon(Icons.home_outlined),
-            title: const Text('Book List'),
+            title: const Text('Home Page'),
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
@@ -51,6 +51,17 @@ class LeftDrawer extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => MyHomePage(),
                   ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.checklist),
+            title: const Text('Book List'),
+            // Bagian redirection ke BookFormPage
+            onTap: () {
+              /*
+              TODO: Buatlah routing ke BookFormPage di sini,
+              setelah halaman BookFormPage sudah dibuat.
+              */
             },
           ),
           ListTile(
