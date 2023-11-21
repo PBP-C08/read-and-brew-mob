@@ -59,7 +59,9 @@ Employee adalah role pengguna aplikasi yang melakukan register sebagai employee 
 ## 🔗 Alur Integrasi dengan Aplikasi Web 🔗
 - Pada aplikasi website, membuat beberapa fungsi baru untuk menerima request dan mengirimkan respon ke aplikasi mobile.
 - Pada aplikasi mobile, melakukan request ke url fungsi tersebut.
-- Fungsi tersebut meberikan respon yang disesuaikan dengan kebutuhan data yang diperlukan pada mobile app.
+- Request yang dikirim dapat berupa request untuk memperoleh data atau mengirimkan data.
+- Fungsi tersebut memberikan respon yang disesuaikan dengan kebutuhan. Respon dapat berupa data ataupun status.
+- Jika respon berupa status, dapat menyatakan proses yang dilakukan di mobile app sudah terintegrasi dengan web app. Sementara jika respon berupa data, data tersebut dapat ditampilkan/dioperasikan pada mobile app.
 
 ## 🗞️ Tautan Berita Acara 🗞️
 Tautan berita acara pengerjaan TK PAS dapat diakses di [sini](https://docs.google.com/spreadsheets/d/1o5-FuryeDXj9a6EmaVzszS1mZXWoRaus/edit#gid=427391982).
