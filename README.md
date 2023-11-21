@@ -60,7 +60,7 @@ Employee adalah role pengguna aplikasi yang melakukan register sebagai employee 
 - Pada aplikasi website, membuat beberapa fungsi baru untuk menerima request dan mengirimkan respon ke aplikasi mobile.
 - Pada aplikasi mobile, melakukan request ke url fungsi tersebut.
 - Request yang dikirim dapat berupa request untuk memperoleh data atau mengirimkan data.
-- Fungsi tersebut memberikan respon yang disesuaikan dengan kebutuhan. Respon dapat berupa data ataupun status.
+- Fungsi tersebut memberikan respon yang disesuaikan dengan kebutuhan. Respon dapat berupa data ataupun status berhasil/gagal.
 - Jika respon berupa status, dapat menyatakan proses yang dilakukan di mobile app sudah terintegrasi dengan web app. Sementara jika respon berupa data, data tersebut dapat ditampilkan/dioperasikan pada mobile app.
 
 ## 🗞️ Tautan Berita Acara 🗞️
