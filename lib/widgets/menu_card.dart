@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/homepage.dart';
+import 'package:read_and_brew/screens/login.dart';
 
 class Menu {
   final String name;
@@ -28,6 +30,32 @@ class MenuWidget extends StatelessWidget {
             ..hideCurrentSnackBar()
             ..showSnackBar(SnackBar(
                 content: Text("Kamu telah menekan tombol ${item.name}!")));
+          if (item.name == "Login") {
+            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const LoginPage()));
+          } else if (item.name == "Log Out") {
+            final response = await request.logout(
+                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                "http://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
+            String message = response["message"];
+            if (response['status']) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message Sampai jumpa, $user_username."),
+              ));
+              user_id = 0;
+              user_username = "";
+              user_status = "";
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message"),
+              ));
+            }
+          }
         },
         child: Container(
           // Container untuk menyimpan Icon dan Text

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/homepage.dart';
+import 'package:read_and_brew/screens/login.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -108,20 +109,62 @@ class LeftDrawer extends StatelessWidget {
               */
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log Out'),
-            tileColor: Colors.red,
-            textColor: Colors.white,
-            iconColor: Colors.white,
-            // Bagian redirection ke BookFormPage
-            onTap: () async {
-              /*
+          if (user_id == 0) ...[
+            ListTile(
+              leading: const Icon(Icons.login),
+              title: const Text('Login'),
+              tileColor: Colors.green,
+              textColor: Colors.white,
+              iconColor: Colors.white,
+              // Bagian redirection ke BookFormPage
+              onTap: () async {
+                /*
               TODO: Buatlah routing ke BookFormPage di sini,
               setelah halaman BookFormPage sudah dibuat.
               */
-            },
-          )
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
+              },
+            ),
+          ] else ...[
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Log Out'),
+              tileColor: Colors.red,
+              textColor: Colors.white,
+              iconColor: Colors.white,
+              // Bagian redirection ke BookFormPage
+              onTap: () async {
+                /*
+              TODO: Buatlah routing ke BookFormPage di sini,
+              setelah halaman BookFormPage sudah dibuat.
+              */
+                final response = await request.logout(
+                    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                    "http://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
+                String message = response["message"];
+                if (response['status']) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("$message Sampai jumpa, $user_username."),
+                  ));
+                  user_id = 0;
+                  user_username = "";
+                  user_status = "";
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage()),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("$message"),
+                  ));
+                }
+              },
+            ),
+          ],
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/menu_card.dart';
+import 'package:read_and_brew/screens/login.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
@@ -10,7 +11,11 @@ class MyHomePage extends StatelessWidget {
     Menu("Forum Review", Icons.reviews, Colors.brown),
     Menu("Order & Borrow", Icons.add, Colors.brown),
     Menu("Book Request", Icons.request_page, Colors.brown),
-    Menu("Log Out", Icons.logout, Colors.red),
+    if (user_id == 0) ...[
+      Menu("Login", Icons.login, Colors.green),
+    ] else ...[
+      Menu("Log Out", Icons.logout, Colors.red),
+    ],
   ];
 
   @override
