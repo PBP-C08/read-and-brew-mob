@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
 
@@ -55,6 +56,12 @@ class MenuWidget extends StatelessWidget {
                 content: Text("$message"),
               ));
             }
+          } else if (item.name == "Book List") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BooklistPage("", "", "", "")),
+            );
           }
         },
         child: Container(

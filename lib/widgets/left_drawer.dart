@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // TODO: Impor halaman BookFormPage jika sudah dibuat
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
 
@@ -63,6 +64,11 @@ class LeftDrawer extends StatelessWidget {
               TODO: Buatlah routing ke BookFormPage di sini,
               setelah halaman BookFormPage sudah dibuat.
               */
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BooklistPage("", "", "", "")),
+              );
             },
           ),
           ListTile(
