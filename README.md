@@ -65,3 +65,6 @@ Employee adalah role pengguna aplikasi yang melakukan register sebagai employee 
 
 ## 🗞️ Tautan Berita Acara 🗞️
 Tautan berita acara pengerjaan TK PAS dapat diakses di [sini](https://docs.google.com/spreadsheets/d/1o5-FuryeDXj9a6EmaVzszS1mZXWoRaus/edit#gid=427391982).
+
+## 📱 Wireframe 📱
+Wireframe rancangan aplikasi dapat diakses di [sini](https://www.figma.com/file/gWach5uBF7S11oFRRGDjxO/read-and-brew?type=design&node-id=110%3A706&mode=design&t=SpDfbbQon1C8exmy-1).
