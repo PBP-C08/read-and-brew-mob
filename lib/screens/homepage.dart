@@ -9,7 +9,7 @@ class MyHomePage extends StatelessWidget {
     Menu("Book List", Icons.checklist, Colors.brown),
     Menu("Book Tracker", Icons.track_changes, Colors.brown),
     Menu("Forum Review", Icons.reviews, Colors.brown),
-    Menu("Order & Borrow", Icons.add, Colors.brown),
+    Menu("Order & Borrow", Icons.restaurant_menu, Colors.brown),
     Menu("Book Request", Icons.request_page, Colors.brown),
     if (user_id == 0) ...[
       Menu("Login", Icons.login, Colors.green),
