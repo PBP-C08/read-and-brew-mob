@@ -5,6 +5,7 @@ import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/tracker.dart';
 
 class Menu {
   final String name;
@@ -67,6 +68,10 @@ class MenuWidget extends StatelessWidget {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+          } else if (item.name == "Book Tracker") {
+            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BookTrackerPage()));
           }
         },
         child: Container(

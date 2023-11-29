@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/tracker.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -80,6 +81,11 @@ class LeftDrawer extends StatelessWidget {
               TODO: Buatlah routing ke BookFormPage di sini,
               setelah halaman BookFormPage sudah dibuat.
               */
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BookTrackerPage()),
+              );
             },
           ),
           ListTile(
