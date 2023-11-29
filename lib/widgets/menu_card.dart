@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
 
 class Menu {
   final String name;
@@ -61,6 +62,11 @@ class MenuWidget extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => BooklistPage("", "", "", "")),
+            );
+          } else if (item.name == "Order & Borrow") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FoodMenu()),
             );
           }
         },
