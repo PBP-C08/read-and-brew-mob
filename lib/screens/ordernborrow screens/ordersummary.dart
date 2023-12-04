@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:read_and_brew/models/ordernborrow models/Order.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
+import 'package:responsive_card/responsive_card.dart';
 
 class OrderPage extends StatefulWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -90,52 +91,59 @@ class _OrderPageState extends State<OrderPage> {
           if (snapshot.data == null) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            if (!snapshot.hasData) {
-              return const Column(
-                children: [
-                  Text(
-                    "You haven't ordered anything.",
-                    style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
-                  ),
-                  SizedBox(height: 8),
-                ],
-              );
+            if (snapshot.data.length == 0) {
+              return const SizedBox(
+                  height: 65,
+                  child: Center(
+                      child: Text("You haven't ordered anything.",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ))));
             } else {
-              return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6, // Number of cards in each row
-                  crossAxisSpacing: 4.0, // Horizontal space between cards
-                  mainAxisSpacing: 4.0, // Vertical space between cards
-                ),
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  Order item = snapshot.data[index];
-                  return Card(
-                    child: InkWell(
-                      onTap: () {
-                        _showOrderDetails(context, item);
-                      },
-                      child: Padding(
-                        padding:
-                            const EdgeInsets.all(2.0), // Adjust the padding
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${item.fields.foodName}",
-                              style: const TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+              return ListView(
+                children: List.generate(
+                  snapshot.data.length,
+                  (index) {
+                    Order item = snapshot.data[index];
+                    double price = double.parse(item.fields.foodPrice);
+                    double totalPrice = price * item.fields.amount;
+                    return ResponsiveCard(
+                      elevation: 5,
+                      titleGap: 20,
+                      bgColor: Colors.white,
+                      screenWidth: 600,
+                      title: Text(
+                        "${item.fields.foodName}",
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                  );
-                },
+                      subTitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Amount: ${item.fields.amount}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Total Price: \$${totalPrice.toStringAsFixed(2)}",
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               );
             }
           }

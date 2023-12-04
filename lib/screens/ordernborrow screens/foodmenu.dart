@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
+import 'package:responsive_card/responsive_card.dart';
 
 class FoodMenu extends StatelessWidget {
   final List<Map<String, dynamic>> menuItems = [
@@ -238,58 +239,38 @@ class FoodMenu extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       drawer: OnBDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, // Number of items in each row
-            crossAxisSpacing: 10.0, // Spacing between columns
-            mainAxisSpacing: 10.0, // Spacing between rows
-          ),
-          itemCount: menuItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            var menuItem = menuItems[index]['fields'];
-            return Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      body: SizedBox(
+        width: 600,
+        child: ListView(
+          children: List.generate(
+            menuItems.length,
+            (index) {
+              var menuItem = menuItems[index]['fields'];
+              return ResponsiveCard(
+                elevation: 5,
+                titleGap: 20,
+                bgColor: Colors.white,
+                screenWidth: 600,
+                title: Text(
+                  menuItem['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                ),
+                subTitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      menuItem['name'],
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 5),
-                    Text(
                       'Price: \$${menuItem['price']}',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 8),
                     Text(
                       '${menuItem['description']}',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15),
                     ),
-                    SizedBox(height: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
+                    SizedBox(
+                      height: 65,
+                      child: Center(
+                        child: ElevatedButton(
                           onPressed: () {
                             _makeOrder(context);
                           },
@@ -306,13 +287,13 @@ class FoodMenu extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
