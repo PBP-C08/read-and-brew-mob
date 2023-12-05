@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
+import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/tracker.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
+
 
 class Menu {
   final String name;
@@ -36,7 +40,7 @@ class MenuWidget extends StatelessWidget {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
             Navigator.push(context,
                 MaterialPageRoute(builder: (context) => const LoginPage()));
-          } else if (item.name == "Log Out") {
+          }else if (item.name == "Log Out") {
             final response = await request.logout(
                 // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
                 "http://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
@@ -69,6 +73,19 @@ class MenuWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => const ReviewPage()),
             );
+          } else if (item.name == "Order & Borrow") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FoodMenu()),
+            );
+          } else if (item.name == "Book Request") {
+            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+          } else if (item.name == "Book Tracker") {
+            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BookTrackerPage()));
           }
         },
         child: Container(
