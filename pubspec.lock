@@ -224,6 +224,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.1"
+  responsive_card:
+    dependency: "direct main"
+    description:
+      name: responsive_card
+      sha256: "9b358ea87da46175e911ab7e101e3dec423e34fb21c6f51fbe3b5da8cd9d1119"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   shared_preferences:
     dependency: transitive
     description:

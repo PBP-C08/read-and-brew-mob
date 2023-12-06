@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 // TODO: Impor halaman BookFormPage jika sudah dibuat
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/screens/booklist.dart';
-import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/tracker.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/drinkmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/ordersummary.dart';
 
-class LeftDrawer extends StatelessWidget {
-  const LeftDrawer({super.key});
+class OnBDrawer extends StatelessWidget {
+  const OnBDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,57 +58,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.checklist),
-            title: const Text('Book List'),
+            leading: const Icon(Icons.restaurant),
+            title: const Text('Food'),
             // Bagian redirection ke BookFormPage
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BooklistPage("", "", "", "")),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.track_changes),
-            title: const Text('Book Tracker'),
-            // Bagian redirection ke BookFormPage
-            onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BookTrackerPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.reviews),
-            title: const Text('Forum Review'),
-            // Bagian redirection ke BookFormPage
-            onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.restaurant_menu),
-            title: const Text('Order & Borrow'),
-            // Bagian redirection ke BookFormPage
-            onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -118,23 +70,40 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.request_page),
-            title: const Text('Book Request'),
+            leading: const Icon(Icons.local_cafe),
+            title: const Text('Drinks'),
             // Bagian redirection ke BookFormPage
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-              if (user_status=='E' || user_status=='M')
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const RequestBukuPage()));
-            else
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Anda harus login untuk mengakses halaman ini!"),
-              ));
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DrinkMenu(),
+                  ));
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.receipt_long),
+            title: const Text('Order Summary'),
+            // Bagian redirection ke BookFormPage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderPage(),
+                  ));
+            },
+          ),
+          // ListTile(
+          //   leading: const Icon(Icons.request_page),
+          //   title: const Text('Book Request'),
+          //   // Bagian redirection ke BookFormPage
+          //   onTap: () {
+          //     /*
+          //     TODO: Buatlah routing ke BookFormPage di sini,
+          //     setelah halaman BookFormPage sudah dibuat.
+          //     */
+          //   },
+          // ),
           if (user_id == 0) ...[
             ListTile(
               leading: const Icon(Icons.login),

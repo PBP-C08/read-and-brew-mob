@@ -5,6 +5,10 @@ import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/tracker.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
+
 
 class Menu {
   final String name;
@@ -61,8 +65,20 @@ class MenuWidget extends StatelessWidget {
               MaterialPageRoute(
                   builder: (context) => BooklistPage("", "", "", "")),
             );
+          } else if (item.name == "Forum Review") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const ReviewPage()),
+            );
+          } else if (item.name == "Order & Borrow") {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => FoodMenu()),
+            );
           } else if (item.name == "Book Request") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+<<<<<<< HEAD
             if (user_status=='E' || user_status=='M')
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const RequestBukuPage()));
@@ -70,6 +86,14 @@ class MenuWidget extends StatelessWidget {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Anda harus login untuk mengakses halaman ini!"),
               ));
+=======
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+          } else if (item.name == "Book Tracker") {
+            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const BookTrackerPage()));
+>>>>>>> 2a14367d2b022ad667277982a7f03edcba6dfd27
           }
         },
         child: Container(
