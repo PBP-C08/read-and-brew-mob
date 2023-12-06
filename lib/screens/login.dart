@@ -49,136 +49,140 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.only(left: 25, right: 25, top: 23, bottom: 23),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-                child: Text(
-              'Login',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w600,
-                height: 0.03,
-              ),
-            )),
-            const SizedBox(height: 30.0),
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
-              ),
-            ),
-            const SizedBox(height: 30.0),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    // Choose the icon based on password visibility
-                    _obscureText ? Icons.visibility : Icons.visibility_off,
+        appBar: AppBar(),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.only(left: 25, right: 25, top: 23, bottom: 23),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                    child: Text(
+                  'Login',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    height: 0.03,
                   ),
-                  onPressed: _togglePasswordVisibility,
+                )),
+                const SizedBox(height: 30.0),
+                TextField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                  ),
                 ),
-              ),
-              obscureText: _obscureText,
-            ),
-            const SizedBox(height: 61.0),
-            Container(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(Color(0xFF377C35)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                const SizedBox(height: 30.0),
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        // Choose the icon based on password visibility
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: _togglePasswordVisibility,
+                    ),
+                  ),
+                  obscureText: _obscureText,
+                ),
+                const SizedBox(height: 61.0),
+                Container(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Color(0xFF377C35)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () async {
+                        String username = _usernameController.text;
+                        String password = _passwordController.text;
+
+                        // Cek kredensial
+                        // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+                        // Untuk menyambungkan Android emulator dengan Django pada localhost,
+                        // gunakan URL http://10.0.2.2/
+                        final response = await request.login(
+                            "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/login/",
+                            {
+                              'username': username,
+                              'password': password,
+                            });
+
+                        if (request.loggedIn) {
+                          user_id = response['id'];
+                          user_username = response['username'];
+                          user_status = response['user_status'];
+                          String message = response['message'];
+                          String uname = response['username'];
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MyHomePage()),
+                          );
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(SnackBar(
+                                content:
+                                    Text("$message Selamat datang, $uname.")));
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Login Gagal'),
+                              content: Text(response['message']),
+                              actions: [
+                                TextButton(
+                                  child: const Text('OK'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+                const SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Don't have an account?"),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterFormPage()),
+                        );
+                      },
+                      child: Text(
+                        'Register',
+                        style: TextStyle(
+                          color: Color(0xFF377C35),
+                        ),
                       ),
                     ),
-                  ),
-                  onPressed: () async {
-                    String username = _usernameController.text;
-                    String password = _passwordController.text;
-
-                    // Cek kredensial
-                    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                    // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                    // gunakan URL http://10.0.2.2/
-                    final response = await request.login(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/login/",
-                        {
-                          'username': username,
-                          'password': password,
-                        });
-
-                    if (request.loggedIn) {
-                      user_id = response['id'];
-                      user_username = response['username'];
-                      user_status = response['user_status'];
-                      String message = response['message'];
-                      String uname = response['username'];
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyHomePage()),
-                      );
-                      ScaffoldMessenger.of(context)
-                        ..hideCurrentSnackBar()
-                        ..showSnackBar(SnackBar(
-                            content: Text("$message Selamat datang, $uname.")));
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Login Gagal'),
-                          content: Text(response['message']),
-                          actions: [
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(color: Colors.white),
-                  )),
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Don't have an account?"),
-                TextButton(
-                  onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const RegisterFormPage()),
-                    );
-                  },
-                  child: Text(
-                    'Register',
-                    style: TextStyle(
-                      color: Color(0xFF377C35),
-                    ),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
-import 'package:read_and_brew/screens/homepage.dart';
-import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/forum_review.dart';
 import 'package:read_and_brew/screens/tracker.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
-
 
 class Menu {
   final String name;
@@ -25,43 +19,13 @@ class MenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Material(
       color: item.color,
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () async {
           // Memunculkan SnackBar ketika diklik
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
-          if (item.name == "Login") {
-            // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const LoginPage()));
-          }else if (item.name == "Log Out") {
-            final response = await request.logout(
-                // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                "http://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
-            String message = response["message"];
-            if (response['status']) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("$message Sampai jumpa, $user_username."),
-              ));
-              user_id = 0;
-              user_username = "";
-              user_status = "";
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("$message"),
-              ));
-            }
-          } else if (item.name == "Book List") {
+          if (item.name == "Book List") {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -70,22 +34,20 @@ class MenuWidget extends StatelessWidget {
           } else if (item.name == "Forum Review") {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                  builder: (context) => const ReviewPage()),
-            );
-          } else if (item.name == "Order & Borrow") {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => FoodMenu()),
+              MaterialPageRoute(builder: (context) => const ReviewPage()),
             );
           } else if (item.name == "Book Request") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const RequestBukuPage()));
           } else if (item.name == "Book Tracker") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const BookTrackerPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const BookTrackerPage()));
           }
         },
         child: Container(
