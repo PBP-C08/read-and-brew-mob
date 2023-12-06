@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
+import 'package:responsive_card/responsive_card.dart';
+import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 class DrinkMenu extends StatelessWidget {
   final List<Map<String, dynamic>> menuItems = [
@@ -166,12 +170,13 @@ class DrinkMenu extends StatelessWidget {
     }
   ];
 
-  void _makeOrder(BuildContext context) {
+  void _makeOrder(
+      BuildContext context, String name, double price, CookieRequest request) {
     TextEditingController amountController = TextEditingController();
-
+    // final request = context.watch<CookieRequest>();
     final _formKey = GlobalKey<FormState>();
-    String _name = "";
-    int _price = 0;
+    String _name = name;
+    double _price = price;
     int _amount = 0;
 
     showDialog(
@@ -220,8 +225,61 @@ class DrinkMenu extends StatelessWidget {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                if (_formKey.currentState?.validate() ?? false) {}
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  double price = double.parse('$_price');
+                  int amount = int.parse('$_amount');
+                  double totalPrice = price * amount;
+                  String total = totalPrice.toStringAsFixed(2);
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Order berhasil dibuat!'),
+                        content: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Drink name: $_name'),
+                              Text('Amount: $_amount'),
+                              Text('Total price: \$$total'),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            child: const Text('OK'),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  // final response = await request.postJson(
+                  //     "http://localhost:8000/ordernborrow/guest/order-drink-flutter/",
+                  //     jsonEncode(<String, String>{
+                  //       'food_name': _name,
+                  //       'food_price': _price.toString(),
+                  //       'amount': _amount.toString(),
+                  //       // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                  //     }));
+                  // if (response['status'] == 'success') {
+                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  //     content: Text("Order berhasil dibuat!"),
+                  //   ));
+                  //   Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(builder: (context) => DrinkMenu()),
+                  //   );
+                  // } else {
+                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  //     content: Text("Terdapat kesalahan, silakan coba lagi."),
+                  //   ));
+                  // }
+                  _formKey.currentState!.reset();
+                }
               },
               child: const Text('Order'),
             ),
@@ -231,8 +289,10 @@ class DrinkMenu extends StatelessWidget {
     );
   }
 
+  // int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order & borrow'),
@@ -240,61 +300,62 @@ class DrinkMenu extends StatelessWidget {
         foregroundColor: Colors.white,
       ),
       drawer: OnBDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, // Number of items in each row
-            crossAxisSpacing: 10.0, // Spacing between columns
-            mainAxisSpacing: 10.0, // Spacing between rows
-          ),
-          itemCount: menuItems.length,
-          itemBuilder: (BuildContext context, int index) {
-            var menuItem = menuItems[index]['fields'];
-            return Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+      // body: tabs[_currentIndex],
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _currentIndex,
+      //   type: BottomNavigationBarType.fixed,
+      //   backgroundColor: Colors.white,
+      //   onTap: (index) {},
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.restaurant),
+      //       label: "Food",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.local_cafe),
+      //       label: "Drinks",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.receipt_long),
+      //       label: "Order Summary",
+      //     ),
+      //   ],
+      // ),
+      body: SizedBox(
+        width: 600,
+        child: ListView(
+          children: List.generate(
+            menuItems.length,
+            (index) {
+              var menuItem = menuItems[index]['fields'];
+              return ResponsiveCard(
+                elevation: 5,
+                titleGap: 20,
+                bgColor: Colors.white,
+                screenWidth: 600,
+                title: Text(
+                  menuItem['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                ),
+                subTitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      menuItem['name'],
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 5),
-                    Text(
                       'Price: \$${menuItem['price']}',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 8),
                     Text(
                       '${menuItem['description']}',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 15),
                     ),
-                    SizedBox(height: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        ElevatedButton(
+                    SizedBox(
+                      height: 65,
+                      child: Center(
+                        child: ElevatedButton(
                           onPressed: () {
-                            // Add your order logic here
-                            _makeOrder(context);
+                            _makeOrder(context, menuItem['name'],
+                                menuItem['price'], request);
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.green,
@@ -309,13 +370,13 @@ class DrinkMenu extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
