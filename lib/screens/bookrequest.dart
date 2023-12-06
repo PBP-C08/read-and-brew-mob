@@ -7,6 +7,7 @@ import 'package:read_and_brew/models/requestbuku.dart';
 import 'package:read_and_brew/screens/booklist_detail.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/bookrequest_detail.dart';
 
 class RequestBukuPage extends StatefulWidget {
     const RequestBukuPage({Key? key}) : super(key: key);
@@ -16,6 +17,11 @@ class RequestBukuPage extends StatefulWidget {
 }
 
 class _RequestBukuPageState extends State<RequestBukuPage> {
+final _formKey = GlobalKey<FormState>();
+String _judul = "";
+String _kategori = "";
+String _penulis = "";
+String _gambar = "";
 Future<List<RequestBuku>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
@@ -40,10 +46,11 @@ Future<List<RequestBuku>> fetchProduct() async {
 
 @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Request Buku'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.brown,
         foregroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
@@ -76,7 +83,8 @@ Future<List<RequestBuku>> fetchProduct() async {
                       ),
                     );
                   },
-                  child: Container(
+                  child:
+                   Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     padding: const EdgeInsets.all(20.0),
@@ -84,6 +92,198 @@ Future<List<RequestBuku>> fetchProduct() async {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                      await showDialog<void>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                                backgroundColor: Colors.white,
+                                content: Stack(
+                                  clipBehavior: Clip.none,
+                                  children: <Widget>[
+                                    Positioned(
+                                      right: -40,
+                                      top: -40,
+                                      child: InkResponse(
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const CircleAvatar(
+                                          backgroundColor: Colors.red,
+                                          child: Icon(Icons.close),
+                                        ),
+                                      ),
+                                    ),
+                                    Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: "Gambar",
+                                                labelText: "Gambar",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _gambar = value!;
+                                                });
+                                              },
+                                              validator: (String? value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Gambar tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: "Judul Buku",
+                                                labelText: "Judul Buku",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _judul = value!;
+                                                });
+                                              },
+                                              validator: (String? value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Judul tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: "Judul Buku",
+                                                labelText: "Judul Buku",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _judul = value!;
+                                                });
+                                              },
+                                              validator: (String? value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Judul tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: "Kategori",
+                                                labelText: "Kategori",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _kategori = value!;
+                                                });
+                                              },
+                                              validator: (String? value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Kategori tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8),
+                                            child: ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.green),
+                                              ),
+                                              child: const Text('Submit',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                              onPressed: () async {
+                                                if (_formKey.currentState!
+                                                    .validate()) {
+                                                  final response =
+                                                      await request.postJson(
+                                                          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/create_request_flutter/",
+                                                          jsonEncode(<String,
+                                                              String>{
+                                                            "judul": _judul,
+                                                            "kategori":
+                                                                _kategori,
+                                                            "penulis": _penulis,
+                                                            "gambar": _gambar,
+                                                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                                                          }));
+                                                  if (response['status'] ==
+                                                      'success') {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          response['messages']),
+                                                    ));
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              RequestBukuPage()),
+                                                    );
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          response['messages']),
+                                                    ));
+                                                  }
+                                                }
+                                              },
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ));
+                    },
+                          child: Text('Tombol Request Sementara'),
+                        ),
                         Text(
                           "${snapshot.data![index].fields.judul}",
                           style: const TextStyle(
@@ -104,83 +304,6 @@ Future<List<RequestBuku>> fetchProduct() async {
             }
           }
         },
-      ),
-    );
-  }
-}
-
-class DetailPage extends StatelessWidget {
-  final RequestBuku requestBuku;
-
-  const DetailPage({Key? key, required this.requestBuku}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(requestBuku.fields.judul),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              requestBuku.fields.gambar, // Replace this with your image URL
-              width: 100.0, // Adjust the width as needed
-              height: 200.0, // Adjust the height as needed
-              fit: BoxFit.cover, // You can adjust the fit property based on your needs
-            ),
-            Text(
-              "${requestBuku.fields.judul}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Penulis:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text("${requestBuku.fields.penulis}"),
-            SizedBox(height: 10),
-            Text(
-              "Kategori:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text("${requestBuku.fields.kategori}"),
-            SizedBox(height: 10),
-            Text(
-              "Like:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text("${requestBuku.fields.like}"),
-            SizedBox(height: 10),
-            Text(
-              "Status:",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text("${requestBuku.fields.status}"),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate back to the previous screen (R)
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.blue, // Set button color to blue
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Set button shape to rectangle
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Adjust padding for a smaller button
-                child: Text(
-                  'Back',
-                  style: TextStyle(fontSize: 14, color: Colors.white), // Set text color to white
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

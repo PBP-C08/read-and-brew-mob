@@ -29,9 +29,7 @@ class MenuWidget extends StatelessWidget {
         onTap: () async {
           // Memunculkan SnackBar ketika diklik
           ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
+            ..hideCurrentSnackBar();
           if (item.name == "Login") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
             Navigator.push(context,
@@ -65,8 +63,13 @@ class MenuWidget extends StatelessWidget {
             );
           } else if (item.name == "Book Request") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+            if (user_status=='E' || user_status=='M')
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+            else
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Anda harus login untuk mengakses halaman ini!"),
+              ));
           }
         },
         child: Container(

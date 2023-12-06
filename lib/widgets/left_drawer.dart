@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
+import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
 
@@ -113,6 +114,13 @@ class LeftDrawer extends StatelessWidget {
               TODO: Buatlah routing ke BookFormPage di sini,
               setelah halaman BookFormPage sudah dibuat.
               */
+              if (user_status=='E' || user_status=='M')
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+            else
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Anda harus login untuk mengakses halaman ini!"),
+              ));
             },
           ),
           if (user_id == 0) ...[
