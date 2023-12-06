@@ -131,7 +131,6 @@ class _OrderPageState extends State<OrderPage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const SizedBox(height: 4),
                           Text(
                             "Total Price: \$${totalPrice.toStringAsFixed(2)}",
                             style: const TextStyle(
