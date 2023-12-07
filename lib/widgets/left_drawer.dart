@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // TODO: Impor halaman BookFormPage jika sudah dibuat
 import 'package:read_and_brew/screens/booklist.dart';
+import 'package:read_and_brew/screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/foodmenu.dart';
@@ -25,7 +26,7 @@ class LeftDrawer extends StatelessWidget {
             child: Column(
               children: [
                 Image(
-                  image: AssetImage('images/logo.png'),
+                  image: AssetImage('assets/images/logo.png'),
                   width: 55,
                   height: 55,
                 ),
@@ -111,6 +112,10 @@ class LeftDrawer extends StatelessWidget {
               TODO: Buatlah routing ke BookFormPage di sini,
               setelah halaman BookFormPage sudah dibuat.
               */
+                Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ReviewPage()),
+              );
             },
           ),
           ListTile(

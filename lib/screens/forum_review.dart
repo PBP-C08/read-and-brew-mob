@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/review.dart';
+import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
+import 'package:read_and_brew/models/ordernborrow models/BorrowedHistory.dart';
 import 'dart:convert' as convert;
 
 class ReviewPage extends StatefulWidget {
@@ -19,18 +21,13 @@ class ReviewPageState extends State<ReviewPage> {
     var data = await request.get(
         'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/get-review/');
     // melakukan konversi data json menjadi object Review
-    List<Review> listReview = [];
+    List<Review> listAllReview = [];
     for (var d in data) {
       if (d != null) {
-        listReview.add(Review.fromJson(d));
+        listAllReview.add(Review.fromJson(d));
       }
     }
-    // for (var d in listReview) {
-    //     Item newItem = Item(d.fields.name, d.fields.amount, d.fields.price, d.fields.power, d.fields.description);
-    //     InventoryProduct.listReview.add(newItem);
-    // }
-
-    return listReview;
+    return listAllReview;
   }
 
   Future<List<Review>> fetchMyReview(request) async {
@@ -39,17 +36,33 @@ class ReviewPageState extends State<ReviewPage> {
     var data = await request.get(
         'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/get-review-member/');
     // melakukan konversi data json menjadi object Review
-    List<Review> listReview = [];
+    List<Review> listMyReview = [];
     for (var d in data) {
       if (d != null) {
-        listReview.add(Review.fromJson(d));
+        listMyReview.add(Review.fromJson(d));
       }
     }
 
-    return listReview;
+    return listMyReview;
+  }
+  Future<List<BorrowedHistory>> bookHistory(request) async {
+    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+    // melakukan decode response menjadi bentuk json
+    var data = await request.get(
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/get_borrowed_history_json_member/');
+    // melakukan konversi data json menjadi object Review
+    List<BorrowedHistory> listBookHistory = [];
+    for (var d in data) {
+      if (d != null) {
+        listBookHistory.add(BorrowedHistory.fromJson(d));
+      }
+    }
+    return listBookHistory;
   }
 
   int _currentIndex = 0;
+  String dropDownValue = "";
+  String dropDownRating = "";
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +71,12 @@ class ReviewPageState extends State<ReviewPage> {
     final _formKey = GlobalKey<FormState>();
     final TextEditingController _username = TextEditingController();
     final TextEditingController _bookname = TextEditingController();
-    final TextEditingController _rating = TextEditingController();
+    TextEditingController _rating = TextEditingController();
     final TextEditingController _review = TextEditingController();
 
-    // String _username = "";
-    // String _bookname = "";
-    // int _rating = 0;
-    // String _review = "";
+    _username.text = user_username;
 
-    final tabs = [
+    var tabs = [
       FutureBuilder(
           future: fetchAllReview(request),
           builder: (context, AsyncSnapshot snapshot) {
@@ -124,15 +134,20 @@ class ReviewPageState extends State<ReviewPage> {
               }
             }
           }),
+
       const Center(child: Text("Search (Still on progress)")),
-      Scaffold(
+      
+      Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Add a Review'),
+          // titleTextStyle: const TextStyle(fontWeight: FontWeight.bold),
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(14.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -150,54 +165,76 @@ class ReviewPageState extends State<ReviewPage> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Fill out the blank username!";
-                        }
-                        return null;
-                      },
+                      readOnly: true,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _bookname,
-                      decoration: InputDecoration(
-                        hintText: "Book Name",
-                        labelText: "Book Name",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
+                    child: 
+                    DropdownMenu<String>(
+                        initialSelection: dropDownValue,
+                        width: 317,
+                        onSelected: (String? value) {
+                          // This is called when the user selects an item.
+                          setState(() {
+                            dropDownValue = value!;
+                          });
+                        },
+                        dropdownMenuEntries:[DropdownMenuEntry(value: "Test", label: "Test")],
                       ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Fill out the blank book name!";
-                        }
-                        return null;
-                      },
-                    ),
+                    // DropdownButtonHideUnderline(
+                    //     child: FutureBuilder(
+                    //       future: bookHistory(request),
+                    //       builder: (context, AsyncSnapshot<List<BorrowedHistory>> snapshot) {
+                    //         if (snapshot.hasError) {
+                    //           return Container();
+                    //         } else if (snapshot.hasData) {
+                    //           List<DropdownMenuItem<int>> dropDownItems = [];
+                    //           for (var item in snapshot.data!) {
+                    //             dropDownItems.add(
+                    //               DropdownMenuItem(
+                    //                 value: item.pk, // Assuming BorrowedHistory has an 'id' property
+                    //                 child: Text(item.fields.book.toString()), // Replace with the actual property you want to display
+                    //               ),
+                    //             );
+                    //           }
+
+                    //           return DropdownButton(
+                    //             items: dropDownItems,
+                    //             onChanged: (int? selected) {
+                    //               // Handle the selected item here
+                    //             },
+                    //             hint: Text(
+                    //               "Select Book",
+                    //               style: TextStyle(color: Colors.blue),
+                    //             ),
+                    //           );
+                    //         } else {
+                    //           return CircularProgressIndicator();
+                    //         }
+                    //       },
+                    //     ),
+                    //   ),
+                    
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      controller: _rating,
-                      decoration: InputDecoration(
-                        hintText: "Rating",
-                        labelText: "Rating",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
+                    child: 
+                    DropdownMenu<String>(
+                        initialSelection: "Rate The Book",
+                        width: 317,
+                        onSelected: (String? value) {
+                          // This is called when the user selects an item.
+                          setState(() {
+                            _rating = value! as TextEditingController;
+                          });
+                        },
+                        dropdownMenuEntries: const [DropdownMenuEntry(value: "1", label: "1"),
+                                              DropdownMenuEntry(value: "2", label: "2"),
+                                              DropdownMenuEntry(value: "3", label: "3"),
+                                              DropdownMenuEntry(value: "4", label: "4"),
+                                              DropdownMenuEntry(value: "5", label: "5")],
                       ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Fill out the blank rating!";
-                        }
-                        if (int.tryParse(value) == null) {
-                          return "Rating must be an numbers!";
-                        }
-                        return null;
-                      },
-                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -289,6 +326,8 @@ class ReviewPageState extends State<ReviewPage> {
           ),
         ),
       ),
+    ),
+
       FutureBuilder(
           future: fetchMyReview(request),
           builder: (context, AsyncSnapshot snapshot) {
@@ -350,7 +389,7 @@ class ReviewPageState extends State<ReviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.brown,
+          backgroundColor: Color(0xFF377C35),
           foregroundColor: Colors.white,
           title: const Center(
             child: Text("Forum Reviews", style: TextStyle(color: Colors.white)),
@@ -362,11 +401,16 @@ class ReviewPageState extends State<ReviewPage> {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+            setState(() {
+              _currentIndex = index; 
+              if(user_id == 0 && _currentIndex == 2){
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()));
+                _currentIndex = 0;
+              } 
+            });
         },
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.reviews),
             label: "Their Review",
@@ -379,10 +423,12 @@ class ReviewPageState extends State<ReviewPage> {
             icon: Icon(Icons.add),
             label: "Add a Review",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.reviews_rounded),
-            label: "My Review",
-          ),
+          if(user_id != 0)...{
+            BottomNavigationBarItem(
+              icon: Icon(Icons.reviews_rounded),
+              label: "My Review",
+            ),
+          },
         ],
       ),
     );
