@@ -44,7 +44,7 @@ class MyHomePage extends StatelessWidget {
               } else {
                 final response = await request.logout(
                     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
-                    "http://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
+                    "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/auth/logout/");
                 String message = response["message"];
                 if (response['status']) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -78,7 +78,7 @@ class MyHomePage extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                 child: Image(
-                    image: AssetImage('images/logo.png'),
+                    image: AssetImage('assets/images/logo.png'),
                     height: 200,
                     width: 200),
               ),
