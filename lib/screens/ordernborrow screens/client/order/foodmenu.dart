@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/guest/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/guest/ordersummary.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
@@ -11,178 +11,203 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class DrinkMenu extends StatefulWidget {
+class FoodMenu extends StatefulWidget {
   @override
-  _DrinkMenuState createState() => _DrinkMenuState();
+  _FoodMenuState createState() => _FoodMenuState();
 }
 
-class _DrinkMenuState extends State<DrinkMenu> {
-  int _currentIndex = 1;
+class _FoodMenuState extends State<FoodMenu> {
+  int _currentIndex = 0;
   final List<Widget> _pages = [
     FoodMenu(),
     DrinkMenu(),
     OrderPage(),
   ];
+
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Latte",
-        "price": 3.99,
+        "name": "Bagel with Cream Cheese",
+        "price": 2.99,
         "description":
-            "Espresso with creamy steamed milk and a hint of vanilla."
+            "A freshly baked bagel served with a generous portion of cream cheese."
       }
     },
     {
       "pk": 2,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Cappuccino",
+        "name": "Egg and Cheese Sandwich",
         "price": 4.49,
         "description":
-            "Espresso topped with frothy milk and a sprinkle of cocoa."
+            "A breakfast classic - scrambled eggs and melted cheese on a toasted bun."
       }
     },
     {
       "pk": 3,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Mocha",
-        "price": 4.99,
-        "description":
-            "Rich espresso with velvety steamed milk, cocoa, and whipped cream."
+        "name": "Cinnamon Roll",
+        "price": 3.49,
+        "description": "A sweet and gooey cinnamon roll with icing on top."
       }
     },
     {
       "pk": 4,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Iced Coffee",
-        "price": 3.49,
-        "description":
-            "Chilled coffee brewed to perfection, served with ice cubes."
+        "name": "Chocolate Croissant",
+        "price": 2.99,
+        "description": "A buttery and flaky croissant mixed with chocolate."
       }
     },
     {
       "pk": 5,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Espresso",
-        "price": 2.49,
+        "name": "New York Style Pizza",
+        "price": 9.99,
         "description":
-            "A shot of intense, concentrated coffee to awaken your senses."
+            "A classic thin-crust pizza with your choice of toppings, just like in the Big Apple."
       }
     },
     {
       "pk": 6,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Chai Latte",
-        "price": 4.99,
+        "name": "Chicago Deep Dish Pizza",
+        "price": 12.99,
         "description":
-            "Spiced black tea combined with frothy milk for a delightful balance."
+            "A thick and cheesy deep-dish pizza, a Windy City specialty."
       }
     },
     {
       "pk": 7,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Caramel Macchiato",
-        "price": 4.99,
+        "name": "Caprese Panini",
+        "price": 7.99,
         "description":
-            "Espresso with steamed milk, caramel, and a caramel drizzle."
+            "Fresh mozzarella, ripe tomatoes, and basil pesto on grilled ciabatta bread."
       }
     },
     {
       "pk": 8,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Iced Tea",
-        "price": 3.29,
+        "name": "Chicken Quesadilla",
+        "price": 8.49,
         "description":
-            "Chilled tea infused with fruit essence, served over ice."
+            "Sliced chicken, cheese, and vegetables folded in a tortilla and grilled."
       }
     },
     {
       "pk": 9,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Hot Chocolate",
-        "price": 3.99,
+        "name": "Spinach and Feta Quiche",
+        "price": 6.99,
         "description":
-            "Silky hot cocoa topped with whipped cream and chocolate shavings."
+            "A savory pastry filled with spinach, feta cheese, and eggs."
       }
     },
     {
       "pk": 10,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Fruit Smoothie",
-        "price": 4.49,
-        "description": "A refreshing blend of fresh fruits, yogurt, and ice."
+        "name": "Avocado Toast",
+        "price": 5.99,
+        "description":
+            "Sliced avocado on toasted artisan bread, topped with seasoning."
       }
     },
     {
       "pk": 11,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Café Americano",
-        "price": 2.99,
-        "description":
-            "Espresso with hot water, delivering a bold and robust flavor."
+        "name": "Muffin",
+        "price": 2.49,
+        "description": "A freshly baked muffin in your choice of flavor."
       }
     },
     {
       "pk": 12,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Matcha Latte",
-        "price": 4.99,
+        "name": "Blueberry Scone",
+        "price": 2.79,
         "description":
-            "Green tea powder mixed with creamy steamed milk, for a vibrant experience."
+            "A tender and crumbly scone filled with juicy blueberries."
       }
     },
     {
       "pk": 13,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Iced Latte",
-        "price": 4.29,
+        "name": "Breakfast Burrito",
+        "price": 6.49,
         "description":
-            "Chilled espresso and milk served over ice, the perfect cool-down."
+            "A hearty breakfast burrito filled with eggs, sausage, cheese, and vegetables."
       }
     },
     {
       "pk": 14,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "White Chocolate Mocha",
+        "name": "Fruit Parfait",
         "price": 4.99,
         "description":
-            "Espresso with white chocolate and whipped cream, pure indulgence."
+            "A delicious parfait made with yogurt, granola, and a mix of fresh fruits."
       }
     },
     {
       "pk": 15,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Decaf Coffee",
-        "price": 3.49,
-        "description": "A soothing cup of coffee with minimal caffeine content."
+        "name": "Quiche Lorraine",
+        "price": 6.99,
+        "description":
+            "A classic quiche filled with bacon, Swiss cheese, and a savory custard."
       }
     },
     {
       "pk": 16,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Hazelnut Latte",
-        "price": 4.79,
+        "name": "Veggie Wrap",
+        "price": 5.99,
         "description":
-            "Espresso with steamed milk and a rich hazelnut flavor, a delightful treat."
+            "A delicious wrap filled with assorted vegetables and a flavorful dressing."
       }
     }
   ];
+
+  Future<void> _placeOrder(BuildContext context, CookieRequest request,
+      String _name, double _price, int _amount) async {
+    final response = await request.postJson(
+        "http://localhost:8000/ordernborrow/guest/order-food-flutter/",
+        jsonEncode(<String, String>{
+          'food_name': _name,
+          'food_price': _price.toString(),
+          'amount': _amount.toString(),
+        }));
+    if (response['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Order successfully placed!"),
+      ));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DrinkMenu()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Sorry there seems to be a problem, please try again."),
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
@@ -193,11 +218,11 @@ class _DrinkMenuState extends State<DrinkMenu> {
     int _amount = 0;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Drinks'),
+        title: const Text('Order & Borrow - Food'),
         backgroundColor: Color(0xFF377C35),
         foregroundColor: Colors.white,
       ),
-      drawer: LeftDrawer(),
+      drawer: const LeftDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -212,19 +237,20 @@ class _DrinkMenuState extends State<DrinkMenu> {
                 screenWidth: 600,
                 title: Text(
                   menuItem['name'],
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 21),
                 ),
                 subTitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Price: \$${menuItem['price']}',
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       '${menuItem['description']}',
-                      style: TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 15),
                     ),
                     SizedBox(
                       height: 65,
@@ -287,32 +313,8 @@ class _DrinkMenuState extends State<DrinkMenu> {
                                     TextButton(
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          final response = await request.postJson(
-                                              "http://localhost:8000/ordernborrow/guest/order-drink-flutter/",
-                                              jsonEncode(<String, String>{
-                                                'food_name': _name,
-                                                'food_price': _price.toString(),
-                                                'amount': _amount.toString(),
-                                              }));
-                                          if (response['status'] == 'success') {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "Order successfully placed!"),
-                                            ));
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DrinkMenu()),
-                                            );
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  "Sorry there seems to be a problem, please try again."),
-                                            ));
-                                          }
+                                          _placeOrder(context, request, _name,
+                                              _price, _amount);
                                           _formKey.currentState!.reset();
                                         }
                                       },
@@ -326,7 +328,7 @@ class _DrinkMenuState extends State<DrinkMenu> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
-                            minimumSize: const Size(200, 50),
+                            minimumSize: Size(200, 50),
                           ),
                           child: const Text(
                             'Order',
