@@ -367,7 +367,6 @@ class _DrinkMenuState extends State<DrinkMenu> {
             _currentIndex = index;
           });
 
-          // Navigate to the selected page
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => _pages[_currentIndex]),

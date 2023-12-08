@@ -44,7 +44,7 @@ class _OrderPageState extends State<OrderPage> {
     return listOrder;
   }
 
-  Future<bool> _showConfirmationDialog(
+  Future<bool> _showPaymentConfirmationDialog(
       BuildContext context, String totalCost) async {
     return await showDialog(
       context: context,
@@ -94,7 +94,7 @@ class _OrderPageState extends State<OrderPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context); // Close the pop-up
+                  Navigator.pop(context);
                 },
                 child: const Text("OK"),
               ),
@@ -114,6 +114,177 @@ class _OrderPageState extends State<OrderPage> {
   String formatDate(DateTime date) {
     final formatter = DateFormat("MMMM d, y 'at' hh:mm:ss a", 'en_US');
     return formatter.format(date.toLocal());
+  }
+
+  Future<void> _showConfirmEditDialog(
+      BuildContext context, Order item, CookieRequest request) async {
+    TextEditingController _amountController = TextEditingController();
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    int _amount = item.fields.amount;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(item.fields.foodName),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Amount: ${item.fields.amount}"),
+                SizedBox(height: 8),
+                TextFormField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'New Amount',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _amount = int.parse(value!);
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Amount must be a valid number!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Amount must be a valid number!";
+                    }
+                    int enteredAmount = int.tryParse(value) ?? 0;
+                    if (enteredAmount < 1) {
+                      return "Amount must be at least 1!";
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+                _formKey.currentState!.reset();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  final response = await request.postJson(
+                      "http://localhost:8000/ordernborrow/guest/edit-order-flutter/${item.pk}/",
+                      jsonEncode({
+                        'amount': _amount.toString(),
+                      }));
+
+                  if (response['status'] == 'success') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => OrderPage()),
+                    );
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Success!"),
+                          content: const Text("Order successfully edited!"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close the pop-up
+                              },
+                              child: const Text("OK"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text(
+                          "Sorry there seems to be a problem, please try again."),
+                    ));
+                  }
+                  _formKey.currentState!.reset();
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Edit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<bool> _showDeleteConfirmationDialog(
+      BuildContext context, Order item) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: Text(
+              "Are you sure you want to delete \"${item.fields.foodName}\" from your order?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteOrder(CookieRequest request, Order order) async {
+    final response = await request.postJson(
+      "http://localhost:8000/ordernborrow/guest/delete-order-flutter/${order.pk}/",
+      jsonEncode({}),
+    );
+
+    if (response['status'] == 'success') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OrderPage()),
+      );
+      // ignore: use_build_context_synchronously
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Delete Successful"),
+            content: const Text("Your order has been deleted successfully!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Payment failed. Please try again."),
+        ),
+      );
+    }
   }
 
   @override
@@ -161,8 +332,7 @@ class _OrderPageState extends State<OrderPage> {
                         double price = double.parse(item.fields.foodPrice);
                         double totalPrice = price * item.fields.amount;
                         return Padding(
-                          padding: const EdgeInsets.all(
-                              10.0), // Adjust the padding as needed
+                          padding: const EdgeInsets.all(10.0),
                           child: ResponsiveCard(
                             bgColor: Colors.white,
                             screenWidth: 600,
@@ -197,17 +367,14 @@ class _OrderPageState extends State<OrderPage> {
                                 ),
                                 const SizedBox(height: 8),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Spacer(), // This will push the IconButton to the right
                                     ElevatedButton(
                                       onPressed: () {
-                                        // TODO: EDIT ORDER
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Edit initiated."),
-                                          ),
-                                        );
+                                        _showConfirmEditDialog(
+                                            context, item, request);
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.orange,
@@ -215,22 +382,20 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                       child: const Text("Edit"),
                                     ),
-                                    const SizedBox(width: 16),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        // TODO: DELETE ORDER
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Delete initiated."),
-                                          ),
-                                        );
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
+                                    Spacer(), // This will push the IconButton to the right
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
                                       ),
-                                      child: const Text("Delete"),
+                                      onPressed: () async {
+                                        bool confirmed =
+                                            await _showDeleteConfirmationDialog(
+                                                context, item);
+                                        if (confirmed) {
+                                          await _deleteOrder(request, item);
+                                        }
+                                      },
                                     ),
                                   ],
                                 ),
@@ -255,8 +420,9 @@ class _OrderPageState extends State<OrderPage> {
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            bool confirmed = await _showConfirmationDialog(
-                                context, totalCost.toStringAsFixed(2));
+                            bool confirmed =
+                                await _showPaymentConfirmationDialog(
+                                    context, totalCost.toStringAsFixed(2));
                             if (confirmed) {
                               await _deleteAllOrders(request);
                             }
@@ -297,8 +463,6 @@ class _OrderPageState extends State<OrderPage> {
           setState(() {
             _currentIndex = index;
           });
-
-          // Navigate to the selected page
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
