@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
@@ -170,157 +171,22 @@ class DrinkMenu extends StatelessWidget {
     }
   ];
 
-  void _makeOrder(
-      BuildContext context, String name, double price, CookieRequest request) {
-    TextEditingController amountController = TextEditingController();
-    // final request = context.watch<CookieRequest>();
-    final _formKey = GlobalKey<FormState>();
-    String _name = name;
-    double _price = price;
-    int _amount = 0;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Order"),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Amount',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (String? value) {
-                    _amount = int.parse(value!);
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Amount must be a valid number!";
-                    }
-                    if (int.tryParse(value) == null) {
-                      return "Amount must be a valid number!";
-                    }
-                    int enteredAmount = int.tryParse(value) ?? 0;
-                    if (enteredAmount < 1) {
-                      return "Amount must be at least 1!";
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  double price = double.parse('$_price');
-                  int amount = int.parse('$_amount');
-                  double totalPrice = price * amount;
-                  String total = totalPrice.toStringAsFixed(2);
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Order berhasil dibuat!'),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Drink name: $_name'),
-                              Text('Amount: $_amount'),
-                              Text('Total price: \$$total'),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            child: const Text('OK'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  // final response = await request.postJson(
-                  //     "http://localhost:8000/ordernborrow/guest/order-drink-flutter/",
-                  //     jsonEncode(<String, String>{
-                  //       'food_name': _name,
-                  //       'food_price': _price.toString(),
-                  //       'amount': _amount.toString(),
-                  //       // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                  //     }));
-                  // if (response['status'] == 'success') {
-                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  //     content: Text("Order berhasil dibuat!"),
-                  //   ));
-                  //   Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(builder: (context) => DrinkMenu()),
-                  //   );
-                  // } else {
-                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  //     content: Text("Terdapat kesalahan, silakan coba lagi."),
-                  //   ));
-                  // }
-                  _formKey.currentState!.reset();
-                }
-              },
-              child: const Text('Order'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   // int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
+    TextEditingController amountController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    String _name = "";
+    double _price = 0.0;
+    int _amount = 0;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order & borrow'),
-        backgroundColor: Colors.brown,
+        backgroundColor: Color(0xFF377C35),
         foregroundColor: Colors.white,
       ),
       drawer: OnBDrawer(),
-      // body: tabs[_currentIndex],
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _currentIndex,
-      //   type: BottomNavigationBarType.fixed,
-      //   backgroundColor: Colors.white,
-      //   onTap: (index) {},
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.restaurant),
-      //       label: "Food",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.local_cafe),
-      //       label: "Drinks",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.receipt_long),
-      //       label: "Order Summary",
-      //     ),
-      //   ],
-      // ),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -354,8 +220,109 @@ class DrinkMenu extends StatelessWidget {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
-                            _makeOrder(context, menuItem['name'],
-                                menuItem['price'], request);
+                            _name = menuItem['name'];
+                            _price = menuItem['price'];
+                            // print(_name);
+                            // print(_price);
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                // print(_name);
+                                // print(_price);
+                                return AlertDialog(
+                                  title: Text("Order"),
+                                  content: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextFormField(
+                                          controller: amountController,
+                                          keyboardType: TextInputType.number,
+                                          decoration: InputDecoration(
+                                            labelText: 'Amount',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                          onChanged: (String? value) {
+                                            _amount = int.parse(value!);
+                                            // _name = menuItem['name'];
+                                            // _price = menuItem['price'];
+                                          },
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.isEmpty) {
+                                              return "Amount must be a valid number!";
+                                            }
+                                            if (int.tryParse(value) == null) {
+                                              return "Amount must be a valid number!";
+                                            }
+                                            int enteredAmount =
+                                                int.tryParse(value) ?? 0;
+                                            if (enteredAmount < 1) {
+                                              return "Amount must be at least 1!";
+                                            }
+                                            return null;
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        _formKey.currentState!.reset();
+                                      },
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        if (_formKey.currentState!.validate()) {
+                                          // print(_name);
+                                          // print(_price);
+                                          // String foodName = _name;
+                                          // String foodPrice = _price.toString();
+                                          // print(
+                                          //     '_name before encoding: $_name'); // Add this line
+                                          // print(
+                                          //     '_price before encoding: $_price');
+                                          final response = await request.postJson(
+                                              "http://localhost:8000/ordernborrow/guest/order-drink-flutter/",
+                                              jsonEncode(<String, String>{
+                                                'food_name': _name,
+                                                'food_price': _price.toString(),
+                                                'amount': _amount.toString(),
+                                              }));
+                                          if (response['status'] == 'success') {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Order berhasil dibuat!"),
+                                            ));
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DrinkMenu()),
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  "Terdapat kesalahan, silakan coba lagi."),
+                                            ));
+                                          }
+                                          _formKey.currentState!.reset();
+                                        }
+                                      },
+                                      child: const Text('Order'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             primary: Colors.green,
