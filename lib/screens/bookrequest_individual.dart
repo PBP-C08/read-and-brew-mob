@@ -4,19 +4,19 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/requestbuku.dart';
-import 'package:read_and_brew/screens/bookrequest_individual.dart';
+import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/bookrequest_detail.dart';
 
-class RequestBukuPage extends StatefulWidget {
-    const RequestBukuPage({Key? key}) : super(key: key);
+class RequestBukuIndividualPage extends StatefulWidget {
+    const RequestBukuIndividualPage({Key? key}) : super(key: key);
 
     @override
-    _RequestBukuPageState createState() => _RequestBukuPageState();
+    _RequestBukuIndividualPageState createState() => _RequestBukuIndividualPageState();
 }
 
-class _RequestBukuPageState extends State<RequestBukuPage> {
+class _RequestBukuIndividualPageState extends State<RequestBukuIndividualPage> {
 final _formKey = GlobalKey<FormState>();
 String _judul = "";
 String _kategori = "";
@@ -25,7 +25,7 @@ String _gambar = "";
 Future<List<RequestBuku>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
-        'http://127.0.0.1:8000/bookrequest/get_books');
+        'http://127.0.0.1:8000/bookrequest/get_books_individual');
     var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},

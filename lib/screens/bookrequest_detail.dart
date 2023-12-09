@@ -8,6 +8,7 @@ import 'package:read_and_brew/screens/booklist_detail.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'dart:convert' as convert;
 
 class DetailPage extends StatelessWidget {
   final RequestBuku requestBuku;
@@ -58,12 +59,21 @@ class DetailPage extends StatelessWidget {
                 ),
               ),
             ),
+            Center(
+              child: Text(
+                'Like: ${requestBuku.fields.like}',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(height: 8),
             if (user_status == "E") ...[
             ElevatedButton(
               onPressed: () async {
                     final response = await request.postJson(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/delete_request_flutter/",
+                        "http://127.0.0.1:8000//bookrequest/delete_request_flutter",
                         jsonEncode(<String, String>{
                           "id": requestBuku.pk.toString(),
                           // TODO: Sesuaikan field data sesuai dengan aplikasimu
@@ -96,7 +106,7 @@ class DetailPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                     final response = await request.postJson(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/approve_request_flutter/",
+                        "http://127.0.0.1:8000/bookrequest/approve_request_flutter/",
                         jsonEncode(<String, String>{
                           "id": requestBuku.pk.toString(),
                           // TODO: Sesuaikan field data sesuai dengan aplikasimu
@@ -130,17 +140,18 @@ class DetailPage extends StatelessWidget {
             else if (user_status == 'M')...[
               ElevatedButton(
               onPressed: () async {
+                    print(requestBuku.pk.toString());
                     final response = await request.postJson(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/like_request_flutter/",
-                        jsonEncode(<String, String>{
-                          "id": requestBuku.pk.toString(),
-                          // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                        }));
+                            "http://127.0.0.1:8000/bookrequest/like_request_flutter",
+                            convert.jsonEncode(<String, String>{
+                              'id': requestBuku.pk.toString()
+                            }));
+                        print('Response: $response');
+                        print(requestBuku.pk.toString());
                     if (response['status'] == 'success') {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Berhasil menyukai buku ${requestBuku.fields.judul}"),
                       ));
-                      Navigator.pop(context); // Balik ke bookrequest
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Gagal menyukai buku ${requestBuku.fields.judul}"),
