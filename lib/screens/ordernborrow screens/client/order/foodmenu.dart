@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
@@ -22,6 +25,12 @@ class _FoodMenuState extends State<FoodMenu> {
     FoodMenu(),
     DrinkMenu(),
     OrderPage(),
+  ];
+  final List<Widget> _pagesMember = [
+    FoodMenu(),
+    DrinkMenu(),
+    SecretMenu(),
+    OrderMemberPage(),
   ];
 
   final List<Map<String, dynamic>> menuItems = [
@@ -187,7 +196,7 @@ class _FoodMenuState extends State<FoodMenu> {
   Future<void> _placeOrder(BuildContext context, CookieRequest request,
       String _name, double _price, int _amount) async {
     final response = await request.postJson(
-        "http://localhost:8000/ordernborrow/guest/order-food-flutter/",
+        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/order-food-flutter/",
         jsonEncode(<String, String>{
           'food_name': _name,
           'food_price': _price.toString(),
@@ -197,14 +206,34 @@ class _FoodMenuState extends State<FoodMenu> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Order successfully placed!"),
       ));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => DrinkMenu()),
-      );
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Sorry there seems to be a problem, please try again."),
       ));
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _placeOrderMember(BuildContext context, CookieRequest request,
+      String _name, double _price, int _amount) async {
+    final response = await request.postJson(
+        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/order-food-flutter/",
+        jsonEncode(<String, String>{
+          'food_name': _name,
+          'food_price': _price.toString(),
+          'amount': _amount.toString(),
+        }));
+    if (response['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Order successfully placed!"),
+      ));
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Sorry there seems to be a problem, please try again."),
+      ));
+      Navigator.pop(context);
     }
   }
 
@@ -216,6 +245,43 @@ class _FoodMenuState extends State<FoodMenu> {
     String _name = "";
     double _price = 0.0;
     int _amount = 0;
+
+    List<BottomNavigationBarItem> bottomNavBarItems = [
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.restaurant),
+        label: 'Food',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.local_cafe),
+        label: 'Drinks',
+      ),
+      const BottomNavigationBarItem(
+        icon: Icon(Icons.receipt_long),
+        label: 'Order Summary',
+      ),
+    ];
+
+    if (user_id != 0) {
+      bottomNavBarItems = [
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.restaurant),
+          label: 'Food',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.local_cafe),
+          label: 'Drinks',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.lock),
+          label: 'Secret Menu',
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.receipt_long),
+          label: 'Order Summary',
+        ),
+      ];
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order & Borrow - Food'),
@@ -313,8 +379,13 @@ class _FoodMenuState extends State<FoodMenu> {
                                     TextButton(
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          _placeOrder(context, request, _name,
-                                              _price, _amount);
+                                          if (user_id == 0) {
+                                            _placeOrder(context, request, _name,
+                                                _price, _amount);
+                                          } else {
+                                            _placeOrderMember(context, request,
+                                                _name, _price, _amount);
+                                          }
                                           _formKey.currentState!.reset();
                                         }
                                       },
@@ -348,31 +419,26 @@ class _FoodMenuState extends State<FoodMenu> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Food',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.local_cafe),
-            label: 'Drinks',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Order Summary',
-          ),
-        ],
+        items: bottomNavBarItems,
+        unselectedItemColor: Colors.grey,
         selectedItemColor: const Color(0xFF377C35),
         currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
             _currentIndex = index;
           });
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-          );
+          if (user_id == 0) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
+            );
+          } else {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => _pagesMember[_currentIndex]),
+            );
+          }
         },
       ),
     );

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
@@ -14,212 +14,147 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class DrinkMenu extends StatefulWidget {
+class SecretMenu extends StatefulWidget {
   @override
-  _DrinkMenuState createState() => _DrinkMenuState();
+  _SecretMenuState createState() => _SecretMenuState();
 }
 
-class _DrinkMenuState extends State<DrinkMenu> {
-  int _currentIndex = 1;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
-
+class _SecretMenuState extends State<SecretMenu> {
+  int _currentIndex = 2;
   final List<Widget> _pagesMember = [
     FoodMenu(),
     DrinkMenu(),
     SecretMenu(),
     OrderMemberPage(),
   ];
+
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Latte",
-        "price": 3.99,
+        "name": "Mystery Meatball Sub",
+        "price": 5.99,
         "description":
-            "Espresso with creamy steamed milk and a hint of vanilla."
+            "Indulge in succulent meatballs smothered in rich marinara sauce, tucked into a warm sub roll with a surprising twist."
       }
     },
     {
       "pk": 2,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Cappuccino",
-        "price": 4.49,
+        "name": "Stealthy Spinach Salad",
+        "price": 6.49,
         "description":
-            "Espresso topped with frothy milk and a sprinkle of cocoa."
+            "Discover a secret blend of fresh ingredients in a vibrant spinach salad that's a hidden gem on the menu."
       }
     },
     {
       "pk": 3,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Mocha",
-        "price": 4.99,
+        "name": "Undercover Veggie Wrap",
+        "price": 7.99,
         "description":
-            "Rich espresso with velvety steamed milk, cocoa, and whipped cream."
+            "Embark on a culinary adventure with a veggie wrap featuring a secret sauce that adds a delightful kick."
       }
     },
     {
       "pk": 4,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Iced Coffee",
-        "price": 3.49,
+        "name": "Intrigue Italian Pasta",
+        "price": 8.49,
         "description":
-            "Chilled coffee brewed to perfection, served with ice cubes."
+            "Savor a top-secret Italian pasta dish, expertly prepared with a balance of bold and delightful flavors."
       }
     },
     {
       "pk": 5,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Espresso",
-        "price": 2.49,
+        "name": "Hidden Hummus Platter",
+        "price": 9.99,
         "description":
-            "A shot of intense, concentrated coffee to awaken your senses."
+            "Whisper the secret password and relish a hummus platter adorned with an array of concealed toppings, perfect for sharing."
       }
     },
     {
       "pk": 6,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Chai Latte",
-        "price": 4.99,
+        "name": "Classified Cheeseburger",
+        "price": 4.49,
         "description":
-            "Spiced black tea combined with frothy milk for a delightful balance."
+            "Uncover the mystery of a classic cheeseburger with an intriguing twist that will leave your taste buds guessing."
       }
     },
     {
       "pk": 7,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Caramel Macchiato",
-        "price": 4.99,
+        "name": "Covert Caramel Latte",
+        "price": 5.99,
         "description":
-            "Espresso with steamed milk, caramel, and a caramel drizzle."
+            "Experience the allure of a caramel latte, where sweetness meets velvety espresso in a delightful rendezvous."
       }
     },
     {
       "pk": 8,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Iced Tea",
-        "price": 3.29,
+        "name": "Stealthy Strawberry Smoothie",
+        "price": 6.49,
         "description":
-            "Chilled tea infused with fruit essence, served over ice."
+            "Delight in a secret blend of fresh strawberries and creamy yogurt, with a hint of enchantment that will whisk you away."
       }
     },
     {
       "pk": 9,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Hot Chocolate",
-        "price": 3.99,
+        "name": "Undercover Coconut Mocha",
+        "price": 7.99,
         "description":
-            "Silky hot cocoa topped with whipped cream and chocolate shavings."
+            "Unearth the hidden tropical delight of a mocha, where rich coffee meets the lusciousness of coconut in an unexpected combination."
       }
     },
     {
       "pk": 10,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Fruit Smoothie",
-        "price": 4.49,
-        "description": "A refreshing blend of fresh fruits, yogurt, and ice."
+        "name": "Espionage Espresso Con Panna",
+        "price": 8.49,
+        "description":
+            "Embark on a covert mission with an espresso that's topped with a luxurious dollop of whipped cream, an indulgent treat shrouded in secrecy."
       }
     },
     {
       "pk": 11,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Café Americano",
-        "price": 2.99,
+        "name": "Intrigue Iced Chai",
+        "price": 9.99,
         "description":
-            "Espresso with hot water, delivering a bold and robust flavor."
+            "Unlock the secret and enjoy an iced chai latte, crafted with a special blend of spices that will captivate your taste buds."
       }
     },
     {
       "pk": 12,
-      "model": "ordernborrow.Drink",
+      "model": "ordernborrow.Food",
       "fields": {
-        "name": "Matcha Latte",
-        "price": 4.99,
+        "name": "Classified Cold Brew",
+        "price": 4.49,
         "description":
-            "Green tea powder mixed with creamy steamed milk, for a vibrant experience."
-      }
-    },
-    {
-      "pk": 13,
-      "model": "ordernborrow.Drink",
-      "fields": {
-        "name": "Iced Latte",
-        "price": 4.29,
-        "description":
-            "Chilled espresso and milk served over ice, the perfect cool-down."
-      }
-    },
-    {
-      "pk": 14,
-      "model": "ordernborrow.Drink",
-      "fields": {
-        "name": "White Chocolate Mocha",
-        "price": 4.99,
-        "description":
-            "Espresso with white chocolate and whipped cream, pure indulgence."
-      }
-    },
-    {
-      "pk": 15,
-      "model": "ordernborrow.Drink",
-      "fields": {
-        "name": "Decaf Coffee",
-        "price": 3.49,
-        "description": "A soothing cup of coffee with minimal caffeine content."
-      }
-    },
-    {
-      "pk": 16,
-      "model": "ordernborrow.Drink",
-      "fields": {
-        "name": "Hazelnut Latte",
-        "price": 4.79,
-        "description":
-            "Espresso with steamed milk and a rich hazelnut flavor, a delightful treat."
+            "Discover the well-aged mystery of a cold brew, where time and precision create a coffee masterpiece that's aged to perfection."
       }
     }
   ];
 
-  Future<void> _placeOrder(BuildContext context, CookieRequest request,
-      String _name, double _price, int _amount) async {
-    final response = await request.postJson(
-        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/order-drink-flutter/",
-        jsonEncode(<String, String>{
-          'food_name': _name,
-          'food_price': _price.toString(),
-          'amount': _amount.toString(),
-        }));
-    if (response['status'] == 'success') {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Order successfully placed!"),
-      ));
-      Navigator.pop(context);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Sorry there seems to be a problem, please try again."),
-      ));
-      Navigator.pop(context);
-    }
-  }
-
   Future<void> _placeOrderMember(BuildContext context, CookieRequest request,
       String _name, double _price, int _amount) async {
     final response = await request.postJson(
-        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/order-drink-flutter/",
+        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/order-food-flutter/",
         jsonEncode(<String, String>{
           'food_name': _name,
           'food_price': _price.toString(),
@@ -285,11 +220,11 @@ class _DrinkMenuState extends State<DrinkMenu> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Drinks'),
+        title: const Text('Order & Borrow - Secret Menu'),
         backgroundColor: Color(0xFF377C35),
         foregroundColor: Colors.white,
       ),
-      drawer: LeftDrawer(),
+      drawer: const LeftDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -304,19 +239,20 @@ class _DrinkMenuState extends State<DrinkMenu> {
                 screenWidth: 600,
                 title: Text(
                   menuItem['name'],
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 21),
                 ),
                 subTitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Price: \$${menuItem['price']}',
-                      style: TextStyle(fontSize: 18),
+                      style: const TextStyle(fontSize: 18),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       '${menuItem['description']}',
-                      style: TextStyle(fontSize: 15),
+                      style: const TextStyle(fontSize: 15),
                     ),
                     SizedBox(
                       height: 65,
@@ -379,20 +315,8 @@ class _DrinkMenuState extends State<DrinkMenu> {
                                     TextButton(
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
-                                          // GUEST
-                                          if (user_id == 0) {
-                                            _placeOrder(context, request, _name,
-                                                _price, _amount);
-                                          } else {
-                                            if (user_status == "M") {
-                                              _placeOrderMember(
-                                                  context,
-                                                  request,
-                                                  _name,
-                                                  _price,
-                                                  _amount);
-                                            }
-                                          }
+                                          _placeOrderMember(context, request,
+                                              _name, _price, _amount);
                                           _formKey.currentState!.reset();
                                         }
                                       },
@@ -406,7 +330,7 @@ class _DrinkMenuState extends State<DrinkMenu> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
-                            minimumSize: const Size(200, 50),
+                            minimumSize: Size(200, 50),
                           ),
                           child: const Text(
                             'Order',
@@ -434,18 +358,11 @@ class _DrinkMenuState extends State<DrinkMenu> {
           setState(() {
             _currentIndex = index;
           });
-          if (user_id == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => _pagesMember[_currentIndex]),
-            );
-          }
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => _pagesMember[_currentIndex]),
+          );
         },
       ),
     );
