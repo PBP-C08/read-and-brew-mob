@@ -73,6 +73,7 @@ class _BooklistPageState extends State<BooklistPage> {
         }
       }
     }
+    
     if (widget.sort == "Judul") {
       list_show.sort((a, b) =>
           a.fields.judul.toLowerCase().compareTo(b.fields.judul.toLowerCase()));
