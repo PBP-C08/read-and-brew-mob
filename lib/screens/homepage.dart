@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/menu_card.dart';
 import 'package:read_and_brew/screens/login.dart';
@@ -120,13 +121,30 @@ class MyHomePage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => FoodMenu()),
-                      );
+                      if (user_id == 0) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => FoodMenu()),
+                        );
+                      } else {
+                        if (user_status == "M") {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => FoodMenu()),
+                          );
+                        } else if (user_status == "E") {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InventoryPage(),
+                              ));
+                        }
+                      }
                     },
-                    child: const Text(
-                      'Order Here',
+                    child: Text(
+                      user_status == "E" && user_id != 0
+                          ? 'Inventory'
+                          : 'Order Here',
                       style: TextStyle(color: Colors.white),
                     )),
               ),

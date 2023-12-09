@@ -4,45 +4,47 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/models/ordernborrow%20models/Order.dart';
 import 'package:read_and_brew/models/ordernborrow%20models/OrderMember.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({Key? key}) : super(key: key);
+class OrderMemberPage extends StatefulWidget {
+  const OrderMemberPage({Key? key}) : super(key: key);
 
   @override
-  _OrderPageState createState() => _OrderPageState();
+  _OrderMemberPageState createState() => _OrderMemberPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
-  int _currentIndex = 2;
-  final List<Widget> _pages = [
+class _OrderMemberPageState extends State<OrderMemberPage> {
+  int _currentIndex = 3;
+
+  final List<Widget> _pagesMember = [
     FoodMenu(),
     DrinkMenu(),
-    OrderPage(),
+    SecretMenu(),
+    OrderMemberPage(),
   ];
 
-  Future<List<Order>> fetchOrder() async {
+  Future<List<OrderMember>> fetchOrder() async {
     var url = Uri.parse(
-        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/get-product/');
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/get-product-flutter/');
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
     );
 
     var data = jsonDecode(utf8.decode(response.bodyBytes));
-    List<Order> listOrder = [];
+    List<OrderMember> listOrder = [];
 
     for (var d in data) {
-      if (d != null) {
-        listOrder.add(Order.fromJson(d));
+      if (d != null && d['fields']['user'] == user_id) {
+        listOrder.add(OrderMember.fromJson(d));
       }
     }
     return listOrder;
@@ -78,14 +80,14 @@ class _OrderPageState extends State<OrderPage> {
 
   Future<void> _deleteAllOrders(CookieRequest request) async {
     final response = await request.postJson(
-      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/delete-all-order-flutter/",
+      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/delete-all-order-flutter/",
       jsonEncode({}),
     );
 
     if (response['status'] == 'success') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
+        MaterialPageRoute(builder: (context) => OrderMemberPage()),
       );
       // ignore: use_build_context_synchronously
       await showDialog(
@@ -112,7 +114,6 @@ class _OrderPageState extends State<OrderPage> {
           content: Text("Payment failed. Please try again."),
         ),
       );
-      Navigator.pop(context);
     }
   }
 
@@ -122,7 +123,7 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> _showConfirmEditDialog(
-      BuildContext context, Order item, CookieRequest request) async {
+      BuildContext context, OrderMember item, CookieRequest request) async {
     TextEditingController _amountController = TextEditingController();
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     int _amount = item.fields.amount;
@@ -181,7 +182,7 @@ class _OrderPageState extends State<OrderPage> {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   final response = await request.postJson(
-                      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/edit-order-flutter/${item.pk}/",
+                      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/edit-order-flutter/${item.pk}/",
                       jsonEncode({
                         'amount': _amount.toString(),
                       }));
@@ -189,7 +190,8 @@ class _OrderPageState extends State<OrderPage> {
                   if (response['status'] == 'success') {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => OrderPage()),
+                      MaterialPageRoute(
+                          builder: (context) => OrderMemberPage()),
                     );
                     await showDialog(
                       context: context,
@@ -227,7 +229,7 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<bool> _showDeleteConfirmationDialog(
-      BuildContext context, Order item) async {
+      BuildContext context, OrderMember item) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -254,16 +256,16 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Future<void> _deleteOrder(CookieRequest request, Order order) async {
+  Future<void> _deleteOrder(CookieRequest request, OrderMember order) async {
     final response = await request.postJson(
-      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/guest/delete-order-flutter/${order.pk}/",
+      "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/delete-order-flutter/${order.pk}/",
       jsonEncode({}),
     );
 
     if (response['status'] == 'success') {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
+        MaterialPageRoute(builder: (context) => OrderMemberPage()),
       );
       // ignore: use_build_context_synchronously
       await showDialog(
@@ -289,7 +291,6 @@ class _OrderPageState extends State<OrderPage> {
           content: Text("Payment failed. Please try again."),
         ),
       );
-      Navigator.pop(context);
     }
   }
 
@@ -306,10 +307,15 @@ class _OrderPageState extends State<OrderPage> {
         label: 'Drinks',
       ),
       const BottomNavigationBarItem(
+        icon: Icon(Icons.lock),
+        label: 'Secret Menu',
+      ),
+      const BottomNavigationBarItem(
         icon: Icon(Icons.receipt_long),
         label: 'Order Summary',
       ),
     ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Summary'),
@@ -323,9 +329,10 @@ class _OrderPageState extends State<OrderPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
+            print(snapshot.error);
             return Center(child: Text("Error: ${snapshot.error}"));
           } else {
-            List<Order> orders = snapshot.data ?? [];
+            List<OrderMember> orders = snapshot.data ?? [];
 
             if (orders.isEmpty) {
               return const Center(
@@ -348,7 +355,7 @@ class _OrderPageState extends State<OrderPage> {
                     child: ListView.builder(
                       itemCount: orders.length,
                       itemBuilder: (context, index) {
-                        Order item = orders[index];
+                        OrderMember item = orders[index];
                         double price = double.parse(item.fields.foodPrice);
                         double totalPrice = price * item.fields.amount;
                         return Padding(
@@ -473,7 +480,8 @@ class _OrderPageState extends State<OrderPage> {
           });
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
+            MaterialPageRoute(
+                builder: (context) => _pagesMember[_currentIndex]),
           );
         },
       ),
