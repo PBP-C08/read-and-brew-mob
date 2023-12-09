@@ -120,13 +120,24 @@ class MyHomePage extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => FoodMenu()),
-                      );
+                      if (user_id == 0) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => FoodMenu()),
+                        );
+                      } else {
+                        if (user_status == "M") {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => FoodMenu()),
+                          );
+                        } else if (user_status == "E") {}
+                      }
                     },
-                    child: const Text(
-                      'Order Here',
+                    child: Text(
+                      user_status == "E" && user_id != 0
+                          ? 'Inventory'
+                          : 'Order Here',
                       style: TextStyle(color: Colors.white),
                     )),
               ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
@@ -313,10 +314,14 @@ class _DrinkMenuState extends State<DrinkMenu> {
                                       onPressed: () async {
                                         if (_formKey.currentState!.validate()) {
                                           // GUEST
-                                          _placeOrder(context, request, _name,
-                                              _price, _amount);
+                                          if (user_id == 0) {
+                                            _placeOrder(context, request, _name,
+                                                _price, _amount);
+                                          } else {
+                                            if (user_status ==
+                                                "M") {} // TODO: MEMBER
+                                          }
                                           _formKey.currentState!.reset();
-                                          // TODO: MEMBER
                                         }
                                       },
                                       child: const Text('Order'),

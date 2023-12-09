@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
+import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 
@@ -119,21 +120,28 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(
-              Icons.restaurant_menu,
-            ),
-            title: const Text('Order & Borrow'),
-            // Bagian redirection ke BookFormPage
+            leading: Icon(user_status == "E" && user_id != 0
+                ? Icons.home_repair_service
+                : Icons.restaurant_menu),
+            title: Text(user_status == "E" && user_id != 0
+                ? 'Inventory'
+                : 'Order & Borrow'),
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FoodMenu(),
-                  ));
+              if (user_id == 0) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FoodMenu(),
+                    ));
+              } else {
+                if (user_status == "M") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FoodMenu(),
+                      ));
+                } else if (user_status == "E") {}
+              }
             },
           ),
           ListTile(
