@@ -60,41 +60,107 @@ class DetailPage extends StatelessWidget {
             ),
             SizedBox(height: 8),
             if (user_status == "E") ...[
-              Center(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Colors.red,
-                    ),
-                  ),
-                  onPressed: () async {
+            ElevatedButton(
+              onPressed: () async {
                     final response = await request.postJson(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/delete-book-flutter/",
+                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/delete_request_flutter/",
                         jsonEncode(<String, String>{
                           "id": requestBuku.pk.toString(),
                           // TODO: Sesuaikan field data sesuai dengan aplikasimu
                         }));
                     if (response['status'] == 'success') {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(response['messages']),
+                        content: Text("Berhasil menghapus buku ${requestBuku.fields.judul}"),
                       ));
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RequestBukuPage()),
-                      );
+                      Navigator.pop(context); // Balik ke bookrequest
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(response['messages']),
+                        content: Text("Gagal menghapus buku ${requestBuku.fields.judul}"),
                       ));
                     }
                   },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(color: Colors.white),
-                  ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-              )
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Text(
+                  'Delete',
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                    final response = await request.postJson(
+                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/approve_request_flutter/",
+                        jsonEncode(<String, String>{
+                          "id": requestBuku.pk.toString(),
+                          // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                        }));
+                    if (response['status'] == 'success') {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Berhasil approve buku ${requestBuku.fields.judul}"),
+                      ));
+                      Navigator.pop(context); // Balik ke bookrequest
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Gagal approve buku ${requestBuku.fields.judul}"),
+                      ));
+                    }
+                  },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Text(
+                  'Approve',
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ),
+            ]
+            else if (user_status == 'M')...[
+              ElevatedButton(
+              onPressed: () async {
+                    final response = await request.postJson(
+                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/like_request_flutter/",
+                        jsonEncode(<String, String>{
+                          "id": requestBuku.pk.toString(),
+                          // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                        }));
+                    if (response['status'] == 'success') {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Berhasil menyukai buku ${requestBuku.fields.judul}"),
+                      ));
+                      Navigator.pop(context); // Balik ke bookrequest
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text("Gagal menyukai buku ${requestBuku.fields.judul}"),
+                      ));
+                    }
+                  },
+              style: ElevatedButton.styleFrom(
+                primary: Colors.blue,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Text(
+                  'Like',
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+            ),              
             ]
           ],
         ),
