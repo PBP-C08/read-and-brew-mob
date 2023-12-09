@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 
 class Menu {
@@ -38,10 +39,13 @@ class MenuWidget extends StatelessWidget {
             );
           } else if (item.name == "Book Request") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RequestBukuPage()));
+            if (user_status=='E' || user_status=='M')
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const RequestBukuPage()));
+            else
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Anda harus login untuk mengakses halaman ini!"),
+              ));
           } else if (item.name == "Book Tracker") {
             // TODO: Gunakan Navigator.push untuk melakukan navigasi ke MaterialPageRoute yang mencakup ShopFormPage.
             Navigator.push(
