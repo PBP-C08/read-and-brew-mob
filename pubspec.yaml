@@ -40,6 +40,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   responsive_card: ^0.0.4
   intl: ^0.19.0
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
