@@ -4,19 +4,19 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/requestbuku.dart';
-import 'package:read_and_brew/screens/bookrequest_individual.dart';
+import 'package:read_and_brew/screens/bookrequest.dart';
+import 'package:read_and_brew/screens/bookrequest_individual_detail.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/bookrequest_detail.dart';
 
-class RequestBukuPage extends StatefulWidget {
-    const RequestBukuPage({Key? key}) : super(key: key);
+class RequestBukuIndividualPage extends StatefulWidget {
+    const RequestBukuIndividualPage({Key? key}) : super(key: key);
 
     @override
-    _RequestBukuPageState createState() => _RequestBukuPageState();
+    _RequestBukuIndividualPageState createState() => _RequestBukuIndividualPageState();
 }
 
-class _RequestBukuPageState extends State<RequestBukuPage> {
+class _RequestBukuIndividualPageState extends State<RequestBukuIndividualPage> {
 final _formKey = GlobalKey<FormState>();
 String _judul = "";
 String _kategori = "";
@@ -25,10 +25,11 @@ String _gambar = "";
 Future<List<RequestBuku>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
-        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/get_books');
-    var response = await http.get(
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/get_books_individual_flutter');
+    var response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
+        body: jsonEncode({ 'id': user_id.toString() }),
     );
 
     // melakukan decode response menjadi bentuk json
@@ -49,7 +50,7 @@ Future<List<RequestBuku>> fetchProduct() async {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('All Requests'),
+        title: const Text('Your Requests'),
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,
       ),
@@ -83,13 +84,13 @@ Future<List<RequestBuku>> fetchProduct() async {
                         },
                       ),
                       title: Text(snapshot.data![index].fields.judul),
-                      subtitle: Text(snapshot.data![index].fields.status),
+                      subtitle: Text(snapshot.data![index].fields.kategori),
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            DetailPage(requestBuku: snapshot.data![index]),
+                            IndividualDetailPage(requestBuku: snapshot.data![index]),
                           ),
                         );
                       },
