@@ -25,7 +25,7 @@ String _gambar = "";
 Future<List<RequestBuku>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
-        'http://127.0.0.1:8000/bookrequest/get_books');
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/get_books');
     var response = await http.get(
         url,
         headers: {"Content-Type": "application/json"},
@@ -49,7 +49,7 @@ Future<List<RequestBuku>> fetchProduct() async {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Request Buku'),
+        title: const Text('All Requests'),
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,
       ),
@@ -83,7 +83,7 @@ Future<List<RequestBuku>> fetchProduct() async {
                         },
                       ),
                       title: Text(snapshot.data![index].fields.judul),
-                      subtitle: Text(snapshot.data![index].fields.kategori),
+                      subtitle: Text(snapshot.data![index].fields.status),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -144,32 +144,6 @@ Future<List<RequestBuku>> fetchProduct() async {
                                             padding: const EdgeInsets.all(8.0),
                                             child: TextFormField(
                                               decoration: InputDecoration(
-                                                hintText: "Gambar",
-                                                labelText: "Gambar",
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
-                                              ),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  _gambar = value!;
-                                                });
-                                              },
-                                              validator: (String? value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "Gambar tidak boleh kosong!";
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
                                                 hintText: "Judul Buku",
                                                 labelText: "Judul Buku",
                                                 border: OutlineInputBorder(
@@ -196,8 +170,8 @@ Future<List<RequestBuku>> fetchProduct() async {
                                             padding: const EdgeInsets.all(8.0),
                                             child: TextFormField(
                                               decoration: InputDecoration(
-                                                hintText: "Judul Buku",
-                                                labelText: "Judul Buku",
+                                                hintText: "Penulis",
+                                                labelText: "Penulis",
                                                 border: OutlineInputBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -206,13 +180,13 @@ Future<List<RequestBuku>> fetchProduct() async {
                                               ),
                                               onChanged: (String? value) {
                                                 setState(() {
-                                                  _judul = value!;
+                                                  _penulis = value!;
                                                 });
                                               },
                                               validator: (String? value) {
                                                 if (value == null ||
                                                     value.isEmpty) {
-                                                  return "Judul tidak boleh kosong!";
+                                                  return "Penulis tidak boleh kosong!";
                                                 }
                                                 return null;
                                               },
@@ -245,6 +219,32 @@ Future<List<RequestBuku>> fetchProduct() async {
                                             ),
                                           ),
                                           Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: TextFormField(
+                                              decoration: InputDecoration(
+                                                hintText: "Gambar",
+                                                labelText: "Gambar",
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                ),
+                                              ),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  _gambar = value!;
+                                                });
+                                              },
+                                              validator: (String? value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return "Gambar tidak boleh kosong!";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                          ),
+                                          Padding(
                                             padding: const EdgeInsets.all(8),
                                             child: ElevatedButton(
                                               style: ButtonStyle(
@@ -260,7 +260,7 @@ Future<List<RequestBuku>> fetchProduct() async {
                                                     .validate()) {
                                                   final response =
                                                       await request.postJson(
-                                                          "http://127.0.0.1:8000/bookrequest/create_request_flutter",
+                                                          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/create_request_flutter",
                                                           jsonEncode(<String,
                                                               String>{
                                                             "user" : user_id.toString(),
@@ -282,7 +282,7 @@ Future<List<RequestBuku>> fetchProduct() async {
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
-                                                              RequestBukuPage()),
+                                                              RequestBukuIndividualPage()),
                                                     );
                                                   } else {
                                                     ScaffoldMessenger.of(

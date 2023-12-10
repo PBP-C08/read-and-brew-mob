@@ -6,20 +6,21 @@ import 'dart:convert';
 import 'package:read_and_brew/models/requestbuku.dart';
 import 'package:read_and_brew/screens/booklist_detail.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
+import 'package:read_and_brew/screens/bookrequest_individual.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'dart:convert' as convert;
 
-class DetailPage extends StatefulWidget {
+class IndividualDetailPage extends StatefulWidget {
   final RequestBuku requestBuku;
 
-  const DetailPage({Key? key, required this.requestBuku}) : super(key: key);
+  const IndividualDetailPage({Key? key, required this.requestBuku}) : super(key: key);
 
   @override
-  _DetailPageState createState() => _DetailPageState();
+  _IndividualDetailPageState createState() => _IndividualDetailPageState();
 }
 
-class _DetailPageState extends State<DetailPage> {
+class _IndividualDetailPageState extends State<IndividualDetailPage> {
   bool isLiked = false;
 
   @override
@@ -104,7 +105,7 @@ class _DetailPageState extends State<DetailPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "Gagal menyukairequest buku ${widget.requestBuku.fields.judul}",
+                                "Gagal menyukai request buku ${widget.requestBuku.fields.judul}",
                               ),
                             ),
                           );
@@ -124,64 +125,6 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ]
-            else if (user_status == 'E')...[
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Add this line
-                  children: [
-                    ElevatedButton(
-                      onPressed: widget.requestBuku.fields.status == 'Approved' ? null : () async {
-                        final response = await request.postJson(
-                          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/approve_request_flutter",
-                          jsonEncode(<String, String>{
-                            "id": widget.requestBuku.pk.toString(),
-                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                          }),
-                        );
-                        if (response['status'] == 'success') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                "Berhasil approve request buku ${widget.requestBuku.fields.judul}",
-                              ),
-                            ),
-                          );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                "Gagal approve request buku ${widget.requestBuku.fields.judul}",
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: widget.requestBuku.fields.status == 'Approved' ? Colors.grey : Colors.lightBlueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: Text(
-                          widget.requestBuku.fields.status == 'Approved' ? 'Approved' : 'Approve',
-                          style: TextStyle(fontSize: 14, color: Colors.white),
-                        ),
-                      ),
-                    ),
                     ElevatedButton(
                       onPressed: () async {
                         final response = await request.postJson(
@@ -192,10 +135,6 @@ class _DetailPageState extends State<DetailPage> {
                           }),
                         );
                         if (response['status'] == 'success') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -206,7 +145,7 @@ class _DetailPageState extends State<DetailPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
+                                builder: (context) => const RequestBukuIndividualPage()));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
