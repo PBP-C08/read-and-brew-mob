@@ -6,11 +6,8 @@ import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
-import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -220,11 +217,11 @@ class _SecretMenuState extends State<SecretMenu> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Secret Menu'),
+        title: const Text('Order - Secret Menu'),
         backgroundColor: Color(0xFF377C35),
         foregroundColor: Colors.white,
       ),
-      drawer: const LeftDrawer(),
+      drawer: const OnBDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(

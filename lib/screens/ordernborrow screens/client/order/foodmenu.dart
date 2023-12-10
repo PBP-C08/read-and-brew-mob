@@ -10,7 +10,6 @@ import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secret
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
-import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -284,11 +283,15 @@ class _FoodMenuState extends State<FoodMenu> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Food'),
+        title: user_id == 0
+            ? const Text('Order & Borrow - Food')
+            : const Text('Order - Food'),
         backgroundColor: Color(0xFF377C35),
         foregroundColor: Colors.white,
       ),
-      drawer: const LeftDrawer(),
+      drawer: user_id != 0 && user_status == "M"
+          ? const OnBDrawer()
+          : const LeftDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
