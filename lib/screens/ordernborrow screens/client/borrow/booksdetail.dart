@@ -8,6 +8,7 @@ import 'package:read_and_brew/models/ordernborrow%20models/OrderMember.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/books.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/borrowedbooks.dart';
 
 class BooksDetails extends StatefulWidget {
   final int id;
@@ -232,7 +233,7 @@ class _BooksDetailsState extends State<BooksDetails> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const BooksPage("", "", "", ""),
+                                            const BorrowedBooks("", "", "", ""),
                                       ),
                                     );
                                     await showDialog(
