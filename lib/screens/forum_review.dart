@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/review.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
-import 'package:read_and_brew/models/ordernborrow models/BorrowedHistory.dart';
+import 'package:http/http.dart' as http;
+// import 'package:read_and_brew/models/ordernborrow models/BorrowedHistory.dart';
+// import 'package:read_and_brew/screens/booklist.dart';
 import 'dart:convert' as convert;
+
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({Key? key}) : super(key: key);
@@ -15,6 +21,7 @@ class ReviewPage extends StatefulWidget {
 }
 
 class ReviewPageState extends State<ReviewPage> {
+
   Future<List<Review>> fetchAllReview(request) async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     // melakukan decode response menjadi bentuk json
@@ -45,34 +52,70 @@ class ReviewPageState extends State<ReviewPage> {
 
     return listMyReview;
   }
-  Future<List<BorrowedHistory>> bookHistory(request) async {
+  
+  Future<List<Buku>> bookHistory(request) async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     // melakukan decode response menjadi bentuk json
+  
     var data = await request.get(
-        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/get_borrowed_history_json_member/');
+      'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/get_borrowed_history_json_member'
+    );
+
+    // var dataDecoded = convert.json.decode(data.body);
+
+    var books = await request.get(
+      'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/api/buku/'
+    );
+
+    // var booksDecoded = convert.json.decode(books.body);
+
+    List<int> borrowedBookIds = data
+        .where((book) => book['fields']['user'] == user_id)
+        .map<int>((item) => item['fields']['book'] as int)
+        .toList();
+
     // melakukan konversi data json menjadi object Review
-    List<BorrowedHistory> listBookHistory = [];
-    for (var d in data) {
-      if (d != null) {
-        listBookHistory.add(BorrowedHistory.fromJson(d));
+    List<Buku> listBookHistory = [];
+    for (var d in books) {
+      var bookId = d['pk'];
+      if (borrowedBookIds.contains(bookId)) {
+        listBookHistory.add(Buku.fromJson(d));
       }
     }
     return listBookHistory;
   }
 
+  final _formKey = GlobalKey<FormState>();
+
+  int index_rating = 0;
+  int index_item = 0;
   int _currentIndex = 0;
-  String dropDownValue = "";
-  String dropDownRating = "";
+
+  TextEditingController _username = TextEditingController();
+  TextEditingController _bookname = TextEditingController();
+  TextEditingController _rating = TextEditingController();
+  TextEditingController _review= TextEditingController();
+
+  // String _username = "";
+  // String _bookname = "";
+  // String _rating = "";
+  // String _review = "";
+
+  // String dropDownValue = "";
+  // String rating = "";
+  List<DropdownMenuItem<String>> dropDownItems = [];
+  List<DropdownMenuItem<String>> dropDownRating = [
+      DropdownMenuItem(value: "~~Rate The Book~~", child: Text("~~Rate The Book~~")),
+      DropdownMenuItem(value: "1", child: Text("1")),
+      DropdownMenuItem(value: "2", child: Text("2")),
+      DropdownMenuItem(value: "3", child: Text("3")),
+      DropdownMenuItem(value: "4", child: Text("4")),
+      DropdownMenuItem(value: "5", child: Text("5")),
+  ];
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _username = TextEditingController();
-    final TextEditingController _bookname = TextEditingController();
-    TextEditingController _rating = TextEditingController();
-    final TextEditingController _review = TextEditingController();
 
     _username.text = user_username;
 
@@ -135,7 +178,40 @@ class ReviewPageState extends State<ReviewPage> {
             }
           }),
 
-      const Center(child: Text("Search (Still on progress)")),
+      Container(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text("Search Book"),
+            centerTitle: true,
+            actions: [
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    final selected = await showSearch(
+                      context: context,
+                      delegate: CustomSearchDelegate(items),
+                    );
+                    if (selected != null && selected != false) {
+                      // Handle the selected item
+                      print('Selected: $selected');
+                    }
+                  },
+                ),
+                
+              ],
+              
+          ),
+          body: ListView.builder(
+            itemCount: filteredItems.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(filteredItems[index]),
+              );
+            },
+          ),
+          // body: BooklistPage("", "", "", ""),
+          ),
+      ),
       
       Container(
         padding: const EdgeInsets.all(16.0),
@@ -152,7 +228,7 @@ class ReviewPageState extends State<ReviewPage> {
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -171,75 +247,83 @@ class ReviewPageState extends State<ReviewPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: 
-                    DropdownMenu<String>(
-                        initialSelection: dropDownValue,
-                        width: 317,
-                        onSelected: (String? value) {
-                          // This is called when the user selects an item.
-                          setState(() {
-                            dropDownValue = value!;
-                          });
+                    DropdownButtonHideUnderline(
+                      child: FutureBuilder(
+                        future: bookHistory(request),
+                        builder: (context, AsyncSnapshot<List<Buku>> snapshot) {
+                          if (snapshot.hasError) {
+                            return DropdownButton<String>(
+                              items: dropDownItems,
+                              onChanged: (String? selected) {
+                                // Handle the selected item here
+                              },
+                              hint: Text(
+                                "You Haven't Borrowed Any Books",
+                              ),
+                            );
+                          } else if (snapshot.hasData) {
+                            dropDownItems = snapshot.data!
+                                .map((item) => DropdownMenuItem(
+                                      value: item.fields.judul,
+                                      child: Text(item.fields.judul),
+                                    ))
+                                .toList();
+                            return DropdownButton<String>(
+                              value: dropDownItems[index_item].value,
+                              onChanged: (String? selected) {
+                                setState(() {
+                                  _bookname.text = selected!;
+                                });
+                              },
+                              hint: Text(
+                                "~~Select Book~~",
+                              ),
+                              items: dropDownItems,
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
                         },
-                        dropdownMenuEntries:[DropdownMenuEntry(value: "Test", label: "Test")],
                       ),
-                    // DropdownButtonHideUnderline(
-                    //     child: FutureBuilder(
-                    //       future: bookHistory(request),
-                    //       builder: (context, AsyncSnapshot<List<BorrowedHistory>> snapshot) {
-                    //         if (snapshot.hasError) {
-                    //           return Container();
-                    //         } else if (snapshot.hasData) {
-                    //           List<DropdownMenuItem<int>> dropDownItems = [];
-                    //           for (var item in snapshot.data!) {
-                    //             dropDownItems.add(
-                    //               DropdownMenuItem(
-                    //                 value: item.pk, // Assuming BorrowedHistory has an 'id' property
-                    //                 child: Text(item.fields.book.toString()), // Replace with the actual property you want to display
-                    //               ),
-                    //             );
-                    //           }
-
-                    //           return DropdownButton(
-                    //             items: dropDownItems,
-                    //             onChanged: (int? selected) {
-                    //               // Handle the selected item here
-                    //             },
-                    //             hint: Text(
-                    //               "Select Book",
-                    //               style: TextStyle(color: Colors.blue),
-                    //             ),
-                    //           );
-                    //         } else {
-                    //           return CircularProgressIndicator();
-                    //         }
-                    //       },
-                    //     ),
-                    //   ),
+                    ),
                     
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: 
-                    DropdownMenu<String>(
-                        initialSelection: "Rate The Book",
-                        width: 317,
-                        onSelected: (String? value) {
-                          // This is called when the user selects an item.
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        value: dropDownRating[index_rating].value,
+                        onChanged: (String? value) {
                           setState(() {
-                            _rating = value! as TextEditingController;
+                            if(value == "~~Rate The Book~~") {
+                              index_rating = 0;
+                            } else {
+                              index_rating = int.tryParse(value!)!;
+                            }
+
+                            if(value != "~~Rate The Book~~"){
+                              _rating.text = value!;
+                            } else {
+                              _rating.text = "";
+                            }
                           });
                         },
-                        dropdownMenuEntries: const [DropdownMenuEntry(value: "1", label: "1"),
-                                              DropdownMenuEntry(value: "2", label: "2"),
-                                              DropdownMenuEntry(value: "3", label: "3"),
-                                              DropdownMenuEntry(value: "4", label: "4"),
-                                              DropdownMenuEntry(value: "5", label: "5")],
+                        hint: Text(
+                          "Rate The Book",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                        items: dropDownRating.map((item) {
+                          return DropdownMenuItem<String>(
+                            value: item.value,
+                            child: Text(item.value.toString()),
+                          );
+                        }).toList(),
                       ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextFormField(
-                      controller: _review,
                       decoration: InputDecoration(
                         hintText: "Review",
                         labelText: "Review",
@@ -247,12 +331,17 @@ class ReviewPageState extends State<ReviewPage> {
                           borderRadius: BorderRadius.circular(5.0),
                         ),
                       ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return "Fill out the blank review!";
-                        }
-                        return null;
+                      onChanged: (String? value) {
+                        setState(() {
+                          _review.text = value!;
+                        });
                       },
+                      // validator: (String? value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return "Fill out the blank review!";
+                      //   }
+                      //   return null;
+                      // },
                     ),
                   ),
                   const SizedBox(height: 24.0),
@@ -431,6 +520,60 @@ class ReviewPageState extends State<ReviewPage> {
           },
         ],
       ),
+    );
+  }
+}
+
+List<String> items = List.generate(100, (index) => 'Item $index');
+List<String> filteredItems = [];
+class CustomSearchDelegate extends SearchDelegate {
+  final List<String> items;
+
+  CustomSearchDelegate(this.items);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, false);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return buildSuggestions(context);
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    filteredItems = items
+        .where((item) => item.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return ListView.builder(
+      itemCount: filteredItems.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(filteredItems[index]),
+          onTap: () {
+            close(context, filteredItems[index]);
+          },
+        );
+      },
     );
   }
 }
