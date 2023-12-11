@@ -21,6 +21,28 @@ class MyHomePage extends StatelessWidget {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
+        title: Center(
+            child: user_id == 0
+                ? Text('')
+                : RichText(
+                    text: TextSpan(
+                      text: 'Welcome, ',
+                      style: TextStyle(
+                        color: Color(0xFF377C35),
+                        fontSize: 20,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$user_username',
+                          style: TextStyle(
+                            color: Color(0xFF377C35),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
         iconTheme: IconThemeData(color: Color(0xFF377C35)),
         actions: [
           IconButton(
@@ -148,18 +170,7 @@ class MyHomePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     )),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
-                child: Text(
-                  'Features:', // Text yang menandakan toko
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+
               // Grid layout
               GridView.count(
                 // Container pada card kita.
