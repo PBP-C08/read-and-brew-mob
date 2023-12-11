@@ -73,8 +73,7 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book Tracker'),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        foregroundColor: Colors.brown,
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
@@ -88,93 +87,99 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                 children: [
                   Text(
                     "You haven't tracked any books.",
-                    style: TextStyle(color: Color.fromARGB(255, 133, 67, 13)),
+                    style: TextStyle(color: Colors.brown),
                   ),
                   SizedBox(height: 8),
                 ],
               );
             } else {
-              return GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16.0,
-                  mainAxisSpacing: 16.0,
-                  childAspectRatio: (1 / 1.5),
-                ),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (_, index) => InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailPage(
-                          fetchBookDetails: fetchBookDetails,
-                          bookTracker: snapshot.data![index],
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
+                    childAspectRatio: (1 / 1.5),
+                  ),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (_, index) => InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailPage(
+                            fetchBookDetails: fetchBookDetails,
+                            bookTracker: snapshot.data![index],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: Card(
-                    elevation: 4.0,
-                    child: IntrinsicHeight(
-                      child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        child: FutureBuilder(
-                          future: fetchBookDetails(
-                              snapshot.data![index].fields.book),
-                          builder: (context, AsyncSnapshot<Buku> bookSnapshot) {
-                            if (bookSnapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const CircularProgressIndicator();
-                            } else if (bookSnapshot.hasError) {
-                              return Text('Error loading book details');
-                            } else if (!bookSnapshot.hasData) {
-                              return Text('No book details available');
-                            } else {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Image.network(
-                                      bookSnapshot.data!.fields.gambar,
-                                      fit: BoxFit.cover,
+                      );
+                    },
+                    child: Card(
+                      elevation: 2.0,
+                      child: IntrinsicHeight(
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          child: FutureBuilder(
+                            future: fetchBookDetails(
+                                snapshot.data![index].fields.book),
+                            builder: (context, AsyncSnapshot<Buku> bookSnapshot) {
+                              if (bookSnapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (bookSnapshot.hasError) {
+                                return Text('Error loading book details');
+                              } else if (!bookSnapshot.hasData) {
+                                return Text('No book details available');
+                              } else {
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Image.network(
+                                        bookSnapshot.data!.fields.gambar,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          bookSnapshot.data!.fields.judul,
-                                          style: const TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center, 
+                                        children: [
+                                          Text(
+                                            bookSnapshot.data!.fields.judul,
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              fontWeight: FontWeight.w800,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center, 
                                           ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          bookSnapshot.data!.fields.penulis,
-                                          style:
-                                              const TextStyle(fontSize: 14.0),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          getStatusLabel(snapshot
-                                              .data![index].fields.status),
-                                          style:
-                                              const TextStyle(fontSize: 14.0),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
+                                          Text(
+                                            bookSnapshot.data!.fields.penulis,
+                                            style: const TextStyle(fontSize: 16.0),
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          Text(
+                                            getStatusLabel(snapshot
+                                                .data![index].fields.status),
+                                            style: const TextStyle(
+                                              fontSize: 16.0,
+                                              color: Color(0xFF472B26)
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
+                                  ],
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -187,37 +192,37 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
       ),
         bottomNavigationBar: SafeArea(
           child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TrackerFormPage()
-              ),
-            );
-          },
-          child: BottomAppBar(
-            color: Colors.brown,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 24.0,
-                  ),
-                  SizedBox(width: 6.0),
-                  Text(
-                    'Track Book',
-                    style: TextStyle(color: Colors.white, fontSize: 16.0),
-                  ),
-                ],
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TrackerFormPage(),
+                ),
+              );
+            },
+            child: BottomAppBar(
+              color: Colors.brown,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0), // Reduce the vertical padding
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 24.0,
+                    ),
+                    SizedBox(width: 6.0),
+                    Text(
+                      'Track Book',
+                      style: TextStyle(color: Colors.white, fontSize: 16.0),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
     );
   }
 }
