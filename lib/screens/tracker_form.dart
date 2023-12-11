@@ -98,142 +98,150 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text(
-            'Track Your Book',
-          ),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: Text('Track Your Book'),
+        foregroundColor: Colors.brown,
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: DropdownButtonFormField<String>(
-                        decoration: InputDecoration(
-                          hintText: 'Select Book',
-                          labelText: 'Book Name',
-                          border: OutlineInputBorder(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: DropdownButtonFormField<String>(
+                          decoration: InputDecoration(
+                            hintText: 'Select Book',
+                            labelText: 'Book Name',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          value: _selectedBookId,
+                          items: _availableBooks.map((book) {
+                            return DropdownMenuItem<String>(
+                              value: book.pk.toString(),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Text(
+                                  book.fields.judul,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedBookId = value!;
+                            });
+                          },
+                          validator: (String? value) {
+                            if (value?.isEmpty ?? true) {
+                              return 'Please select a book';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Total Book Pages',
+                      labelText: 'Total Book Pages',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _page = int.parse(value!);
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Book pages cannot be empty!';
+                      }
+                      if (int.tryParse(value) == null) {
+                        return 'Book pages must be an integer!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Total Pages Read',
+                      labelText: 'Total Pages Read',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _progress = int.parse(value!);
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Book progress cannot be empty!';
+                      }
+                      if (int.tryParse(value) == null) {
+                        return 'Book progress must be an integer!';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: 160,
+                    height: 70, // Set the width here
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.brown,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
-                        value: _selectedBookId,
-                        items: _availableBooks.map((book) {
-                          return DropdownMenuItem<String>(
-                            value: book.pk.toString(),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Text(
-                                book.fields.judul,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (String? value) {
-                          setState(() {
-                            _selectedBookId = value!;
-                          });
-                        },
-                        validator: (String? value) {
-                          if (value?.isEmpty ?? true) {
-                            return 'Please select a book';
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            await _addTracker(request);
                           }
-                          return null;
                         },
+                        child: const Text(
+                          'Track Book',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Total Book Pages',
-                    labelText: 'Total Book Pages',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _page = int.parse(value!);
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Book pages cannot be empty!';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Book pages must be an integer!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: 'Total Pages Read',
-                    labelText: 'Total Pages Read',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _progress = int.parse(value!);
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Book progress cannot be empty!';
-                    }
-                    if (int.tryParse(value) == null) {
-                      return 'Book progress must be an integer!';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.brown),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        await _addTracker(request);
-                      }
-                    },
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(color: Colors.white),
-                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-    Future<void> _addTracker(CookieRequest request) async {
+  Future<void> _addTracker(CookieRequest request) async {
     try {
       final formData = <String, dynamic>{
         'book': _selectedBookId,
@@ -242,14 +250,10 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
         'status': (_page == _progress) ? 'finished' : 'in-progress',
       };
 
-      print('Sending form data: $formData'); // Debug print
-
       final response = await request.postJson(
         'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/track-book-guest-flutter',
         jsonEncode(formData),
       );
-
-      print('Response received: $response'); // Debug print
 
       if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
