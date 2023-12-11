@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +5,6 @@ import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/review.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
-import 'package:http/http.dart' as http;
 // import 'package:read_and_brew/models/ordernborrow models/BorrowedHistory.dart';
 // import 'package:read_and_brew/screens/booklist.dart';
 import 'dart:convert' as convert;
@@ -336,12 +333,12 @@ class ReviewPageState extends State<ReviewPage> {
                           _review.text = value!;
                         });
                       },
-                      // validator: (String? value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return "Fill out the blank review!";
-                      //   }
-                      //   return null;
-                      // },
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return "Fill out the blank review!";
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(height: 24.0),
