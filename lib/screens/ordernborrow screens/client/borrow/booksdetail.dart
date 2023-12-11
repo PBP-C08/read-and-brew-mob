@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/models/ordernborrow%20models/OrderMember.dart';
-import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/books.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrowpage.dart';
 
 class BooksDetails extends StatefulWidget {
   final int id;
@@ -68,13 +66,13 @@ class _BooksDetailsState extends State<BooksDetails> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // Dialog cancelled
+                Navigator.of(context).pop(false);
               },
               child: Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(true); // User confirmed
+                Navigator.of(context).pop(true);
               },
               child: Text("Confirm"),
             ),
@@ -180,11 +178,12 @@ class _BooksDetailsState extends State<BooksDetails> {
                                     }),
                                   );
                                   if (response['status'] == 'success') {
+                                    indexBorrow = 2;
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            BooksPage("", "", "", ""),
+                                            BorrowPage("", "", "", ""),
                                       ),
                                     );
                                     // ignore: use_build_context_synchronously
@@ -228,11 +227,12 @@ class _BooksDetailsState extends State<BooksDetails> {
                                     }),
                                   );
                                   if (response['status'] == 'success') {
+                                    indexBorrow = 1;
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const BooksPage("", "", "", ""),
+                                            BorrowPage("", "", "", ""),
                                       ),
                                     );
                                     await showDialog(

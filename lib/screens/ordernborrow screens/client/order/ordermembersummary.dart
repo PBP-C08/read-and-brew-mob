@@ -6,9 +6,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/ordernborrow%20models/OrderMember.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
 
@@ -20,14 +17,13 @@ class OrderMemberPage extends StatefulWidget {
 }
 
 class _OrderMemberPageState extends State<OrderMemberPage> {
-  int _currentIndex = 3;
+  late Future<List<OrderMember>> futureOrder;
 
-  final List<Widget> _pagesMember = [
-    FoodMenu(),
-    DrinkMenu(),
-    SecretMenu(),
-    OrderMemberPage(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    futureOrder = fetchOrder();
+  }
 
   Future<List<OrderMember>> fetchOrder() async {
     var url = Uri.parse(
@@ -46,6 +42,13 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
       }
     }
     return listOrder;
+  }
+
+  Future<void> refreshOrderData() async {
+    final newOrderData = await fetchOrder();
+    setState(() {
+      futureOrder = Future.value(newOrderData);
+    });
   }
 
   Future<bool> _showPaymentConfirmationDialog(
@@ -83,10 +86,7 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderMemberPage()),
-      );
+      refreshOrderData();
       // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
@@ -186,11 +186,8 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
                       }));
 
                   if (response['status'] == 'success') {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OrderMemberPage()),
-                    );
+                    Navigator.pop(context);
+                    refreshOrderData();
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -261,11 +258,7 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderMemberPage()),
-      );
-      // ignore: use_build_context_synchronously
+      refreshOrderData();
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -295,24 +288,6 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.lock),
-        label: 'Secret Menu',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -322,7 +297,7 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
       ),
       drawer: const OnBDrawer(),
       body: FutureBuilder(
-        future: fetchOrder(),
+        future: futureOrder,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -465,22 +440,6 @@ class _OrderMemberPageState extends State<OrderMemberPage> {
               );
             }
           }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => _pagesMember[_currentIndex]),
-          );
         },
       ),
     );

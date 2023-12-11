@@ -7,7 +7,7 @@ import 'package:read_and_brew/models/booktracker.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 
-//TODO: figure out routing edit progress, bedain member/guest
+//TODO: bedain member/guest, abis pencet save progress ga async ke updatenya
 class DetailPage extends StatefulWidget {
   final BookTracker bookTracker;
   final Function(int) fetchBookDetails;
@@ -25,6 +25,8 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   final _formKey = GlobalKey<FormState>();
   int _progress = 0;
+  int _bookId = 0;
+  int _bookDetailsId = 0;
 
   Future<Buku> fetchBookDetails(int bookId) async {
     var url = Uri.parse(
@@ -54,7 +56,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Book Tracker"),
-        foregroundColor: Colors.brown,
+        foregroundColor: Color(0xFF377C35),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -118,7 +120,8 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text: '${getStatusLabel(widget.bookTracker.fields.status)}',
+                              text:
+                                  '${getStatusLabel(widget.bookTracker.fields.status)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
@@ -139,7 +142,8 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text: '${widget.bookTracker.fields.progress}/${widget.bookTracker.fields.page}',
+                              text:
+                                  '${widget.bookTracker.fields.progress}/${widget.bookTracker.fields.page}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
@@ -163,15 +167,15 @@ class _DetailPageState extends State<DetailPage> {
                                   title: const Text(
                                     "Edit Your Progress",
                                     style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.brown
-                                    ),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFF377C35)),
                                   ),
                                   content: Form(
                                     key: _formKey,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         TextFormField(
@@ -186,13 +190,15 @@ class _DetailPageState extends State<DetailPage> {
                                             });
                                           },
                                           validator: (value) {
-                                            if (value == null || value.isEmpty) {
+                                            if (value == null ||
+                                                value.isEmpty) {
                                               return "Book progress invalid!";
                                             }
                                             if (int.tryParse(value) == null) {
                                               return "Book progress invalid!";
                                             }
-                                            int enteredPages = int.tryParse(value) ?? 0;
+                                            int enteredPages =
+                                                int.tryParse(value) ?? 0;
                                             if (enteredPages < 1) {
                                               return "Book progress must be positive!";
                                             }
@@ -210,19 +216,24 @@ class _DetailPageState extends State<DetailPage> {
                                       },
                                       child: const Text('Cancel'),
                                       style: TextButton.styleFrom(
-                                        primary: Colors.brown,
+                                        primary: Color(0xFF377C35),
                                       ),
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         if (_formKey.currentState!.validate()) {
-                                          // _editProgress(request, _progress, _bookId);
+                                          _bookId =
+                                              widget.bookTracker.fields.book;
+                                          _bookDetailsId =
+                                              bookSnapshot.data!.pk;
+                                          _editProgress(
+                                              request, _progress, _bookId, _bookDetailsId);
                                           _formKey.currentState!.reset();
                                         }
                                       },
                                       child: const Text('Save'),
                                       style: TextButton.styleFrom(
-                                        primary: Colors.brown,
+                                        primary: Color(0xFF377C35),
                                       ),
                                     ),
                                   ],
@@ -231,7 +242,7 @@ class _DetailPageState extends State<DetailPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.brown,
+                            primary: Color(0xFF377C35),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -260,7 +271,7 @@ class _DetailPageState extends State<DetailPage> {
                             Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF377C35),
+                            primary: Colors.brown,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -289,17 +300,20 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Future<void> _editProgress(CookieRequest request, int _progress, int _bookId) async {
+  Future<void> _editProgress(
+      CookieRequest request, int _progress, int _bookId, int _bookDetailId) async {
     final response = await request.postJson(
-        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/",
+        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/update-progress-flutter/$_bookId",
         jsonEncode(<String, String>{
-            'progress': _progress.toString(),
+          'progress': _progress.toString(),
         }));
+
     if (response['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("You have successfully edit your progress!"),
       ));
       Navigator.pop(context);
+      fetchBookDetails(_bookDetailId);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("An error occurred. Please try again later."),

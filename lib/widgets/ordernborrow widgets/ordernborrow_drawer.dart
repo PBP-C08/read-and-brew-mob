@@ -5,9 +5,9 @@ import 'package:read_and_brew/screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/books.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrowpage.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/tracker.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 
 class OnBDrawer extends StatelessWidget {
   const OnBDrawer({super.key});
@@ -72,7 +72,7 @@ class OnBDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FoodMenu(),
+                    builder: (context) => OrderPage(),
                   ));
             },
           ),
@@ -82,10 +82,15 @@ class OnBDrawer extends StatelessWidget {
             ),
             title: const Text('Borrow'),
             onTap: () {
+              indexBorrow = 0;
+              judul_found = '';
+              kategori_found = '';
+              sort_found = '';
+              order_found = '';
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BooksPage("", "", "", ""),
+                    builder: (context) => BorrowPage("", "", "", ""),
                   ));
             },
           ),

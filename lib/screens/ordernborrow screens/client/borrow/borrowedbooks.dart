@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/books.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/booksdetail.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/borrowedhistory.dart';
-import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 
 class BorrowedBooks extends StatefulWidget {
@@ -27,24 +22,23 @@ class BorrowedBooks extends StatefulWidget {
 }
 
 class _BorrowedBooksState extends State<BorrowedBooks> {
+  late Future<List<Buku>> futureBooks;
   final _formKey = GlobalKey<FormState>();
-  String _judul = "";
-  String _kategori = "";
-  String _penulis = "";
-  String _gambar = "";
   List<String> list_kategori = [];
-  String judul_search = '';
-  String kategori_search = '';
-  String sort_search = '';
   List<String> sort_by = ["Judul", "Rating"];
-  String order_search = '';
 
-  int _currentIndex = 1;
-  final List<Widget> _pagesBorrow = [
-    BooksPage("", "", "", ""),
-    BorrowedBooks("", "", "", ""),
-    BorrowedHistoryPage("", "", "", ""),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    futureBooks = fetchBorrowedBooks();
+  }
+
+  Future<void> refreshBooksData() async {
+    final newBooksData = await fetchBorrowedBooks();
+    setState(() {
+      futureBooks = Future.value(newBooksData);
+    });
+  }
 
   Future<List<Buku>> fetchBorrowedBooks() async {
     var url = Uri.parse(
@@ -78,29 +72,25 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
       }
     }
 
-    if (widget.kategori == "") {
+    if (kategori_found == "") {
       for (var d in list_item) {
-        if (d.fields.judul
-            .toLowerCase()
-            .contains(widget.search.toLowerCase())) {
+        if (d.fields.judul.toLowerCase().contains(judul_found.toLowerCase())) {
           list_show.add(d);
         }
       }
     } else {
       for (var d in list_item) {
-        if (d.fields.kategori == widget.kategori &&
-            d.fields.judul
-                .toLowerCase()
-                .contains(widget.search.toLowerCase())) {
+        if (d.fields.kategori == kategori_found &&
+            d.fields.judul.toLowerCase().contains(judul_found.toLowerCase())) {
           list_show.add(d);
         }
       }
     }
 
-    if (widget.sort == "Judul") {
+    if (sort_found == "Judul") {
       list_show.sort((a, b) =>
           a.fields.judul.toLowerCase().compareTo(b.fields.judul.toLowerCase()));
-    } else if (widget.sort == "Rating") {
+    } else if (sort_found == "Rating") {
       list_show.sort((a, b) => a.fields.rating.compareTo(b.fields.rating));
     }
 
@@ -113,21 +103,6 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book),
-        label: 'Books',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.auto_stories),
-        label: 'Borrowed',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.import_contacts),
-        label: 'History',
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Borrowed Books'),
@@ -176,7 +151,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                         ),
                                         onChanged: (String? value) {
                                           setState(() {
-                                            judul_search = value!;
+                                            judul_found = value!;
                                           });
                                         },
                                       ),
@@ -220,7 +195,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                             ),
                                             onChanged: (String value) {
                                               setState(() {
-                                                kategori_search = value;
+                                                kategori_found = value;
                                               });
                                             },
                                           );
@@ -237,7 +212,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                                   children: options.map((opt) {
                                                     return InkWell(
                                                       onTap: () {
-                                                        kategori_search = opt;
+                                                        kategori_found = opt;
                                                         onSelected(opt);
                                                       },
                                                       child: Container(
@@ -280,7 +255,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                         onSelected: (String? value) {
                                           // This is called when the user selects an item.
                                           setState(() {
-                                            sort_search = value!;
+                                            sort_found = value!;
                                           });
                                         },
                                         dropdownMenuEntries: sort_by
@@ -305,16 +280,8 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                         onPressed: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      BorrowedBooks(
-                                                          kategori_search,
-                                                          judul_search,
-                                                          sort_search,
-                                                          order_search)),
-                                            );
+                                            Navigator.pop(context);
+                                            refreshBooksData();
                                           }
                                         },
                                       ),
@@ -333,7 +300,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
       ),
       drawer: const OnBDrawer(),
       body: FutureBuilder(
-          future: fetchBorrowedBooks(),
+          future: futureBooks,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
@@ -400,22 +367,6 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
               }
             }
           }),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => _pagesBorrow[_currentIndex]),
-          );
-        },
-      ),
     );
   }
 }

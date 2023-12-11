@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-// TODO: Impor halaman BookFormPage jika sudah dibuat
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
 import 'package:read_and_brew/screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
 import 'package:read_and_brew/screens/tracker.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -133,14 +132,14 @@ class LeftDrawer extends StatelessWidget {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => FoodMenu(),
+                      builder: (context) => OrderPage(),
                     ));
               } else {
                 if (user_status == "M") {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FoodMenu(),
+                        builder: (context) => OrderPage(),
                       ));
                 } else if (user_status == "E") {
                   Navigator.pushReplacement(

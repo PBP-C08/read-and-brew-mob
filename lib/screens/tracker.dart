@@ -73,7 +73,7 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book Tracker'),
-        foregroundColor: Colors.brown,
+        foregroundColor: Color(0xFF377C35),
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
@@ -87,7 +87,7 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                 children: [
                   Text(
                     "You haven't tracked any books.",
-                    style: TextStyle(color: Colors.brown),
+                    style: TextStyle(color: Color(0xFF377C35)),
                   ),
                   SizedBox(height: 8),
                 ],
@@ -151,7 +151,7 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                                             bookSnapshot.data!.fields.judul,
                                             style: const TextStyle(
                                               fontSize: 16.0,
-                                              fontWeight: FontWeight.w800,
+                                              fontWeight: FontWeight.w600,
                                             ),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center, 
@@ -190,9 +190,12 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
           }
         },
       ),
-        bottomNavigationBar: SafeArea(
-          child: GestureDetector(
-            onTap: () {
+      floatingActionButton: Container(
+        height: 70.0, // Increase the height
+        width: 70.0, // Increase the width
+        child: FittedBox(
+          child: FloatingActionButton(
+            onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -200,29 +203,15 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                 ),
               );
             },
-            child: BottomAppBar(
-              color: Colors.brown,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2.0), // Reduce the vertical padding
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: Colors.white,
-                      size: 24.0,
-                    ),
-                    SizedBox(width: 6.0),
-                    Text(
-                      'Track Book',
-                      style: TextStyle(color: Colors.white, fontSize: 16.0),
-                    ),
-                  ],
-                ),
-              ),
+            tooltip: 'Track Book', // Add this line
+            backgroundColor: Color(0xFF377C35),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
             ),
           ),
         ),
+      ),
     );
   }
 }

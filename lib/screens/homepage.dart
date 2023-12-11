@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/menu_card.dart';
@@ -21,6 +22,28 @@ class MyHomePage extends StatelessWidget {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
+        title: Center(
+            child: user_id == 0
+                ? Text('')
+                : RichText(
+                    text: TextSpan(
+                      text: 'Welcome, ',
+                      style: TextStyle(
+                        color: Color(0xFF377C35),
+                        fontSize: 20,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '$user_username',
+                          style: TextStyle(
+                            color: Color(0xFF377C35),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
         iconTheme: IconThemeData(color: Color(0xFF377C35)),
         actions: [
           IconButton(
@@ -124,13 +147,14 @@ class MyHomePage extends StatelessWidget {
                       if (user_id == 0) {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => FoodMenu()),
+                          MaterialPageRoute(builder: (context) => OrderPage()),
                         );
                       } else {
                         if (user_status == "M") {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => FoodMenu()),
+                            MaterialPageRoute(
+                                builder: (context) => OrderPage()),
                           );
                         } else if (user_status == "E") {
                           Navigator.pushReplacement(
@@ -148,18 +172,7 @@ class MyHomePage extends StatelessWidget {
                       style: TextStyle(color: Colors.white),
                     )),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                // Widget Text untuk menampilkan tulisan dengan alignment center dan style yang sesuai
-                child: Text(
-                  'Features:', // Text yang menandakan toko
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+
               // Grid layout
               GridView.count(
                 // Container pada card kita.
