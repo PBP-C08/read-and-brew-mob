@@ -24,8 +24,8 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
   @override
   void initState() {
     super.initState();
-    _availableBooks = []; // Initialize an empty list
-    _selectedBookId = ''; // Initialize an empty string
+    _availableBooks = [];
+    _selectedBookId = ''; 
     _refreshBookTracker();
   }
 
@@ -99,7 +99,7 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Track Your Book'),
-        foregroundColor: Colors.brown,
+        foregroundColor: Color(0xFF377C35),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -212,7 +212,7 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
                       padding: const EdgeInsets.all(12.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.brown,
+                          primary: Color(0xFF377C35),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
