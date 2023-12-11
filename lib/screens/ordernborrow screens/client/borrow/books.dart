@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/booksdetail.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/borrowedbooks.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/borrowedhistory.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
+
+String judul_found = '';
+String kategori_found = '';
+String sort_found = '';
+String order_found = '';
 
 class BooksPage extends StatefulWidget {
   final kategori;
@@ -23,24 +24,23 @@ class BooksPage extends StatefulWidget {
 }
 
 class _BooksPageState extends State<BooksPage> {
+  late Future<List<Buku>> futureBooks;
   final _formKey = GlobalKey<FormState>();
-  String _judul = "";
-  String _kategori = "";
-  String _penulis = "";
-  String _gambar = "";
   List<String> list_kategori = [];
-  String judul_search = '';
-  String kategori_search = '';
-  String sort_search = '';
   List<String> sort_by = ["Judul", "Rating"];
-  String order_search = '';
 
-  int _currentIndex = 0;
-  final List<Widget> _pagesBorrow = [
-    BooksPage("", "", "", ""),
-    BorrowedBooks("", "", "", ""),
-    BorrowedHistoryPage("", "", "", ""),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    futureBooks = fetchAvailableBooks();
+  }
+
+  Future<void> refreshBooksData() async {
+    final newBooksData = await fetchAvailableBooks();
+    setState(() {
+      futureBooks = Future.value(newBooksData);
+    });
+  }
 
   Future<List<Buku>> fetchAvailableBooks() async {
     var url = Uri.parse(
@@ -78,26 +78,26 @@ class _BooksPageState extends State<BooksPage> {
       }
     }
 
-    if (widget.kategori != "") {
+    if (kategori_found != "") {
       list_show = list_show
           .where((book) =>
-              book.fields.kategori == widget.kategori &&
+              book.fields.kategori == kategori_found &&
               book.fields.judul
                   .toLowerCase()
-                  .contains(widget.search.toLowerCase()))
+                  .contains(judul_found.toLowerCase()))
           .toList();
     } else {
       list_show = list_show
           .where((book) => book.fields.judul
               .toLowerCase()
-              .contains(widget.search.toLowerCase()))
+              .contains(judul_found.toLowerCase()))
           .toList();
     }
 
-    if (widget.sort == "Judul") {
+    if (sort_found == "Judul") {
       list_show.sort((a, b) =>
           a.fields.judul.toLowerCase().compareTo(b.fields.judul.toLowerCase()));
-    } else if (widget.sort == "Rating") {
+    } else if (sort_found == "Rating") {
       list_show.sort((a, b) => a.fields.rating.compareTo(b.fields.rating));
     }
 
@@ -110,21 +110,6 @@ class _BooksPageState extends State<BooksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.menu_book),
-        label: 'Books',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.auto_stories),
-        label: 'Borrowed',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.import_contacts),
-        label: 'History',
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Books'),
@@ -173,7 +158,7 @@ class _BooksPageState extends State<BooksPage> {
                                         ),
                                         onChanged: (String? value) {
                                           setState(() {
-                                            judul_search = value!;
+                                            judul_found = value!;
                                           });
                                         },
                                       ),
@@ -217,7 +202,7 @@ class _BooksPageState extends State<BooksPage> {
                                             ),
                                             onChanged: (String value) {
                                               setState(() {
-                                                kategori_search = value;
+                                                kategori_found = value;
                                               });
                                             },
                                           );
@@ -234,7 +219,7 @@ class _BooksPageState extends State<BooksPage> {
                                                   children: options.map((opt) {
                                                     return InkWell(
                                                       onTap: () {
-                                                        kategori_search = opt;
+                                                        kategori_found = opt;
                                                         onSelected(opt);
                                                       },
                                                       child: Container(
@@ -275,9 +260,8 @@ class _BooksPageState extends State<BooksPage> {
                                         ),
                                         requestFocusOnTap: false,
                                         onSelected: (String? value) {
-                                          // This is called when the user selects an item.
                                           setState(() {
-                                            sort_search = value!;
+                                            sort_found = value!;
                                           });
                                         },
                                         dropdownMenuEntries: sort_by
@@ -302,16 +286,8 @@ class _BooksPageState extends State<BooksPage> {
                                         onPressed: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            Navigator.pushReplacement(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      BooksPage(
-                                                          kategori_search,
-                                                          judul_search,
-                                                          sort_search,
-                                                          order_search)),
-                                            );
+                                            Navigator.pop(context);
+                                            refreshBooksData();
                                           }
                                         },
                                       ),
@@ -330,7 +306,7 @@ class _BooksPageState extends State<BooksPage> {
       ),
       drawer: const OnBDrawer(),
       body: FutureBuilder(
-          future: fetchAvailableBooks(),
+          future: futureBooks,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
@@ -396,22 +372,6 @@ class _BooksPageState extends State<BooksPage> {
               }
             }
           }),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => _pagesBorrow[_currentIndex]),
-          );
-        },
-      ),
     );
   }
 }

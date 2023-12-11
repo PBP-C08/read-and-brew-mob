@@ -5,25 +5,24 @@ import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/ordernborrow%20models/Order.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({Key? key}) : super(key: key);
+class OrderSummaryPage extends StatefulWidget {
+  const OrderSummaryPage({Key? key}) : super(key: key);
 
   @override
-  _OrderPageState createState() => _OrderPageState();
+  _OrderSummaryPageState createState() => _OrderSummaryPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
-  int _currentIndex = 2;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
+class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  late Future<List<Order>> futureOrder;
+
+  @override
+  void initState() {
+    super.initState();
+    futureOrder = fetchOrder();
+  }
 
   Future<List<Order>> fetchOrder() async {
     var url = Uri.parse(
@@ -42,6 +41,13 @@ class _OrderPageState extends State<OrderPage> {
       }
     }
     return listOrder;
+  }
+
+  Future<void> refreshOrderData() async {
+    final newOrderData = await fetchOrder();
+    setState(() {
+      futureOrder = Future.value(newOrderData);
+    });
   }
 
   Future<bool> _showPaymentConfirmationDialog(
@@ -79,10 +85,7 @@ class _OrderPageState extends State<OrderPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
-      );
+      refreshOrderData();
       // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
@@ -183,10 +186,8 @@ class _OrderPageState extends State<OrderPage> {
                       }));
 
                   if (response['status'] == 'success') {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => OrderPage()),
-                    );
+                    Navigator.pop(context);
+                    refreshOrderData();
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -257,10 +258,7 @@ class _OrderPageState extends State<OrderPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
-      );
+      refreshOrderData();
       // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
@@ -292,20 +290,20 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
+    // List<BottomNavigationBarItem> bottomNavBarItems = [
+    //   const BottomNavigationBarItem(
+    //     icon: Icon(Icons.restaurant),
+    //     label: 'Food',
+    //   ),
+    //   const BottomNavigationBarItem(
+    //     icon: Icon(Icons.local_cafe),
+    //     label: 'Drinks',
+    //   ),
+    //   const BottomNavigationBarItem(
+    //     icon: Icon(Icons.receipt_long),
+    //     label: 'Order Summary',
+    //   ),
+    // ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Summary'),
@@ -314,7 +312,7 @@ class _OrderPageState extends State<OrderPage> {
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        future: fetchOrder(),
+        future: futureOrder,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -458,21 +456,21 @@ class _OrderPageState extends State<OrderPage> {
           }
         },
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-          );
-        },
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: bottomNavBarItems,
+      //   unselectedItemColor: Colors.grey,
+      //   selectedItemColor: const Color(0xFF377C35),
+      //   currentIndex: _currentIndex,
+      //   onTap: (int index) {
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //     Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
+      //     );
+      //   },
+      // ),
     );
   }
 }
