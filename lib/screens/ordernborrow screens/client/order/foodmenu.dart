@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
@@ -19,19 +15,6 @@ class FoodMenu extends StatefulWidget {
 }
 
 class _FoodMenuState extends State<FoodMenu> {
-  int _currentIndex = 0;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
-  final List<Widget> _pagesMember = [
-    FoodMenu(),
-    DrinkMenu(),
-    SecretMenu(),
-    OrderMemberPage(),
-  ];
-
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
@@ -245,42 +228,6 @@ class _FoodMenuState extends State<FoodMenu> {
     double _price = 0.0;
     int _amount = 0;
 
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
-
-    if (user_id != 0) {
-      bottomNavBarItems = [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.restaurant),
-          label: 'Food',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.local_cafe),
-          label: 'Drinks',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.lock),
-          label: 'Secret Menu',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Order Summary',
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: user_id == 0
@@ -421,29 +368,29 @@ class _FoodMenuState extends State<FoodMenu> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (user_id == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => _pagesMember[_currentIndex]),
-            );
-          }
-        },
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: bottomNavBarItems,
+      //   unselectedItemColor: Colors.grey,
+      //   selectedItemColor: const Color(0xFF377C35),
+      //   currentIndex: _currentIndex,
+      //   onTap: (int index) {
+      //     setState(() {
+      //       _currentIndex = index;
+      //     });
+      //     if (user_id == 0) {
+      //       Navigator.pushReplacement(
+      //         context,
+      //         MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
+      //       );
+      //     } else {
+      //       Navigator.pushReplacement(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (context) => _pagesMember[_currentIndex]),
+      //       );
+      //     }
+      //   },
+      // ),
     );
   }
 }
