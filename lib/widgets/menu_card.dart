@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
-import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 
