@@ -139,11 +139,15 @@ class _AddReviewState extends State<AddReview> {
                             builder:
                                 (context, AsyncSnapshot<List<Buku>> snapshot) {
                               if (snapshot.hasError) {
-                                return DropdownButton<String>(
+                                return DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent))),
                                   items: dropDownItems,
                                   onChanged: (String? selected) {
                                     // Handle the selected item here
                                   },
+                                  validator: (value) => value == null ? 'Need to borrow a book first!' : null,
                                   hint: Text(
                                     "You Haven't Borrowed Any Books",
                                   ),
@@ -155,7 +159,10 @@ class _AddReviewState extends State<AddReview> {
                                           child: Text(item.fields.judul),
                                         ))
                                     .toList();
-                                return DropdownButton<String>(
+                                return DropdownButtonFormField<String>(
+                                  decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.transparent))),
                                   value: _bookname.text.isNotEmpty
                                       ? _bookname.text
                                       : null, // Set the selected item
@@ -165,6 +172,7 @@ class _AddReviewState extends State<AddReview> {
                                       print(_bookname.text);
                                     });
                                   },
+                                  validator: (value) => value == null ? 'Choose a book!' : null,
                                   hint: Text(
                                     "~~Select Book~~",
                                   ),
@@ -180,7 +188,10 @@ class _AddReviewState extends State<AddReview> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.transparent))),
                             value: dropDownRating[index_rating].value,
                             onChanged: (String? value) {
                               setState(() {
@@ -197,6 +208,7 @@ class _AddReviewState extends State<AddReview> {
                                 }
                               });
                             },
+                            validator: (value) => value == "~~Rate The Book~~" ? 'Rate the book!' : null,
                             hint: Text(
                               "Rate The Book",
                               style: TextStyle(color: Colors.blue),

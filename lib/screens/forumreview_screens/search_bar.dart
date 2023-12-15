@@ -11,8 +11,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    return Container(
-          child: Scaffold(
+    return Scaffold(
             appBar: AppBar(
               title: const Text("Search Book"),
               centerTitle: true,
@@ -41,8 +40,7 @@ class _SearchBarState extends State<SearchBar> {
               },
             ),
             // body: BooklistPage("", "", "", ""),
-          ),
-        );
+          );
   }
   
 }
