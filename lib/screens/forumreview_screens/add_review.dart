@@ -105,7 +105,7 @@ class _AddReviewState extends State<AddReview> {
                   key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Center the column's children vertically
-                    crossAxisAlignment: CrossAxisAlignment.stretch, // Center the column's children vertically
+                    crossAxisAlignment: CrossAxisAlignment.center, // Center the column's children vertically
                     children: [
                       SizedBox(height: screenSize.height * 0.1), // This creates space at the top of the column
                       Center(child: Text(
@@ -140,6 +140,7 @@ class _AddReviewState extends State<AddReview> {
                                 (context, AsyncSnapshot<List<Buku>> snapshot) {
                               if (snapshot.hasError) {
                                 return DropdownButtonFormField<String>(
+                                  isExpanded: true,
                                   decoration: InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.transparent))),
@@ -156,10 +157,11 @@ class _AddReviewState extends State<AddReview> {
                                 dropDownItems = snapshot.data!
                                     .map((item) => DropdownMenuItem(
                                           value: item.fields.judul,
-                                          child: Text(item.fields.judul),
+                                          child: Text(item.fields.judul, overflow: TextOverflow.ellipsis),
                                         ))
                                     .toList();
                                 return DropdownButtonFormField<String>(
+                                  isExpanded: true,
                                   decoration: InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.transparent))),
@@ -189,6 +191,7 @@ class _AddReviewState extends State<AddReview> {
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButtonFormField<String>(
+                            isExpanded: true,
                             decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.transparent))),
@@ -266,12 +269,24 @@ class _AddReviewState extends State<AddReview> {
                                 }));
 
                             if (response['status'] == 'success') {
-                              // if (!context.mounted) return;
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                content: Text(
-                                    "Your review is successfully submitted!"),
-                              ));
+                              if (!context.mounted) return;
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Review Submitted!"),
+                                    content: const Text("Your review has been published"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context); // Close the pop-up
+                                        },
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                               // if (!context.mounted) return;
                               // Navigator.pushReplacement(
                               //   context,

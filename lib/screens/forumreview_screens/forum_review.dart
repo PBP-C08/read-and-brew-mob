@@ -14,8 +14,11 @@ class ReviewPage extends StatefulWidget {
   State<ReviewPage> createState() => ReviewPageState();
 }
 
+bool deleteMode = false;
+
 class ReviewPageState extends State<ReviewPage> {
   int _currentIndex = 0;
+  
   @override
   Widget build(BuildContext context) {
     var tabs = [
@@ -37,9 +40,27 @@ class ReviewPageState extends State<ReviewPage> {
       appBar: AppBar(
           backgroundColor: Color(0xFF377C35),
           foregroundColor: Colors.white,
+          actions: [
+            if(_currentIndex==3)...{
+                IconButton(
+                  icon: const Icon(Icons.delete),
+                  color: deleteMode == false ? Colors.white : Colors.red,
+                  onPressed: () {
+                    setState(() {
+                      if(deleteMode == false) {
+                        deleteMode = true;
+                      } else {
+                        deleteMode = false;
+                      }
+                    });
+                  },
+                ),
+            }
+          ],
           title: const Center(
             child: Text("Forum Reviews", style: TextStyle(color: Colors.white)),
           )),
+      
       drawer: const LeftDrawer(),
       body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -49,11 +70,6 @@ class ReviewPageState extends State<ReviewPage> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
-            // if (user_id == 0 && _currentIndex == 2) {
-            //   Navigator.push(context,
-            //       MaterialPageRoute(builder: (context) => const LoginPage()));
-            //   _currentIndex = 0;
-            // }
           });
         },
         items: [
