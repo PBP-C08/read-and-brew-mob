@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/forumreview_models/review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/review_details.dart';
 
 class TheirReviews extends StatefulWidget {
   @override
@@ -87,6 +88,7 @@ class _TheirReviewState extends State<TheirReviews> {
                 future: getBookByName(request, currentReview.fields.bookName),
                 builder: (context, AsyncSnapshot<Buku?> bookSnapshot) {
                   Widget bookImageWidget = Container(); 
+                  Buku? currentBuku = bookSnapshot.data;
 
                   if (bookSnapshot.connectionState == ConnectionState.done) {
                     if (bookSnapshot.hasError) {
@@ -103,50 +105,67 @@ class _TheirReviewState extends State<TheirReviews> {
                     }
                   }
 
-                  return InkWell(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Center(child: Container(
-                                margin: const EdgeInsets.only(right: 16),
-                                child: bookImageWidget,
-                              )),
-                            ],
-                          ),
-                          const SizedBox(width: 8,),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 10,
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewDetailsPage(buku: currentBuku, review: currentReview),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: const EdgeInsets.all(20.0),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "${currentReview.fields.bookName}",
-                                  style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                Column(
+                                  children: [
+                                    Center(child: Container(
+                                      margin: const EdgeInsets.only(right: 16),
+                                      child: bookImageWidget,
+                                    )),
+                                  ],
                                 ),
-                                const SizedBox(height: 10),
-                                buildRatingStars(currentReview.fields.rating),
-                                const SizedBox(height: 10),
-                                Text("${currentReview.fields.username}"),
-                                const SizedBox(height: 10),
-                                Text("Comment: ${currentReview.fields.review}",
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
+                                const SizedBox(width: 8,),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        currentReview.fields.bookName,
+                                        style: const TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      buildRatingStars(currentReview.fields.rating),
+                                      const SizedBox(height: 10),
+                                      Text(currentReview.fields.username),
+                                      const SizedBox(height: 10),
+                                      Text("Comment: ${currentReview.fields.review}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
                     ),
                   );
                 },
