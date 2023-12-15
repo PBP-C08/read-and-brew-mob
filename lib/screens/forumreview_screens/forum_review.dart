@@ -70,6 +70,9 @@ class ReviewPageState extends State<ReviewPage> {
         onTap: (index) {
           setState(() {
             _currentIndex = index;
+            if(_currentIndex == 3){
+              deleteMode = false;
+            }
           });
         },
         items: [
