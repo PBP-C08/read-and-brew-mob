@@ -56,15 +56,8 @@ class _AddReviewState extends State<AddReview> {
   TextEditingController _rating = TextEditingController();
   TextEditingController _review = TextEditingController();
 
-  // String _username = "";
-  // String _bookname = "";
-  // String _rating = "";
-  // String _review = "";
-
-  // String dropDownValue = "";
-  // String rating = "";
   List<DropdownMenuItem<String>> dropDownItems = [];
-  List<DropdownMenuItem<String>> dropDownRating = [
+  List<DropdownMenuItem<String>> dropDownRating = const [
     DropdownMenuItem(
         value: "~~Rate The Book~~", child: Text("~~Rate The Book~~")),
     DropdownMenuItem(value: "1", child: Text("1")),
@@ -83,14 +76,14 @@ class _AddReviewState extends State<AddReview> {
     _username.text = user_username;
 
     return Center(
-        child: Card(
+        child: Material(
         elevation: 8.0, // Adjust the elevation as needed
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
         // color: Color(0xFF377C35),
         child: Padding(
-        padding: EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(18.0),
         child:  Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -98,7 +91,7 @@ class _AddReviewState extends State<AddReview> {
           ),
           width: MediaQuery.of(context).size.width * 0.8,
           padding: const EdgeInsets.all(16.0),
-          child: Container(
+          child: SizedBox(
               width: screenSize.width * 0.9, // Sets the container width to 80% of the screen width
               child: SingleChildScrollView( // Allows for scrolling when keyboard is displayed
                 child: Form(
@@ -107,8 +100,8 @@ class _AddReviewState extends State<AddReview> {
                     mainAxisAlignment: MainAxisAlignment.center, // Center the column's children vertically
                     crossAxisAlignment: CrossAxisAlignment.center, // Center the column's children vertically
                     children: [
-                      SizedBox(height: screenSize.height * 0.1), // This creates space at the top of the column
-                      Center(child: Text(
+                      SizedBox(height: screenSize.height * 0.05), // This creates space at the top of the column
+                      const Center(child: Text(
                           'Add a Review',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -116,7 +109,7 @@ class _AddReviewState extends State<AddReview> {
                           ),
                         ),
                       ),
-                        SizedBox(height: 20),
+                      const SizedBox(height: 28),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
@@ -131,6 +124,7 @@ class _AddReviewState extends State<AddReview> {
                           readOnly: true,
                         ),
                       ),
+                      const SizedBox(height: 18),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButtonHideUnderline(
@@ -141,7 +135,7 @@ class _AddReviewState extends State<AddReview> {
                               if (snapshot.hasError) {
                                 return DropdownButtonFormField<String>(
                                   isExpanded: true,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.transparent))),
                                   items: dropDownItems,
@@ -149,7 +143,7 @@ class _AddReviewState extends State<AddReview> {
                                     // Handle the selected item here
                                   },
                                   validator: (value) => value == null ? 'Need to borrow a book first!' : null,
-                                  hint: Text(
+                                  hint: const Text(
                                     "You Haven't Borrowed Any Books",
                                   ),
                                 );
@@ -162,7 +156,7 @@ class _AddReviewState extends State<AddReview> {
                                     .toList();
                                 return DropdownButtonFormField<String>(
                                   isExpanded: true,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                   enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.transparent))),
                                   value: _bookname.text.isNotEmpty
@@ -175,7 +169,7 @@ class _AddReviewState extends State<AddReview> {
                                     });
                                   },
                                   validator: (value) => value == null ? 'Choose a book!' : null,
-                                  hint: Text(
+                                  hint: const Text(
                                     "~~Select Book~~",
                                   ),
                                   items: dropDownItems,
@@ -187,12 +181,13 @@ class _AddReviewState extends State<AddReview> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 18),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DropdownButtonHideUnderline(
                           child: DropdownButtonFormField<String>(
                             isExpanded: true,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.transparent))),
                             value: dropDownRating[index_rating].value,
@@ -212,7 +207,7 @@ class _AddReviewState extends State<AddReview> {
                               });
                             },
                             validator: (value) => value == "~~Rate The Book~~" ? 'Rate the book!' : null,
-                            hint: Text(
+                            hint: const Text(
                               "Rate The Book",
                               style: TextStyle(color: Colors.blue),
                             ),
@@ -225,6 +220,7 @@ class _AddReviewState extends State<AddReview> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 18),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: TextFormField(
@@ -248,11 +244,18 @@ class _AddReviewState extends State<AddReview> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 24.0),
-                      // SizedBox(height: 20), // Space between last input field and the submit button
-                      // Your ElevatedButton for submitting the form
-                      // SizedBox(height: screenSize.height * 0.1), // This creates space at the bottom of the column
+                      const SizedBox(height: 28.0),
                       ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Color(0xFF377C35)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             // Cek kredensial
@@ -279,7 +282,7 @@ class _AddReviewState extends State<AddReview> {
                                     actions: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pop(context); // Close the pop-up
+                                          Navigator.pop(context); 
                                         },
                                         child: const Text("OK"),
                                       ),
@@ -314,9 +317,12 @@ class _AddReviewState extends State<AddReview> {
                             _formKey.currentState!.reset();
                           }
                         },
-                        child: const Text('Submit'),
+                        child: const Text(
+                          'Submit',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
-                      SizedBox(height: screenSize.height * 0.1)
+                      SizedBox(height: screenSize.height * 0.05)
                       // ElevatedButton(
                       //   onPressed: () {
                       //     if (!context.mounted) return;

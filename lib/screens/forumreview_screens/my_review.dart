@@ -13,6 +13,7 @@ class MyReviews extends StatefulWidget {
 }
 
 enum SortingOption {
+  none,
   byNameAZ,
   byRatingAscending,
   byRatingDescending,
@@ -20,7 +21,7 @@ enum SortingOption {
 
 class _MyReviewState extends State<MyReviews> {
   late Future<List<Review>> futureReview;
-  SortingOption _selectedSortingOption = SortingOption.byNameAZ;
+  SortingOption _selectedSortingOption = SortingOption.none;
 
   @override
   void initState() {
@@ -108,6 +109,8 @@ class _MyReviewState extends State<MyReviews> {
 
   List<Review> sortReviews(List<Review> reviews, SortingOption sortingOption) {
     switch (sortingOption) {
+      case SortingOption.none:
+        return reviews;
       case SortingOption.byNameAZ:
         return sortReviewsByName(reviews);
       case SortingOption.byRatingAscending:
@@ -118,17 +121,40 @@ class _MyReviewState extends State<MyReviews> {
   }
 
   List<Review> sortReviewsByName(List<Review> reviews) {
-    reviews.sort((a, b) => a.fields.bookName.compareTo(b.fields.bookName));
-    return reviews;
+    reviews.sort((a, b) {
+      int comparing = a.fields.bookName.compareTo(b.fields.bookName);
+      if (comparing == 0) {
+        return a.fields.rating.compareTo(b.fields.rating);
+      } else {
+        return comparing;
+      }
+    }
+  );
+
+  return reviews;
   }
 
   List<Review> sortReviewsByRatingAscending(List<Review> reviews) {
-    reviews.sort((a, b) => a.fields.rating.compareTo(b.fields.rating));
+    reviews.sort((a, b){
+      int comparing = a.fields.rating.compareTo(b.fields.rating);
+      if (comparing == 0) {
+        return a.fields.bookName.compareTo(b.fields.bookName);
+      } else {
+        return comparing;
+      }
+    });
     return reviews;
   }
 
   List<Review> sortReviewsByRatingDescending(List<Review> reviews) {
-    reviews.sort((a, b) => b.fields.rating.compareTo(a.fields.rating));
+    reviews.sort((a, b) {
+      int comparing = b.fields.rating.compareTo(a.fields.rating);
+      if (comparing == 0) {
+        return a.fields.bookName.compareTo(b.fields.bookName);
+      } else {
+        return comparing;
+      }
+    });
     return reviews;
   }
 
@@ -320,6 +346,10 @@ class _MyReviewState extends State<MyReviews> {
                 });
               },
               items: const [
+                DropdownMenuItem(
+                  value: SortingOption.none,
+                  child: Text('Sort by'),
+                ),
                 DropdownMenuItem(
                   value: SortingOption.byNameAZ,
                   child: Text('Sort by Name (A-Z)'),
