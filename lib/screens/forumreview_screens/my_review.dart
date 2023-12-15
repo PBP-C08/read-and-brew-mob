@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/forumreview_models/review.dart';
 import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
 
@@ -76,78 +77,149 @@ class _MyReviewState extends State<MyReviews> {
     }
   }
 
+  Future<Buku?> getBookByName(request, bookName) async {
+    var data =
+        await request.get('https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/api/buku/');
+    
+    List<Buku> bookList = [];
+    
+    for(var d in data){
+      if (d != null) {
+        bookList.add(Buku.fromJson(d));
+      }
+    }
+
+    for(var d in bookList){
+      if(d.fields.judul.contains(bookName)){
+        return d;
+      }
+    }
+
+    return null;
+  }
+
+  Widget buildRatingStars(int rating) {
+    return Row(
+      children: List.generate(5, (index) {
+        return Icon(
+          index < rating.round() ? Icons.star : Icons.star_border,
+          color: Colors.amber,
+        );
+      }),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return FutureBuilder(
-          future: futureReview,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.data == null) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              if (!snapshot.hasData) {
-                return const Column(
-                  children: [
-                    Text(
-                      "Tidak ada review.",
-                      style: TextStyle(color: Colors.black, fontSize: 20),
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (_, index) => InkWell(
-                      // onTap: () {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => ProductDetailsPage(item: snapshot.data![index]),
-                      //     ),
-                      //   );
-                      // },
-                      child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "${snapshot.data![index].fields.bookName}",
-                          style: const TextStyle(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
+      future: fetchMyReview(request),
+      builder: (context, AsyncSnapshot<List<Review>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error loading data.'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Column(
+            children: [
+              Text(
+                "Tidak ada review.",
+                style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+              ),
+              SizedBox(height: 8),
+            ],
+          );
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (_, index) {
+              Review currentReview = snapshot.data![index];
+              
+              return FutureBuilder(
+                future: getBookByName(request, currentReview.fields.bookName),
+                builder: (context, AsyncSnapshot<Buku?> bookSnapshot) {
+                  Widget bookImageWidget = Container(); 
+
+                  if (bookSnapshot.connectionState == ConnectionState.done) {
+                    if (bookSnapshot.hasError) {
+                      bookImageWidget = Text('Error loading book information.');
+                    } else if (bookSnapshot.hasData && bookSnapshot.data != null) {
+                      String? imageUrl = bookSnapshot.data!.fields.gambar;
+                      if (imageUrl.isNotEmpty) {
+                        bookImageWidget = Image.network(
+                          imageUrl,
+                          width: 80, 
+                          height: 120, 
+                        );
+                      }
+                    }
+                  }
+
+                  return InkWell(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              Center(child: Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                child: bookImageWidget,
+                              )),
+                            ],
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text("${snapshot.data![index].fields.username}"),
-                        const SizedBox(height: 10),
-                        Text(
-                            "Rating: ${snapshot.data![index].fields.rating}/5"),
-                        const SizedBox(height: 10),
-                        Text("Comment: ${snapshot.data![index].fields.review}"),
-                        const SizedBox(height: 10),
-                        if(deleteMode == true)...{
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: IconButton(
-                              icon: const Icon(Icons.delete),
-                              color: Colors.red,
-                              onPressed: () async {
-                                _deleteReview(request, snapshot.data![index]);
-                              },
+                          const SizedBox(width: 8),
+                          
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${currentReview.fields.bookName}",
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 10),
+                                buildRatingStars(currentReview.fields.rating),
+                                const SizedBox(height: 10),
+                                Text("${currentReview.fields.username}"),
+                                const SizedBox(height: 10),
+                                Text("Comment: ${currentReview.fields.review}",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ),
-                        }
-                      ],
+                           if (deleteMode == true) ...{
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 45), 
+                              child: IconButton(
+                                icon: const Icon(Icons.delete),
+                                color: Colors.red,
+                                onPressed: () async {
+                                  _deleteReview(request, snapshot.data![index]);
+                                },
+                              ),
+                            ),
+                          },
+                        ],
+                      ),
                     ),
-                  )),
-                );
-              }
-            }
-          });
-  }    
+                  );
+                },
+              );
+            },
+          );
+        }
+      },
+    );
+  } 
 }
