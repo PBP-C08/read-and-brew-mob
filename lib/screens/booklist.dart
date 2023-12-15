@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
+import 'package:http/http.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/booklist_detail.dart';
+import 'package:read_and_brew/screens/booklist_form.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -23,17 +23,12 @@ class BooklistPage extends StatefulWidget {
 }
 
 class _BooklistPageState extends State<BooklistPage> {
-  final _formKey = GlobalKey<FormState>();
-  String _judul = "";
-  String _kategori = "";
-  String _penulis = "";
-  String _gambar = "";
   List<String> list_kategori = [];
-  String judul_search = '';
-  String kategori_search = '';
-  String sort_search = '';
-  List<String> sort_by = ["Judul", "Rating"];
-  String order_search = '';
+  List<Buku> _list_book = [];
+  List<Buku>? _list_show = [];
+  String? selectedCategory = "All";
+  String searchText = "";
+
   Future<List<Buku>> fetchItem() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
@@ -48,608 +43,382 @@ class _BooklistPageState extends State<BooklistPage> {
 
     // melakukan konversi data json menjadi object Product
     List<Buku> list_item = [];
-    List<Buku> list_show = [];
+
     for (var d in data) {
       if (d != null) {
         list_item.add(Buku.fromJson(d));
       }
-    }
-    if (widget.kategori == "") {
-      for (var d in list_item) {
-        if (d.fields.judul
-            .toLowerCase()
-            .contains(widget.search.toLowerCase())) {
-          list_show.add(d);
-        }
-      }
-    } else {
-      for (var d in list_item) {
-        if (d.fields.kategori == widget.kategori &&
-            d.fields.judul
-                .toLowerCase()
-                .contains(widget.search.toLowerCase())) {
-          list_show.add(d);
-        }
-      }
-    }
-    if (widget.sort == "Judul") {
-      list_show.sort((a, b) =>
-          a.fields.judul.toLowerCase().compareTo(b.fields.judul.toLowerCase()));
-    } else if (widget.sort == "Rating") {
-      list_show.sort((a, b) => a.fields.rating.compareTo(b.fields.rating));
     }
 
     for (var d in list_item) {
       list_kategori.add(d.fields.kategori);
     }
     list_kategori = list_kategori.toSet().toList();
-    return list_show;
+
+    return list_item;
+  }
+
+  @override
+  void initState() {
+    fetchItem().then((value) {
+      setState(() {
+        _list_book.addAll(value);
+        _list_show = _list_book;
+      });
+    }).catchError((error) {
+      // Handle the error here
+      print('Error occurred: $error');
+      if (error is ClientException) {
+        // Show a message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Terdapat kesalahan pada server/jaringan internet'),
+          ),
+        );
+        setState(() {
+          _list_show = null;
+        });
+      }
+    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Scaffold(
         appBar: AppBar(
-          title: const Center(
-            child: Text(
-              'Book List',
-            ),
+          title: Text(
+            'Book List',
+            style: TextStyle(
+                color: Color(0xFF377C35), fontWeight: FontWeight.bold),
           ),
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  await showDialog<void>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            backgroundColor: Colors.white,
-                            content: Stack(
-                              clipBehavior: Clip.none,
-                              children: <Widget>[
-                                Positioned(
-                                  right: -40,
-                                  top: -40,
-                                  child: InkResponse(
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const CircleAvatar(
-                                      backgroundColor: Colors.red,
-                                      child: Icon(Icons.close),
-                                    ),
-                                  ),
-                                ),
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                            hintText: "Judul",
-                                            labelText: "Judul",
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                            ),
-                                          ),
-                                          onChanged: (String? value) {
-                                            setState(() {
-                                              judul_search = value!;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: RawAutocomplete(
-                                          optionsBuilder: (TextEditingValue
-                                              textEditingValue) {
-                                            if (textEditingValue.text == '') {
-                                              return const Iterable<
-                                                  String>.empty();
-                                            } else {
-                                              List<String> matches = <String>[];
-                                              matches.addAll(list_kategori);
-
-                                              matches.retainWhere((s) {
-                                                return s.toLowerCase().contains(
-                                                    textEditingValue.text
-                                                        .toLowerCase());
-                                              });
-                                              return matches;
-                                            }
-                                          },
-                                          onSelected: (String selection) {},
-                                          fieldViewBuilder: (BuildContext
-                                                  context,
-                                              TextEditingController
-                                                  textEditingController,
-                                              FocusNode focusNode,
-                                              VoidCallback onFieldSubmitted) {
-                                            return TextFormField(
-                                              controller: textEditingController,
-                                              focusNode: focusNode,
-                                              decoration: InputDecoration(
-                                                hintText: "Kategori",
-                                                labelText: "Kategori",
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
-                                              ),
-                                              onChanged: (String value) {
-                                                setState(() {
-                                                  kategori_search = value;
-                                                });
-                                              },
-                                            );
-                                          },
-                                          optionsViewBuilder: (BuildContext
-                                                  context,
-                                              void Function(String) onSelected,
-                                              Iterable<String> options) {
-                                            return Material(
-                                              child: SizedBox(
-                                                height: 200,
-                                                child: SingleChildScrollView(
-                                                  child: Column(
-                                                    children:
-                                                        options.map((opt) {
-                                                      return InkWell(
-                                                        onTap: () {
-                                                          kategori_search = opt;
-                                                          onSelected(opt);
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  right: 60),
-                                                          child: Card(
-                                                            child: Container(
-                                                              width: double
-                                                                  .infinity,
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(10),
-                                                              child: Text(opt),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: DropdownMenu<String>(
-                                          label: Text("Sort by"),
-                                          hintText: "Sort by",
-                                          inputDecorationTheme:
-                                              InputDecorationTheme(
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                            ),
-                                          ),
-                                          requestFocusOnTap: false,
-                                          onSelected: (String? value) {
-                                            // This is called when the user selects an item.
-                                            setState(() {
-                                              sort_search = value!;
-                                            });
-                                          },
-                                          dropdownMenuEntries: sort_by
-                                              .map<DropdownMenuEntry<String>>(
-                                                  (String value) {
-                                            return DropdownMenuEntry<String>(
-                                                value: value, label: value);
-                                          }).toList(),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.green),
-                                          ),
-                                          child: const Text('Submit',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                          onPressed: () async {
-                                            if (_formKey.currentState!
-                                                .validate()) {
-                                              Navigator.pushReplacement(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BooklistPage(
-                                                            kategori_search,
-                                                            judul_search,
-                                                            sort_search,
-                                                            order_search)),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ));
-                },
-                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              ),
-            ),
-          ],
-          backgroundColor: Colors.brown,
-          foregroundColor: Colors.white,
-        ),
-        drawer: const LeftDrawer(),
-        body: FutureBuilder(
-            future: fetchItem(),
-            builder: (context, AsyncSnapshot snapshot) {
-              if (snapshot.data == null) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                if (snapshot.data!.length == 0) {
-                  return const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Belum ada buku.",
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              fontSize: 20),
-                        ),
-                        SizedBox(height: 8),
-                      ],
+          centerTitle: true,
+          actions: user_status == "E"
+              ? [
+                  IconButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      )),
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Color(0xFF377C35)),
                     ),
-                  );
-                } else {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (_, index) => ListTile(
-                      leading: Image.network(
-                        snapshot.data![index].fields.gambar,
-                        errorBuilder: (BuildContext context, Object exception,
-                            StackTrace? stackTrace) {
-                          // You can return any widget here. For example, let's return an Icon.
-                          return Icon(Icons.error);
-                        },
-                      ),
-                      title: Text(snapshot.data![index].fields.judul),
-                      subtitle: Text(snapshot.data![index].fields.kategori),
-                      trailing: RatingBar.builder(
-                        initialRating: snapshot.data![index].fields.rating,
-                        minRating: 0,
-                        direction: Axis.horizontal,
-                        itemCount: 5,
-                        itemSize:
-                            15.0, // Adjust this value to change the size of the stars
-                        itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        ignoreGestures: true,
-                        onRatingUpdate: (double value) {},
-                      ),
-                      onTap: () {
-                        Navigator.push(
+                    icon: Icon(Icons.add, color: Colors.white),
+                    onPressed: () {
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BookDetailPage(
-                              snapshot.data![index].pk,
-                              snapshot.data![index].fields.gambar,
-                              snapshot.data![index].fields.judul,
-                              snapshot.data![index].fields.rating,
-                              snapshot.data![index].fields.kategori,
-                              snapshot.data![index].fields.penulis,
-                            ),
-                          ),
+                              builder: (context) =>
+                                  BooklistFormPage(list_kategori)));
+                    },
+                  ),
+                ]
+              : null,
+          foregroundColor: Color(0xFF377C35),
+        ),
+        drawer: const LeftDrawer(),
+        body: _list_show == null
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image(
+                      image: AssetImage('images/logo.png'),
+                      height: 100,
+                      width: 100,
+                    ),
+                    SizedBox(
+                        height:
+                            12), // Add some space between the image and the text
+                    Text(
+                      'Loading...',
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              )
+            : Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      onChanged: (text) {
+                        text = text.toLowerCase();
+                        setState(() {
+                          searchText = text; // Update the searchText variable
+                          _list_show = _list_book.where((book) {
+                            var bookTitle = book.fields.judul.toLowerCase();
+                            var bookKategori = book.fields.kategori;
+                            selectedCategory = selectedCategory == 'All'
+                                ? null
+                                : selectedCategory;
+                            return bookTitle.contains(text) &&
+                                (selectedCategory == null ||
+                                    bookKategori == selectedCategory);
+                          }).toList();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        labelText: "Search",
+                        hintText: "Search",
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xFF377C35), width: 1.0),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xFF377C35), width: 1.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DropdownButtonFormField<String>(
+                      menuMaxHeight: 300,
+                      decoration: InputDecoration(
+                        labelText: "Kategori",
+                        hintText: "Kategori",
+                        prefixIcon: Icon(Icons.list),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xFF377C35), width: 1.0),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                          borderSide:
+                              BorderSide(color: Color(0xFF377C35), width: 1.0),
+                        ),
+                      ),
+                      value: "All",
+                      items: ['All', ...list_kategori]
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
                         );
+                      }).toList(),
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedCategory = value == 'All' ? null : value;
+                          _list_show = _list_book.where((book) {
+                            var bookTitle = book.fields.judul.toLowerCase();
+                            var bookKategori = book.fields.kategori;
+                            return bookTitle.contains(searchText) &&
+                                (selectedCategory == null ||
+                                    bookKategori == selectedCategory);
+                          }).toList();
+                        });
                       },
                     ),
-                  );
-                }
-              }
-            }),
-        bottomNavigationBar: user_status == "E"
-            ? Padding(
-                padding: EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.green),
-                    ),
-                    onPressed: () async {
-                      await showDialog<void>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                                backgroundColor: Colors.white,
-                                content: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: <Widget>[
-                                    Positioned(
-                                      right: -40,
-                                      top: -40,
-                                      child: InkResponse(
-                                        onTap: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const CircleAvatar(
-                                          backgroundColor: Colors.red,
-                                          child: Icon(Icons.close),
-                                        ),
+                  ),
+                  Expanded(
+                      child: _list_show?.length == 0
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Belum ada buku.",
+                                    style: TextStyle(
+                                        color: Color.fromARGB(255, 0, 0, 0),
+                                        fontSize: 20),
+                                  ),
+                                  SizedBox(height: 8),
+                                ],
+                              ),
+                            )
+                          : GridView.builder(
+                              padding: const EdgeInsets.all(12.0),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 16.0,
+                                mainAxisSpacing: 16.0,
+                                childAspectRatio: (1 / 1.5),
+                              ),
+                              itemCount: _list_show?.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white,
+                                          Color.fromARGB(255, 235, 255, 235),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
                                       ),
+                                      border: Border.all(
+                                        color: Color(
+                                            0xFF377C35), // Set border color
+                                        width: 1, // Set border width
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          24), // Set border radius
                                     ),
-                                    Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: "Gambar",
-                                                labelText: "Gambar",
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(24),
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        // Area responsive terhadap sentuhan
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BookDetailPage(
+                                                _list_show![index].pk,
+                                                _list_show![index]
+                                                    .fields
+                                                    .gambar,
+                                                _list_show![index].fields.judul,
+                                                _list_show![index]
+                                                    .fields
+                                                    .rating,
+                                                _list_show![index]
+                                                    .fields
+                                                    .kategori,
+                                                _list_show![index]
+                                                    .fields
+                                                    .penulis,
                                               ),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  _gambar = value!;
-                                                });
-                                              },
-                                              validator: (String? value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "Gambar tidak boleh kosong!";
-                                                }
-                                                return null;
-                                              },
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: "Judul Buku",
-                                                labelText: "Judul Buku",
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.all(4),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Image.network(
+                                                _list_show![index]
+                                                    .fields
+                                                    .gambar,
+                                                errorBuilder: (BuildContext
+                                                        context,
+                                                    Object exception,
+                                                    StackTrace? stackTrace) {
+                                                  // You can return any widget here. For example, let's return an Icon.
+                                                  return Icon(Icons.error);
+                                                },
+                                                width: 200,
+                                                height: 200,
                                               ),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  _judul = value!;
-                                                });
-                                              },
-                                              validator: (String? value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "Judul tidak boleh kosong!";
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: RawAutocomplete(
-                                              optionsBuilder: (TextEditingValue
-                                                  textEditingValue) {
-                                                if (textEditingValue.text ==
-                                                    '') {
-                                                  return const Iterable<
-                                                      String>.empty();
-                                                } else {
-                                                  List<String> matches =
-                                                      <String>[];
-                                                  matches.addAll(list_kategori);
-
-                                                  matches.retainWhere((s) {
-                                                    return s
-                                                        .toLowerCase()
-                                                        .contains(
-                                                            textEditingValue
-                                                                .text
-                                                                .toLowerCase());
-                                                  });
-                                                  return matches;
-                                                }
-                                              },
-                                              onSelected: (String selection) {},
-                                              fieldViewBuilder:
-                                                  (BuildContext context,
-                                                      TextEditingController
-                                                          textEditingController,
-                                                      FocusNode focusNode,
-                                                      VoidCallback
-                                                          onFieldSubmitted) {
-                                                return TextFormField(
-                                                  controller:
-                                                      textEditingController,
-                                                  focusNode: focusNode,
-                                                  decoration: InputDecoration(
-                                                    hintText: "Kategori",
-                                                    labelText: "Kategori",
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5.0),
-                                                    ),
-                                                  ),
-                                                  onChanged: (String value) {
-                                                    setState(() {
-                                                      _kategori = value;
-                                                    });
-                                                  },
-                                                  validator: (String? value) {
-                                                    if (value == null ||
-                                                        value.isEmpty) {
-                                                      return "Kategori tidak boleh kosong!";
-                                                    }
-                                                    return null;
-                                                  },
-                                                );
-                                              },
-                                              optionsViewBuilder: (BuildContext
-                                                      context,
-                                                  void Function(String)
-                                                      onSelected,
-                                                  Iterable<String> options) {
-                                                return Material(
-                                                  child: SizedBox(
-                                                    height: 200,
-                                                    child:
-                                                        SingleChildScrollView(
-                                                      child: Column(
-                                                        children:
-                                                            options.map((opt) {
-                                                          return InkWell(
-                                                            onTap: () {
-                                                              _kategori = opt;
-                                                              onSelected(opt);
-                                                            },
-                                                            child: Container(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      right:
-                                                                          60),
-                                                              child: Card(
-                                                                child:
-                                                                    Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  child:
-                                                                      Text(opt),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }).toList(),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                _list_show![index].fields.judul,
+                                                textAlign: TextAlign.center,
+                                                overflow: TextOverflow
+                                                    .ellipsis, // Add this line
+                                                style: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15.0,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              RatingBar.builder(
+                                                initialRating:
+                                                    _list_show![index]
+                                                        .fields
+                                                        .rating
+                                                        .toDouble(),
+                                                minRating: 0,
+                                                direction: Axis.horizontal,
+                                                itemCount: 5,
+                                                itemSize:
+                                                    20, // Adjust this value to change the size of the stars
+                                                itemPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 4.0),
+                                                itemBuilder: (context, _) =>
+                                                    Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                ignoreGestures: true,
+                                                onRatingUpdate:
+                                                    (double value) {},
+                                              ),
+                                              const SizedBox(height: 8),
+                                              RichText(
+                                                textAlign: TextAlign.center,
+                                                text: TextSpan(
+                                                  style: DefaultTextStyle.of(
+                                                          context)
+                                                      .style,
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: 'Kategori: ',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: TextFormField(
-                                              decoration: InputDecoration(
-                                                hintText: "Penulis",
-                                                labelText: "Penulis",
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
+                                                    TextSpan(
+                                                      text: _list_show![index]
+                                                          .fields
+                                                          .kategori,
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12.0,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  _penulis = value!;
-                                                });
-                                              },
-                                              validator: (String? value) {
-                                                if (value == null ||
-                                                    value.isEmpty) {
-                                                  return "Penulis tidak boleh kosong!";
-                                                }
-                                                return null;
-                                              },
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8),
-                                            child: ElevatedButton(
-                                              style: ButtonStyle(
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Colors.green),
+                                              const SizedBox(height: 8),
+                                              RichText(
+                                                textAlign: TextAlign.center,
+                                                text: TextSpan(
+                                                  style: DefaultTextStyle.of(
+                                                          context)
+                                                      .style,
+                                                  children: <TextSpan>[
+                                                    TextSpan(
+                                                      text: 'Penulis: ',
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12.0,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    TextSpan(
+                                                      text: _list_show![index]
+                                                          .fields
+                                                          .penulis,
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 12.0,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                              child: const Text('Submit',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                              onPressed: () async {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  final response =
-                                                      await request.postJson(
-                                                          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/create-book-flutter/",
-                                                          jsonEncode(<String,
-                                                              String>{
-                                                            "judul": _judul,
-                                                            "kategori":
-                                                                _kategori,
-                                                            "penulis": _penulis,
-                                                            "gambar": _gambar,
-                                                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                                                          }));
-                                                  if (response['status'] ==
-                                                      'success') {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          response['messages']),
-                                                    ));
-                                                    Navigator.pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              BooklistPage("",
-                                                                  "", "", "")),
-                                                    );
-                                                  } else {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          response['messages']),
-                                                    ));
-                                                  }
-                                                }
-                                              },
-                                            ),
-                                          )
-                                        ],
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ));
-                    },
-                    child: Text('Add Book',
-                        style: TextStyle(color: Colors.white))),
-              )
-            : null);
+                                    ));
+                              })),
+                ],
+              ));
   }
 }

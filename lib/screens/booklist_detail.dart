@@ -24,17 +24,24 @@ class BookDetailPage extends StatelessWidget {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text(judul),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                judul,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: 8),
             Center(
               child: Image.network(
                 gambar,
@@ -65,60 +72,104 @@ class BookDetailPage extends StatelessWidget {
                 onRatingUpdate: (double value) {},
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 10),
             Center(
-              child: Text(
-                'Kategori: ${kategori}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              child: RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Kategori: ',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '${kategori}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
             SizedBox(height: 8),
             Center(
-              child: Text(
-                'Penulis: ${penulis}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              child: RichText(
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Penulis: ',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '${penulis}',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 15),
             if (user_status == "E") ...[
               Center(
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                      Colors.red,
+                child: Container(
+                  height: 40, // Set the height as per your requirement
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.red,
+                      ),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
                     ),
-                  ),
-                  onPressed: () async {
-                    final response = await request.postJson(
-                        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/delete-book-flutter/",
-                        jsonEncode(<String, String>{
-                          "id": id.toString(),
-                          // TODO: Sesuaikan field data sesuai dengan aplikasimu
-                        }));
-                    if (response['status'] == 'success') {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(response['messages']),
-                      ));
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BooklistPage("", "", "", "")),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text(response['messages']),
-                      ));
-                    }
-                  },
-                  child: Text(
-                    'Delete',
-                    style: TextStyle(color: Colors.white),
+                    onPressed: () async {
+                      final response = await request.postJson(
+                          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/delete-book-flutter/",
+                          jsonEncode(<String, String>{
+                            "id": id.toString(),
+                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
+                          }));
+                      if (response['status'] == 'success') {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(response['messages']),
+                        ));
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  BooklistPage("", "", "", "")),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(response['messages']),
+                        ));
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(
+                            width:
+                                10), // Add some space between the icon and the text
+                        Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )

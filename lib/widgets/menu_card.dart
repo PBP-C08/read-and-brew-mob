@@ -24,7 +24,7 @@ class MenuWidget extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(
             color: Color(0xFF377C35), // Set border color
-            width: 3, // Set border width
+            width: 2, // Set border width
           ),
           borderRadius: BorderRadius.circular(24), // Set border radius
         ),

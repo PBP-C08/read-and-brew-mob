@@ -9,13 +9,24 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override // TODO: Implement initState
+  double _opacity = 0;
+
+  @override
   void initState() {
     super.initState();
     Timer(
         Duration(seconds: 3),
         () => Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyHomePage())));
+    _fadeInImage();
+  }
+
+  void _fadeInImage() {
+    Future.delayed(Duration(milliseconds: 200)).then((_) {
+      setState(() {
+        _opacity = 1;
+      });
+    });
   }
 
   @override
@@ -23,18 +34,26 @@ class _SplashScreenState extends State<SplashScreen> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.white, Color.fromARGB(255, 172, 255, 169)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white,
+            Color.fromARGB(255, 219, 255, 218),
+            Color.fromARGB(255, 172, 255, 169)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Container(
-            width: 300, // Set your desired width
-            height: 300, // Set your desired height
-            child: Image.asset('images/splash.png'),
+          AnimatedOpacity(
+            opacity: _opacity,
+            duration: Duration(seconds: 2),
+            child: Container(
+              width: 300, // Set your desired width
+              height: 300, // Set your desired height
+              child: Image.asset('images/splash.png'),
+            ),
           ),
         ],
       ),
