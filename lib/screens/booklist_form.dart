@@ -116,9 +116,9 @@ class _BooklistFormPageState extends State<BooklistFormPage> {
                                       }
                                       return widget.list_kategori
                                           .where((String option) {
-                                        return option.contains(textEditingValue
-                                            .text
-                                            .toLowerCase());
+                                        return option.toLowerCase().contains(
+                                            textEditingValue.text
+                                                .toLowerCase());
                                       });
                                     },
                                     onSelected: (selectedString) {

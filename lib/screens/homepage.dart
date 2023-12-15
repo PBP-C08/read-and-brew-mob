@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
@@ -22,28 +21,28 @@ class MyHomePage extends StatelessWidget {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child: user_id == 0
-                ? Text('')
-                : RichText(
-                    text: TextSpan(
-                      text: 'Welcome, ',
+        title: user_id == 0
+            ? Text('')
+            : RichText(
+                text: TextSpan(
+                  text: 'Welcome, ',
+                  style: TextStyle(
+                    color: Color(0xFF377C35),
+                    fontSize: 20,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '$user_username',
                       style: TextStyle(
                         color: Color(0xFF377C35),
                         fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '$user_username',
-                          style: TextStyle(
-                            color: Color(0xFF377C35),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
                     ),
-                  )),
+                  ],
+                ),
+              ),
+        centerTitle: true,
         iconTheme: IconThemeData(color: Color(0xFF377C35)),
         actions: [
           IconButton(
