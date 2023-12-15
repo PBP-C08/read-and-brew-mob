@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/forumreview_models/review.dart';
 import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/review_details.dart';
 
 class MyReviews extends StatefulWidget {
   @override
@@ -139,7 +140,8 @@ class _MyReviewState extends State<MyReviews> {
                 future: getBookByName(request, currentReview.fields.bookName),
                 builder: (context, AsyncSnapshot<Buku?> bookSnapshot) {
                   Widget bookImageWidget = Container(); 
-
+                  Buku? currentBuku = bookSnapshot.data;
+                  
                   if (bookSnapshot.connectionState == ConnectionState.done) {
                     if (bookSnapshot.hasError) {
                       bookImageWidget = Text('Error loading book information.');
@@ -155,62 +157,79 @@ class _MyReviewState extends State<MyReviews> {
                     }
                   }
 
-                  return InkWell(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 10,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReviewDetailsPage(buku: currentBuku, review: currentReview),
+                              ),
+                            );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          padding: const EdgeInsets.all(20.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(child: Container(
-                                margin: const EdgeInsets.only(right: 16),
-                                child: bookImageWidget,
-                              )),
-                            ],
-                          ),
-                          const SizedBox(width: 8),
-                          
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${currentReview.fields.bookName}",
-                                  style: const TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 10),
-                                buildRatingStars(currentReview.fields.rating),
-                                const SizedBox(height: 10),
-                                Text("${currentReview.fields.username}"),
-                                const SizedBox(height: 10),
-                                Text("Comment: ${currentReview.fields.review}",
+                              Column(
+                                children: [
+                                  Center(child: Container(
+                                    margin: const EdgeInsets.only(right: 16),
+                                    child: bookImageWidget,
+                                  )),
+                                ],
+                              ),
+                              const SizedBox(width: 8),
+                              
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      currentReview.fields.bookName,
+                                      style: const TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    buildRatingStars(currentReview.fields.rating),
+                                    const SizedBox(height: 10),
+                                    Text(currentReview.fields.username),
+                                    const SizedBox(height: 10),
+                                    Text("Comment: ${currentReview.fields.review}",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                           if (deleteMode == true) ...{
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 45), 
-                              child: IconButton(
-                                icon: const Icon(Icons.delete),
-                                color: Colors.red,
-                                onPressed: () async {
-                                  _deleteReview(request, snapshot.data![index]);
-                                },
                               ),
-                            ),
-                          },
-                        ],
+                              if (deleteMode == true) ...{
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 45), 
+                                  child: IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    color: Colors.red,
+                                    onPressed: () async {
+                                      _deleteReview(request, snapshot.data![index]);
+                                    },
+                                  ),
+                                ),
+                              },
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   );

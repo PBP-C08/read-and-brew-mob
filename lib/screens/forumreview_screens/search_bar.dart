@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:read_and_brew/screens/forumreview_screens/their_reviews.dart';
 
 class SearchBar extends StatefulWidget {
   @override
@@ -31,19 +32,20 @@ class _SearchBarState extends State<SearchBar> {
                 ),
               ],
             ),
-            body: ListView.builder(
-              itemCount: filteredItems.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(filteredItems[index]),
-                );
-              },
-            ),
-            // body: BooklistPage("", "", "", ""),
+            body: filteredItems.isEmpty ?
+              TheirReviews() :
+              ListView.builder(
+                itemCount: filteredItems.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(filteredItems[index]),
+                  );
+                },
+              ) 
           );
   }
-  
 }
+
 List<String> items = List.generate(100, (index) => 'Item $index');
 List<String> filteredItems = [];
 
@@ -51,7 +53,7 @@ class CustomSearchDelegate extends SearchDelegate {
   final List<String> items;
 
   CustomSearchDelegate(this.items);
-
+  
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -98,3 +100,4 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
+
