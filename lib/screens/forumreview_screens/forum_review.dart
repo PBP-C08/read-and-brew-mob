@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:read_and_brew/screens/forumreview_screens/add_review.dart';
 import 'package:read_and_brew/screens/forumreview_screens/my_review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/search_bar.dart';
 import 'package:read_and_brew/screens/forumreview_screens/their_reviews.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
@@ -23,7 +24,7 @@ class ReviewPageState extends State<ReviewPage> {
   Widget build(BuildContext context) {
     var tabs = [
         TheirReviews(),
-        const SearchBar(),
+        SearchPage(),
         AddReview(),
         MyReviews(),
     ];
@@ -31,7 +32,7 @@ class ReviewPageState extends State<ReviewPage> {
     if (user_id == 0){
       tabs = [
         TheirReviews(),
-        const SearchBar(),
+        SearchPage(),
         const LoginPage(),
       ];
     }
