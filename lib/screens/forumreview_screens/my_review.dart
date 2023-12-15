@@ -4,6 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/forumreview_models/review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
 import 'package:read_and_brew/screens/forumreview_screens/review_details.dart';
 
 class MyReviews extends StatefulWidget {
@@ -258,6 +259,18 @@ class _MyReviewState extends State<MyReviews> {
                                           ],
                                         ),
                                       ),
+                                      if (deleteMode == true) ...{
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 45), 
+                                          child: IconButton(
+                                            icon: const Icon(Icons.delete),
+                                            color: Colors.red,
+                                            onPressed: () async {
+                                              _deleteReview(request, snapshot.data![index]);
+                                            },
+                                          ),
+                                        ),
+                                      },
                                     ],
                                   ),
                                 ),
