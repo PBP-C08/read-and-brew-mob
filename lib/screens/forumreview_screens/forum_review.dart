@@ -57,20 +57,20 @@ class ReviewPageState extends State<ReviewPage> {
           });
         },
         items: [
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.reviews),
             label: "Their Review",
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.search),
             label: "Search",
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.add),
             label: "Add a Review",
           ),
           if (user_id != 0) ...{
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.reviews_rounded),
               label: "My Review",
             ),
