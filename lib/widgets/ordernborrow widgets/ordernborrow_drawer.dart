@@ -90,7 +90,7 @@ class OnBDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BorrowPage("", "", "", ""),
+                    builder: (context) => BorrowPage(),
                   ));
             },
           ),
@@ -102,8 +102,7 @@ class OnBDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => BooklistPage("", "", "", "")),
+                MaterialPageRoute(builder: (context) => BooklistPage()),
               );
             },
           ),

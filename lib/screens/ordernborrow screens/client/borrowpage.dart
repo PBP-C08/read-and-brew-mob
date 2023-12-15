@@ -8,21 +8,15 @@ import 'package:flutter/src/widgets/framework.dart';
 int indexBorrow = 0;
 
 class BorrowPage extends StatefulWidget {
-  final kategori;
-  final search;
-  final sort;
-  final order;
-  const BorrowPage(this.kategori, this.search, this.sort, this.order,
-      {Key? key})
-      : super(key: key);
+  const BorrowPage({Key? key}) : super(key: key);
   _BorrowPageState createState() => _BorrowPageState();
 }
 
 class _BorrowPageState extends State<BorrowPage> {
   final List<Widget> _pagesBorrow = [
-    BooksPage("", "", "", ""),
-    BorrowedBooks("", "", "", ""),
-    BorrowedHistoryPage("", "", "", ""),
+    BooksPage(),
+    BorrowedBooks(),
+    BorrowedHistoryPage(),
   ];
 
   @override
@@ -51,26 +45,13 @@ class _BorrowPageState extends State<BorrowPage> {
         currentIndex: indexBorrow,
         type: BottomNavigationBarType.fixed,
         onTap: (int index) {
-          if (index == indexBorrow) {
+          setState(() {
             indexBorrow = index;
             judul_found = '';
             kategori_found = '';
             sort_found = '';
             order_found = '';
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => BorrowPage("", "", "", "")),
-            );
-          } else {
-            setState(() {
-              indexBorrow = index;
-              judul_found = '';
-              kategori_found = '';
-              sort_found = '';
-              order_found = '';
-            });
-          }
+          });
         },
       ),
     );
