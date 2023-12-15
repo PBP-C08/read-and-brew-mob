@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -17,7 +16,7 @@ class BookDetailPage extends StatelessWidget {
   const BookDetailPage(this.id, this.gambar, this.judul, this.rating,
       this.kategori, this.penulis,
       {Key? key})
-      : super(key: key); // Constructor
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,6 @@ class BookDetailPage extends StatelessWidget {
                 gambar,
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
-                  // You can return any widget here. For example, let's return an Icon.
                   return Icon(Icons.error);
                 },
                 width: 200,
@@ -61,8 +59,7 @@ class BookDetailPage extends StatelessWidget {
                 minRating: 0,
                 direction: Axis.horizontal,
                 itemCount: 5,
-                itemSize:
-                    40, // Adjust this value to change the size of the stars
+                itemSize: 40,
                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
                 itemBuilder: (context, _) => Icon(
                   Icons.star,
@@ -122,7 +119,7 @@ class BookDetailPage extends StatelessWidget {
             if (user_status == "E") ...[
               Center(
                 child: Container(
-                  height: 40, // Set the height as per your requirement
+                  height: 40,
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
@@ -139,7 +136,6 @@ class BookDetailPage extends StatelessWidget {
                           "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/delete-book-flutter/",
                           jsonEncode(<String, String>{
                             "id": id.toString(),
-                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
                           }));
                       if (response['status'] == 'success') {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -148,8 +144,7 @@ class BookDetailPage extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  BooklistPage("", "", "", "")),
+                              builder: (context) => BooklistPage()),
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -161,9 +156,7 @@ class BookDetailPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(Icons.delete, color: Colors.white),
-                        SizedBox(
-                            width:
-                                10), // Add some space between the icon and the text
+                        SizedBox(width: 10),
                         Text(
                           'Delete',
                           style: TextStyle(color: Colors.white),

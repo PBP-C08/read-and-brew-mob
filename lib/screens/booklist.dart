@@ -10,13 +10,7 @@ import 'package:read_and_brew/screens/login.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class BooklistPage extends StatefulWidget {
-  final kategori;
-  final search;
-  final sort;
-  final order;
-  const BooklistPage(this.kategori, this.search, this.sort, this.order,
-      {Key? key})
-      : super(key: key);
+  const BooklistPage({Key? key}) : super(key: key);
 
   @override
   _BooklistPageState createState() => _BooklistPageState();
@@ -30,7 +24,6 @@ class _BooklistPageState extends State<BooklistPage> {
   String searchText = "";
 
   Future<List<Buku>> fetchItem() async {
-    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
         'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/booklist/api/buku/');
     var response = await http.get(
@@ -38,10 +31,8 @@ class _BooklistPageState extends State<BooklistPage> {
       headers: {"Content-Type": "application/json"},
     );
 
-    // melakukan decode response menjadi bentuk json
     var data = jsonDecode(utf8.decode(response.bodyBytes));
 
-    // melakukan konversi data json menjadi object Product
     List<Buku> list_item = [];
 
     for (var d in data) {
@@ -66,10 +57,7 @@ class _BooklistPageState extends State<BooklistPage> {
         _list_show = _list_book;
       });
     }).catchError((error) {
-      // Handle the error here
-      print('Error occurred: $error');
       if (error is ClientException) {
-        // Show a message to the user
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Terdapat kesalahan pada server/jaringan internet'),
@@ -128,11 +116,9 @@ class _BooklistPageState extends State<BooklistPage> {
                       height: 100,
                       width: 100,
                     ),
-                    SizedBox(
-                        height:
-                            12), // Add some space between the image and the text
+                    SizedBox(height: 12),
                     Text(
-                      'Loading...',
+                      'Server/Network Error',
                       style: TextStyle(
                           fontSize: 20,
                           color: Colors.black,
@@ -149,7 +135,7 @@ class _BooklistPageState extends State<BooklistPage> {
                       onChanged: (text) {
                         text = text.toLowerCase();
                         setState(() {
-                          searchText = text; // Update the searchText variable
+                          searchText = text;
                           _list_show = _list_book.where((book) {
                             var bookTitle = book.fields.judul.toLowerCase();
                             var bookKategori = book.fields.kategori;
@@ -258,18 +244,15 @@ class _BooklistPageState extends State<BooklistPage> {
                                         end: Alignment.bottomRight,
                                       ),
                                       border: Border.all(
-                                        color: Color(
-                                            0xFF377C35), // Set border color
-                                        width: 1, // Set border width
+                                        color: Color(0xFF377C35),
+                                        width: 1,
                                       ),
-                                      borderRadius: BorderRadius.circular(
-                                          24), // Set border radius
+                                      borderRadius: BorderRadius.circular(24),
                                     ),
                                     child: Material(
                                       borderRadius: BorderRadius.circular(24),
                                       color: Colors.transparent,
                                       child: InkWell(
-                                        // Area responsive terhadap sentuhan
                                         onTap: () {
                                           Navigator.push(
                                             context,
@@ -308,7 +291,6 @@ class _BooklistPageState extends State<BooklistPage> {
                                                         context,
                                                     Object exception,
                                                     StackTrace? stackTrace) {
-                                                  // You can return any widget here. For example, let's return an Icon.
                                                   return Icon(Icons.error);
                                                 },
                                                 width: 200,
@@ -318,8 +300,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                               Text(
                                                 _list_show![index].fields.judul,
                                                 textAlign: TextAlign.center,
-                                                overflow: TextOverflow
-                                                    .ellipsis, // Add this line
+                                                overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 15.0,
@@ -336,8 +317,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                                 minRating: 0,
                                                 direction: Axis.horizontal,
                                                 itemCount: 5,
-                                                itemSize:
-                                                    20, // Adjust this value to change the size of the stars
+                                                itemSize: 20,
                                                 itemPadding:
                                                     EdgeInsets.symmetric(
                                                         horizontal: 4.0),

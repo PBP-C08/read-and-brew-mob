@@ -36,8 +36,7 @@ class MenuWidget extends StatelessWidget {
               if (item.name == "Book List") {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => BooklistPage("", "", "", "")),
+                  MaterialPageRoute(builder: (context) => BooklistPage()),
                 );
               } else if (item.name == "Forum Review") {
                 Navigator.pushReplacement(

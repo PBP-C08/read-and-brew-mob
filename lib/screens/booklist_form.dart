@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-// TODO: Impor drawer yang sudah dibuat sebelumnya
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/booklist.dart';
@@ -205,7 +204,6 @@ class _BooklistFormPageState extends State<BooklistFormPage> {
                                           "kategori": _kategori,
                                           "penulis": _penulis,
                                           "gambar": _gambar,
-                                          // TODO: Sesuaikan field data sesuai dengan aplikasimu
                                         }));
                                     if (response['status'] == 'success') {
                                       ScaffoldMessenger.of(context)
@@ -216,7 +214,7 @@ class _BooklistFormPageState extends State<BooklistFormPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                BooklistPage("", "", "", "")),
+                                                BooklistPage()),
                                       );
                                     } else {
                                       ScaffoldMessenger.of(context)

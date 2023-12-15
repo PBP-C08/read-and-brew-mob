@@ -81,8 +81,7 @@ class LeftDrawer extends StatelessWidget {
               */
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => BooklistPage("", "", "", "")),
+                MaterialPageRoute(builder: (context) => BooklistPage()),
               );
             },
           ),
