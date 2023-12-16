@@ -25,7 +25,7 @@ Buku yang sedang dipinjam dapat di-_track progressnya_ dengan menandai sudah sej
 #### Peran Role Pengguna
 | Member (Login)  | Guest |
 | ------------- | ------------- |
-| Dapat melakukan _tracking progress_ buku bacaan yang dipinjam. | Dapat melakukan _tracking progress_ disaat berkunjung saja. |
+| Dapat melakukan _tracking progress_ buku bacaan yang dipinjam dan menghapus buku yang sudah di _track_. | Dapat melakukan _tracking progress_ disaat berkunjung saja dan buku akan bertahan selama 48 jam setelah _tracking_ sebelum akhirnya dihapus. |
 
 ### 3. Forum Review (Fikri Dhiya Ramadhana)
 Pengguna dapat me-review buku yang sudah dipinjam dan membagikan pengalaman saat menggunakan aplikasi Read&Brew. Digunakan sistem rating untuk setiap pengalaman user. 
