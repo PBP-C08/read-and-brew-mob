@@ -2,10 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:read_and_brew/models/booktracker.dart';
+import 'package:read_and_brew/models/booktrackermember.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/tracker_form.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/tracker_detail.dart';
+import 'package:read_and_brew/screens/login.dart';
+
+class BookService {
+  static Future<void> deleteOldBooks() async {
+    var url = Uri.parse('https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/delete-old-books');
+    var response = await http.post(url);
+    if (response.statusCode == 200) {
+      print('Old books deleted successfully');
+    } else {
+      print('Failed to delete old books');
+    }
+  }
+}
 
 String getStatusLabel(String status) {
   switch (status) {
@@ -26,9 +40,33 @@ class BookTrackerPage extends StatefulWidget {
 }
 
 class _BookTrackerPageState extends State<BookTrackerPage> {
+  Future<List<BookTrackerMember>> fetchBookMember() async {
+    var url = Uri.parse(
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/show-json-tracker-flutter');
+
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object BookTracker
+    List<BookTrackerMember> list_book_tracker = [];
+    for (var d in data) {
+      if (d != null && d['fields']['user'] == user_id) {
+        list_book_tracker.add(BookTrackerMember.fromJson(d));
+      }
+    }
+
+    return list_book_tracker;
+  }
+
   Future<List<BookTracker>> fetchBook() async {
     var url = Uri.parse(
         'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/show-json-tracker');
+
     var response = await http.get(
       url,
       headers: {"Content-Type": "application/json"},
@@ -44,6 +82,7 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
         list_book_tracker.add(BookTracker.fromJson(d));
       }
     }
+
     return list_book_tracker;
   }
 
@@ -77,21 +116,24 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        future: fetchBook(),
+        future: user_status == 'M' ? fetchBookMember() : fetchBook(),
         builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.data == null) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            if (!snapshot.hasData) {
-              return Column(
-                children: [
-                  Text(
-                    "You haven't tracked any books.",
-                    style: TextStyle(color: Color(0xFF377C35)),
-                  ),
-                  SizedBox(height: 8),
-                ],
-              );
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          if (snapshot.data!.isEmpty) {
+            return Center(
+              child: Text(
+                'Start tracking your book here!',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20.0,
+                  color: Color(0xFF377C35),
+                ),
+              ),
+            );
             } else {
               return Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -104,26 +146,53 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                   ),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (_, index) => InkWell(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailPage(
-                            fetchBookDetails: fetchBookDetails,
-                            bookTracker: snapshot.data![index],
-                          ),
+                          builder: (context) {
+                            if (snapshot.data![index] is BookTracker) {
+                              return DetailPage(
+                                fetchBookDetails: fetchBookDetails,
+                                bookTracker: snapshot.data![index],
+                              );
+                            } else if (snapshot.data![index] is BookTrackerMember) {
+                              return DetailPage(
+                                fetchBookDetails: fetchBookDetails,
+                                bookTrackerMember: snapshot.data![index],
+                              );
+                            } else {
+                              throw Exception('Unexpected data type');
+                            }
+                          },
                         ),
                       );
+                      setState(() {});
                     },
                     child: Card(
-                      elevation: 2.0,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Color(0xFF377C35), width: 1.0),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 1.0,
                       child: IntrinsicHeight(
                         child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white,
+                                Color.fromARGB(255, 235, 255, 235),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
                           padding: const EdgeInsets.all(12.0),
                           child: FutureBuilder(
                             future: fetchBookDetails(
                                 snapshot.data![index].fields.book),
-                            builder: (context, AsyncSnapshot<Buku> bookSnapshot) {
+                            builder:
+                                (context, AsyncSnapshot<Buku> bookSnapshot) {
                               if (bookSnapshot.connectionState ==
                                   ConnectionState.waiting) {
                                 return const CircularProgressIndicator();
@@ -145,7 +214,8 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center, 
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             bookSnapshot.data!.fields.judul,
@@ -154,11 +224,12 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                                               fontWeight: FontWeight.w600,
                                             ),
                                             overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center, 
+                                            textAlign: TextAlign.center,
                                           ),
                                           Text(
                                             bookSnapshot.data!.fields.penulis,
-                                            style: const TextStyle(fontSize: 16.0),
+                                            style:
+                                                const TextStyle(fontSize: 16.0),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                           ),
@@ -166,9 +237,8 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
                                             getStatusLabel(snapshot
                                                 .data![index].fields.status),
                                             style: const TextStyle(
-                                              fontSize: 16.0,
-                                              color: Color(0xFF472B26)
-                                            ),
+                                                fontSize: 16.0,
+                                                color:Color.fromARGB(255, 27, 68, 26)),
                                             overflow: TextOverflow.ellipsis,
                                             textAlign: TextAlign.center,
                                           ),

@@ -4,17 +4,20 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/booktracker.dart';
+import 'package:read_and_brew/models/booktrackermember.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/tracker.dart';
+import 'package:read_and_brew/screens/login.dart';
 
-//TODO: bedain member/guest, abis pencet save progress ga async ke updatenya
 class DetailPage extends StatefulWidget {
-  final BookTracker bookTracker;
+  final BookTracker? bookTracker;
+  final BookTrackerMember? bookTrackerMember;
   final Function(int) fetchBookDetails;
 
   const DetailPage({
     Key? key,
-    required this.bookTracker,
+    this.bookTracker,
+    this.bookTrackerMember,
     required this.fetchBookDetails,
   }) : super(key: key);
 
@@ -24,9 +27,27 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   final _formKey = GlobalKey<FormState>();
-  int _progress = 0;
   int _bookId = 0;
   int _bookDetailsId = 0;
+  late int _progress;
+  late int _page;
+  late String _status;
+  late int _formProgress;
+
+  @override
+  void initState() {
+    super.initState();
+    _progress = widget.bookTrackerMember != null
+        ? widget.bookTrackerMember!.fields.progress
+        : widget.bookTracker!.fields.progress;
+    _page = widget.bookTrackerMember != null
+        ? widget.bookTrackerMember!.fields.page
+        : widget.bookTracker!.fields.page;
+    _status = widget.bookTrackerMember != null
+        ? getStatusLabel(widget.bookTrackerMember!.fields.status)
+        : getStatusLabel(widget.bookTracker!.fields.status);
+    _formProgress = _progress;
+  }
 
   Future<Buku> fetchBookDetails(int bookId) async {
     var url = Uri.parse(
@@ -61,7 +82,9 @@ class _DetailPageState extends State<DetailPage> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
-          future: fetchBookDetails(widget.bookTracker.fields.book),
+          future: widget.bookTrackerMember != null
+            ? fetchBookDetails(widget.bookTrackerMember!.fields.book)
+            : fetchBookDetails(widget.bookTracker!.fields.book),
           builder: (context, AsyncSnapshot<Buku> bookSnapshot) {
             if (bookSnapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -120,8 +143,7 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text:
-                                  '${getStatusLabel(widget.bookTracker.fields.status)}',
+                              text: '$_status',
                               style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
@@ -142,8 +164,7 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text:
-                                  '${widget.bookTracker.fields.progress}/${widget.bookTracker.fields.page}',
+                              text: '$_progress/$_page',
                               style: const TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
@@ -185,9 +206,14 @@ class _DetailPageState extends State<DetailPage> {
                                             border: OutlineInputBorder(),
                                           ),
                                           onChanged: (String? value) {
-                                            setState(() {
-                                              _progress = int.parse(value!);
-                                            });
+                                            if (value != null && value.isNotEmpty) {
+                                              try {
+                                                _formProgress = int.parse(value);
+                                              } catch (e) {
+                                                // Handle the exception. For example, you can show a message to the user.
+                                                print('Invalid number: $value');
+                                              }
+                                            }
                                           },
                                           validator: (value) {
                                             if (value == null ||
@@ -223,11 +249,14 @@ class _DetailPageState extends State<DetailPage> {
                                       onPressed: () {
                                         if (_formKey.currentState!.validate()) {
                                           _bookId =
-                                              widget.bookTracker.fields.book;
+                                              widget.bookTrackerMember != null
+                                                  ? widget.bookTrackerMember!
+                                                      .fields.book
+                                                  : widget
+                                                      .bookTracker!.fields.book;
                                           _bookDetailsId =
                                               bookSnapshot.data!.pk;
-                                          _editProgress(
-                                              request, _progress, _bookId, _bookDetailsId);
+                                          _editProgress(request, _formProgress, _bookId, _bookDetailsId);
                                           _formKey.currentState!.reset();
                                         }
                                       },
@@ -261,35 +290,50 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 13),
-                    Center(
-                      child: Container(
-                        width: 165,
-                        height: 46,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.brown,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            child: Text(
-                              'Back',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFFFFFFFF),
+                    user_status == 'M'
+                      ? Column(
+                          children: [
+                            SizedBox(height: 13),
+                            Center(
+                              child: Container(
+                                width: 165,
+                                height: 46,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    _bookId =
+                                        widget.bookTrackerMember != null
+                                            ? widget.bookTrackerMember!
+                                                .fields.book
+                                            : widget
+                                                .bookTracker!.fields.book;
+                                    _bookDetailsId =
+                                        bookSnapshot.data!.pk;
+                                    _deleteProgress(request, _bookId, _bookDetailsId);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.red.shade800,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 16),
+                                    child: Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFFFFFFFF),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
+                          ],
+                        )
+                      : Container(), // Empty container when user_status is not 'M'
                   ],
                 ),
               );
@@ -300,17 +344,57 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Future<void> _editProgress(
-      CookieRequest request, int _progress, int _bookId, int _bookDetailId) async {
-    final response = await request.postJson(
-        "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/update-progress-flutter/$_bookId",
-        jsonEncode(<String, String>{
-          'progress': _progress.toString(),
-        }));
+  Future<void> _editProgress(CookieRequest request, int _progress, int _bookId, int _bookDetailId) async {
+    final response;
+    
+    if (user_status == 'M') {
+      response = await request.postJson(
+          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/update-progress-member-flutter/$_bookId",
+          jsonEncode(<String, String>{
+            'progress': _progress.toString(),
+          }));
+    } else {
+      response = await request.postJson(
+          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/update-progress-flutter/$_bookId",
+          jsonEncode(<String, String>{
+            'progress': _progress.toString(),
+          }));
+    }
 
     if (response['status'] == 'success') {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("You have successfully edit your progress!"),
+        content: Text("You have successfully edited your progress!"),
+      ));
+      this._progress = _progress;
+      this._page = _page; 
+
+
+      if (_progress == _page) {
+        this._status = 'Finished';
+      } else {
+        this._status = 'In Progress';
+      }
+
+      setState(() {});
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("An error occurred. Please try again later."),
+      ));
+      Navigator.pop(context);
+    }
+  }
+
+   Future<void> _deleteProgress(CookieRequest request, int _bookId, int _bookDetailId) async {
+    final response = await request.postJson(
+          "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/delete-book-member-flutter",
+          jsonEncode(<String, String>{
+            'id': _bookId.toString(),
+          }));
+
+    if (response['status'] == 'success') {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("You have successfully deleted your progress!"),
       ));
       Navigator.pop(context);
       fetchBookDetails(_bookDetailId);

@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/tracker.dart';
 import 'package:read_and_brew/models/booktracker.dart';
 import 'package:read_and_brew/models/buku.dart';
+import 'package:read_and_brew/models/ordernborrow%20models/borrowedbook.dart';
+import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/models/booktrackermember.dart';
 
 class TrackerFormPage extends StatefulWidget {
   const TrackerFormPage({Key? key}) : super(key: key);
@@ -25,8 +28,53 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
   void initState() {
     super.initState();
     _availableBooks = [];
-    _selectedBookId = ''; 
+    _selectedBookId = '';
     _refreshBookTracker();
+  }
+
+  Future<List<BorrowedBook>> getBorrowedBooks() async {
+    var url = Uri.parse(
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/show-json-borrowedbooks-flutter');
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object BookTracker
+    List<BorrowedBook> list_book_tracker = [];
+    for (var d in data) {
+      if (d != null && d['fields']['user'] == user_id) {
+        list_book_tracker.add(BorrowedBook.fromJson(d));
+      }
+    }
+
+    return list_book_tracker;
+  }
+
+  Future<List<BookTrackerMember>> getTrackedBooksMember() async {
+    var url = Uri.parse(
+        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/show-json-tracker-flutter');
+
+    var response = await http.get(
+      url,
+      headers: {"Content-Type": "application/json"},
+    );
+
+    // melakukan decode response menjadi bentuk json
+    var data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    // melakukan konversi data json menjadi object BookTracker
+    List<BookTrackerMember> list_book_tracker = [];
+    for (var d in data) {
+      if (d != null && d['fields']['user'] == user_id) {
+        list_book_tracker.add(BookTrackerMember.fromJson(d));
+      }
+    }
+
+    return list_book_tracker;
   }
 
   Future<List<BookTracker>> getTrackedBooks() async {
@@ -74,16 +122,30 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
   Future<void> _refreshBookTracker() async {
     final books = await getBooks();
     final trackedBooks = await getTrackedBooks();
+    final borrowedBooks = await getBorrowedBooks();
+    final trackedBooksMember = await getTrackedBooksMember();
 
-    setState(() { // Set the state after data is fetched
+    setState(() {
       _availableBooks = books.where((book) {
         final bookId = book.pk;
-        final isInProgress = trackedBooks.any(
-          (trackedBook) =>
-              trackedBook.fields.book == bookId &&
-              trackedBook.fields.status == 'in-progress',
-        );
-        return !isInProgress;
+        if (user_status != 'M' && user_id == 0) {
+          final isInProgress = trackedBooks.any(
+            (trackedBook) =>
+                trackedBook.fields.book == bookId &&
+                trackedBook.fields.status == 'in-progress',
+          );
+          return !isInProgress;
+        } else {
+          final isInProgress = trackedBooksMember.any(
+            (trackedBook) =>
+                trackedBook.fields.book == bookId &&
+                trackedBook.fields.status == 'in-progress',
+          );
+          final isBorrowed = borrowedBooks.any(
+            (borrowedBook) => borrowedBook.fields.book == bookId,
+          );
+          return isBorrowed && !isInProgress;
+        }
       }).toList();
 
       if (_availableBooks.isNotEmpty) {
@@ -224,10 +286,7 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
                         },
                         child: const Text(
                           'Track Book',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
                     ),
@@ -250,10 +309,19 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
         'status': (_page == _progress) ? 'finished' : 'in-progress',
       };
 
-      final response = await request.postJson(
-        'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/track-book-guest-flutter',
-        jsonEncode(formData),
-      );
+      final response;
+
+      if (user_status == 'M') {
+        response = await request.postJson(
+          'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/track-book-flutter',
+          jsonEncode(formData),
+        );
+      } else {
+        response = await request.postJson(
+          'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/trackernplanner/track-book-guest-flutter',
+          jsonEncode(formData),
+        );
+      }
 
       if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
