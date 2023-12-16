@@ -90,7 +90,7 @@ class OnBDrawer extends StatelessWidget {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BorrowPage("", "", "", ""),
+                    builder: (context) => BorrowPage(),
                   ));
             },
           ),

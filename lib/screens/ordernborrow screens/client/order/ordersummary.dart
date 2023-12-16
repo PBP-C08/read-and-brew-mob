@@ -290,20 +290,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    // List<BottomNavigationBarItem> bottomNavBarItems = [
-    //   const BottomNavigationBarItem(
-    //     icon: Icon(Icons.restaurant),
-    //     label: 'Food',
-    //   ),
-    //   const BottomNavigationBarItem(
-    //     icon: Icon(Icons.local_cafe),
-    //     label: 'Drinks',
-    //   ),
-    //   const BottomNavigationBarItem(
-    //     icon: Icon(Icons.receipt_long),
-    //     label: 'Order Summary',
-    //   ),
-    // ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Summary'),

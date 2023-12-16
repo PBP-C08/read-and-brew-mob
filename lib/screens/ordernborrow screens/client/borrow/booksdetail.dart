@@ -182,8 +182,7 @@ class _BooksDetailsState extends State<BooksDetails> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            BorrowPage("", "", "", ""),
+                                        builder: (context) => BorrowPage(),
                                       ),
                                     );
                                     // ignore: use_build_context_synchronously
@@ -231,8 +230,7 @@ class _BooksDetailsState extends State<BooksDetails> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            BorrowPage("", "", "", ""),
+                                        builder: (context) => BorrowPage(),
                                       ),
                                     );
                                     await showDialog(

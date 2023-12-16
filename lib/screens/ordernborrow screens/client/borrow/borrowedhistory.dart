@@ -9,13 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 
 class BorrowedHistoryPage extends StatefulWidget {
-  final kategori;
-  final search;
-  final sort;
-  final order;
-  const BorrowedHistoryPage(this.kategori, this.search, this.sort, this.order,
-      {Key? key})
-      : super(key: key);
+  const BorrowedHistoryPage({Key? key}) : super(key: key);
 
   @override
   _BorrowedHistoryPageState createState() => _BorrowedHistoryPageState();
@@ -50,7 +44,6 @@ class _BorrowedHistoryPageState extends State<BorrowedHistoryPage> {
 
     var data = jsonDecode(utf8.decode(response.bodyBytes));
 
-    // Fetch borrowed books by the current user
     var borrowedBooksResponse = await http.get(
       Uri.parse(
           'https://readandbrew-c08-tk.pbp.cs.ui.ac.id/ordernborrow/member/borrowed-history/'),
@@ -99,6 +92,10 @@ class _BorrowedHistoryPageState extends State<BorrowedHistoryPage> {
       list_kategori.add(d.fields.kategori);
     }
     list_kategori = list_kategori.toSet().toList();
+    judul_found = '';
+    kategori_found = '';
+    sort_found = '';
+    order_found = '';
     return list_show;
   }
 
@@ -300,7 +297,7 @@ class _BorrowedHistoryPageState extends State<BorrowedHistoryPage> {
       ),
       drawer: const OnBDrawer(),
       body: FutureBuilder(
-          future: fetchBorrowedHistory(),
+          future: futureBooks,
           builder: (context, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return const Center(child: CircularProgressIndicator());
@@ -331,10 +328,13 @@ class _BorrowedHistoryPageState extends State<BorrowedHistoryPage> {
                         return Icon(Icons.error);
                       },
                     ),
-                    title: Text(snapshot.data![index].fields.judul),
+                    title: Text(snapshot.data![index].fields.judul,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
                     subtitle: Text(snapshot.data![index].fields.kategori),
                     trailing: RatingBar.builder(
-                      initialRating: snapshot.data![index].fields.rating,
+                      initialRating: snapshot.data![index].fields.rating.toDouble(),
                       minRating: 0,
                       direction: Axis.horizontal,
                       itemCount: 5,

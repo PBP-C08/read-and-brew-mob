@@ -12,12 +12,7 @@ String sort_found = '';
 String order_found = '';
 
 class BooksPage extends StatefulWidget {
-  final kategori;
-  final search;
-  final sort;
-  final order;
-  const BooksPage(this.kategori, this.search, this.sort, this.order, {Key? key})
-      : super(key: key);
+  const BooksPage({Key? key}) : super(key: key);
 
   @override
   _BooksPageState createState() => _BooksPageState();
@@ -105,6 +100,10 @@ class _BooksPageState extends State<BooksPage> {
       list_kategori.add(d.fields.kategori);
     }
     list_kategori = list_kategori.toSet().toList();
+    judul_found = '';
+    kategori_found = '';
+    sort_found = '';
+    order_found = '';
     return list_show;
   }
 
@@ -319,7 +318,10 @@ class _BooksPageState extends State<BooksPage> {
                       Text(
                         "Book doesn't exist.",
                         style: TextStyle(
-                            color: Color.fromARGB(255, 0, 0, 0), fontSize: 20),
+                          color: Colors.black, // Change the text color to black
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(height: 8),
                     ],
@@ -336,10 +338,13 @@ class _BooksPageState extends State<BooksPage> {
                         return Icon(Icons.error);
                       },
                     ),
-                    title: Text(snapshot.data![index].fields.judul),
+                    title: Text(snapshot.data![index].fields.judul,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
                     subtitle: Text(snapshot.data![index].fields.kategori),
                     trailing: RatingBar.builder(
-                      initialRating: snapshot.data![index].fields.rating,
+                      initialRating: snapshot.data![index].fields.rating.toDouble(),
                       minRating: 0,
                       direction: Axis.horizontal,
                       itemCount: 5,
