@@ -111,7 +111,10 @@ class _BookTrackerPageState extends State<BookTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book Tracker'),
+        title: Text(
+          'Book Tracker',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         foregroundColor: Color(0xFF377C35),
       ),
       drawer: const LeftDrawer(),

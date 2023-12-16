@@ -76,7 +76,10 @@ class _DetailPageState extends State<DetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Book Tracker"),
+        title: Text(
+          'Book Tracker',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         foregroundColor: Color(0xFF377C35),
       ),
       body: Padding(
@@ -300,7 +303,6 @@ class _DetailPageState extends State<DetailPage> {
                                 height: 46,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Navigator.pop(context);
                                     _bookId =
                                         widget.bookTrackerMember != null
                                             ? widget.bookTrackerMember!
@@ -310,6 +312,7 @@ class _DetailPageState extends State<DetailPage> {
                                     _bookDetailsId =
                                         bookSnapshot.data!.pk;
                                     _deleteProgress(request, _bookId, _bookDetailsId);
+                                    Navigator.pop(context);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.red.shade800,
@@ -331,6 +334,7 @@ class _DetailPageState extends State<DetailPage> {
                                 ),
                               ),
                             ),
+                            SizedBox(height: 24), // Add this line to create a gap
                           ],
                         )
                       : Container(), // Empty container when user_status is not 'M'
@@ -397,7 +401,6 @@ class _DetailPageState extends State<DetailPage> {
         content: Text("You have successfully deleted your progress!"),
       ));
       Navigator.pop(context);
-      fetchBookDetails(_bookDetailId);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("An error occurred. Please try again later."),

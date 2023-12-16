@@ -160,7 +160,10 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Track Your Book'),
+        title: Text(
+          'Track Your Book',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         foregroundColor: Color(0xFF377C35),
       ),
       body: Padding(
@@ -175,8 +178,9 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
                   padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
                   child: Row(
                     children: [
-                      Flexible(
+                      Expanded(
                         child: DropdownButtonFormField<String>(
+                          isExpanded: true,
                           decoration: InputDecoration(
                             hintText: 'Select Book',
                             labelText: 'Book Name',
@@ -188,12 +192,9 @@ class _TrackerFormPageState extends State<TrackerFormPage> {
                           items: _availableBooks.map((book) {
                             return DropdownMenuItem<String>(
                               value: book.pk.toString(),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                child: Text(
-                                  book.fields.judul,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                              child: Text(
+                                book.fields.judul,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             );
                           }).toList(),
