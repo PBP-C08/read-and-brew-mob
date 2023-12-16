@@ -51,6 +51,41 @@ class _MyReviewState extends State<MyReviews> {
     });
   }
 
+  Future<bool> showDeleteConfirmationDialog(BuildContext context, String bookReview) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Confirm Deletion"),
+          content: Text(
+              "Are you sure you want to delete your review about $bookReview?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Dialog cancelled
+              },
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // User confirmed
+              },
+              child: const Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> deleteProcedure(CookieRequest request, BuildContext context, Review review) async {
+    bool confirm = await showDeleteConfirmationDialog(context, review.fields.bookName);
+
+    if(confirm){
+      await _deleteReview(request, review);
+    }
+  }
+
   Future<void> _deleteReview(CookieRequest request, Review review) async {
     final response = await request.postJson(
       "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/delete-review-flutter/${review.pk}/",
@@ -233,7 +268,9 @@ class _MyReviewState extends State<MyReviews> {
                               ),
                               // elevation: 10,
                               child: InkWell(
-                                onTap: () {
+                                onTap: () async {
+                                  deleteMode == true ? 
+                                  await deleteProcedure(request, context, snapshot.data![index]) :
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -309,15 +346,9 @@ class _MyReviewState extends State<MyReviews> {
                                         ),
                                       ),
                                       if (deleteMode == true) ...{
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 45), 
-                                          child: IconButton(
-                                            icon: const Icon(Icons.delete),
-                                            color: Colors.red,
-                                            onPressed: () async {
-                                              _deleteReview(request, snapshot.data![index]);
-                                            },
-                                          ),
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 48), 
+                                          child: Icon(Icons.delete, color: Colors.red,),
                                         ),
                                       },
                                     ],
