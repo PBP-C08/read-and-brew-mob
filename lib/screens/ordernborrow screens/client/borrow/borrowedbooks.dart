@@ -20,6 +20,8 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
   final _formKey = GlobalKey<FormState>();
   List<String> list_kategori = [];
   List<String> sort_by = ["Judul", "Rating"];
+  bool isSearched = false;
+  bool isFilled = false;
 
   @override
   void initState() {
@@ -103,9 +105,10 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Borrowed Books'),
-        backgroundColor: const Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: const Text('Borrowed Books',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
         actions: [
           Builder(
             builder: (context) => IconButton(
@@ -123,6 +126,8 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                 top: -40,
                                 child: InkResponse(
                                   onTap: () {
+                                    isFilled = false;
+                                    isSearched = false;
                                     Navigator.of(context).pop();
                                   },
                                   child: const CircleAvatar(
@@ -150,6 +155,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                         onChanged: (String? value) {
                                           setState(() {
                                             judul_found = value!;
+                                            isFilled = true;
                                           });
                                         },
                                       ),
@@ -194,6 +200,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                             onChanged: (String value) {
                                               setState(() {
                                                 kategori_found = value;
+                                                isFilled = true;
                                               });
                                             },
                                           );
@@ -254,6 +261,7 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                           // This is called when the user selects an item.
                                           setState(() {
                                             sort_found = value!;
+                                            isFilled = true;
                                           });
                                         },
                                         dropdownMenuEntries: sort_by
@@ -278,6 +286,12 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
                                         onPressed: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
+                                            if (judul_found.isEmpty &&
+                                                kategori_found.isEmpty &&
+                                                sort_found.isEmpty) {
+                                              isFilled = false;
+                                            }
+                                            isSearched = true;
                                             Navigator.pop(context);
                                             refreshBooksData();
                                           }
@@ -297,80 +311,112 @@ class _BorrowedBooksState extends State<BorrowedBooks> {
         ],
       ),
       drawer: const OnBDrawer(),
-      body: FutureBuilder(
-          future: futureBooks,
-          builder: (context, AsyncSnapshot snapshot) {
-            if (snapshot.data == null) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              // List<BorrowedBooks>
-              if (snapshot.data!.length == 0) {
-                return const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "You haven't borrowed any books.",
-                        style: TextStyle(
-                          color: Colors.black, // Change the text color to black
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder(
+              future: futureBooks,
+              builder: (context, AsyncSnapshot snapshot) {
+                if (snapshot.data == null) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  if (snapshot.data!.length == 0) {
+                    return const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Book doesn't exist.",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                        ],
                       ),
-                      SizedBox(height: 8),
-                    ],
-                  ),
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (_, index) => ListTile(
-                    leading: Image.network(
-                      snapshot.data![index].fields.gambar,
-                      errorBuilder: (BuildContext context, Object exception,
-                          StackTrace? stackTrace) {
-                        return Icon(Icons.error);
-                      },
-                    ),
-                    title: Text(snapshot.data![index].fields.judul,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
-                    subtitle: Text(snapshot.data![index].fields.kategori),
-                    trailing: RatingBar.builder(
-                      initialRating: snapshot.data![index].fields.rating.toDouble(),
-                      minRating: 0,
-                      direction: Axis.horizontal,
-                      itemCount: 5,
-                      itemSize: 15.0,
-                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                      itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      ignoreGestures: true,
-                      onRatingUpdate: (double value) {},
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BooksDetails(
-                              snapshot.data![index].pk,
-                              snapshot.data![index].fields.gambar,
-                              snapshot.data![index].fields.judul,
-                              snapshot.data![index].fields.rating,
-                              snapshot.data![index].fields.kategori,
-                              snapshot.data![index].fields.penulis,
-                              "NO"),
+                    );
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (_, index) => ListTile(
+                        leading: Image.network(
+                          snapshot.data![index].fields.gambar,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                            return Icon(Icons.error);
+                          },
                         ),
-                      );
-                    },
+                        title: Text(
+                          snapshot.data![index].fields.judul,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(snapshot.data![index].fields.kategori),
+                        trailing: RatingBar.builder(
+                          initialRating:
+                              snapshot.data![index].fields.rating.toDouble(),
+                          minRating: 0,
+                          direction: Axis.horizontal,
+                          itemCount: 5,
+                          itemSize: 15.0,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          ignoreGestures: true,
+                          onRatingUpdate: (double value) {},
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BooksDetails(
+                                snapshot.data![index].pk,
+                                snapshot.data![index].fields.gambar,
+                                snapshot.data![index].fields.judul,
+                                snapshot.data![index].fields.rating,
+                                snapshot.data![index].fields.kategori,
+                                snapshot.data![index].fields.penulis,
+                                "NO",
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          ),
+          if (isFilled && isSearched)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isSearched = false;
+                    isFilled = false;
+                  });
+                  refreshBooksData();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF377C35),
+                ),
+                child: const Text(
+                  'Clear Filter',
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
-                );
-              }
-            }
-          }),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

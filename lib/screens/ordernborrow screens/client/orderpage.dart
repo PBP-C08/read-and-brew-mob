@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class OrderPage extends StatefulWidget {
-  // final int index;
-  // const OrderPage(this.index, {Key? key}) : super(key: key);
-
   @override
   _OrderPageState createState() => _OrderPageState();
 }
@@ -22,14 +17,14 @@ class _OrderPageState extends State<OrderPage> {
   final List<Widget> _pages = [
     FoodMenu(),
     DrinkMenu(),
-    OrderSummaryPage(),
+    const OrderSummaryPage(),
   ];
 
   final List<Widget> _pagesMember = [
     FoodMenu(),
     DrinkMenu(),
     SecretMenu(),
-    OrderMemberPage(),
+    const OrderMemberPage(),
   ];
 
   @override

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -68,13 +70,13 @@ class _BooksDetailsState extends State<BooksDetails> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: Text("Confirm"),
+              child: const Text("Confirm"),
             ),
           ],
         );
@@ -88,10 +90,11 @@ class _BooksDetailsState extends State<BooksDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text(widget.judul),
+          child: Text(widget.judul,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
         ),
-        backgroundColor: const Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -117,8 +120,8 @@ class _BooksDetailsState extends State<BooksDetails> {
                 direction: Axis.horizontal,
                 itemCount: 5,
                 itemSize: 40,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                itemBuilder: (context, _) => const Icon(
                   Icons.star,
                   color: Colors.amber,
                 ),
@@ -126,33 +129,33 @@ class _BooksDetailsState extends State<BooksDetails> {
                 onRatingUpdate: (double value) {},
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Center(
               child: Text(
                 'Category: ${widget.kategori}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Center(
               child: Text(
                 'Author: ${widget.penulis}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             if (widget.fromBorrowedHistory == "NO") ...[
               FutureBuilder<bool>(
                 future: isBorrowedFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const CircularProgressIndicator();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else {
@@ -182,10 +185,10 @@ class _BooksDetailsState extends State<BooksDetails> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BorrowPage(),
+                                        builder: (context) =>
+                                            const BorrowPage(),
                                       ),
                                     );
-                                    // ignore: use_build_context_synchronously
                                     await showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -240,7 +243,7 @@ class _BooksDetailsState extends State<BooksDetails> {
                                           title: const Text(
                                               "Borrowed Successfully!"),
                                           content: Text(
-                                              "You have borrowed \"${judul}\" !"),
+                                              "You have borrowed \"$judul\" !"),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
@@ -262,7 +265,7 @@ class _BooksDetailsState extends State<BooksDetails> {
                               },
                         child: Text(
                           isBorrowed ? 'Return' : 'Borrow',
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       ),
                     );

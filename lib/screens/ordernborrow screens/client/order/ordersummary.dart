@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -86,7 +88,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
 
     if (response['status'] == 'success') {
       refreshOrderData();
-      // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -138,7 +139,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("Amount: ${item.fields.amount}"),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
@@ -259,7 +260,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
 
     if (response['status'] == 'success') {
       refreshOrderData();
-      // ignore: use_build_context_synchronously
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -292,9 +292,10 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Summary'),
-        backgroundColor: const Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: const Text('Order Summary',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
@@ -370,7 +371,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Spacer(), // This will push the IconButton to the right
+                                    const Spacer(),
                                     ElevatedButton(
                                       onPressed: () {
                                         _showConfirmEditDialog(
@@ -382,7 +383,7 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
                                       ),
                                       child: const Text("Edit"),
                                     ),
-                                    Spacer(), // This will push the IconButton to the right
+                                    const Spacer(),
                                     IconButton(
                                       icon: const Icon(
                                         Icons.delete,
@@ -442,21 +443,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
           }
         },
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: bottomNavBarItems,
-      //   unselectedItemColor: Colors.grey,
-      //   selectedItemColor: const Color(0xFF377C35),
-      //   currentIndex: _currentIndex,
-      //   onTap: (int index) {
-      //     setState(() {
-      //       _currentIndex = index;
-      //     });
-      //     Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-      //     );
-      //   },
-      // ),
     );
   }
 }
