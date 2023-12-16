@@ -43,95 +43,117 @@ class _ListGambarState extends State<ListGambar> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return OrientationBuilder(builder: (context, orientation) {
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(24), 
-                child: Center(
-                  child: Text(
-                    "Search a Review by Book Name or Username",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center
-                  ),
-                )
-              ),
-            FutureBuilder(
-              future: fetchAllReview(request),
-              builder: (context, AsyncSnapshot<List<Review>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error loading data.'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Column(
-                    children: [
-                      Text(
-                        "Tidak ada review.",
-                        style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
-                      ),
-                      SizedBox(height: 8),
-                    ],
-                  );
-                } else {
-                  return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                      ),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (_, index) {
-                        Review currentReview = snapshot.data![index];
+      return Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 255, 255, 255),
+            Color.fromARGB(255, 235, 255, 235),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(24), 
+                  child: Center(
+                    child: Text(
+                      "Search a Review by Book Name or Username",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+                      textAlign: TextAlign.center
+                    ),
+                  )
+                ),
+              FutureBuilder(
+                future: fetchAllReview(request),
+                builder: (context, AsyncSnapshot<List<Review>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return const Center(child: Text('Error loading data.'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Column(
+                      children: [
+                        Text(
+                          "Tidak ada review.",
+                          style: TextStyle(color: Color(0xff59A5D8), fontSize: 20),
+                        ),
+                        SizedBox(height: 8),
+                      ],
+                    );
+                  } else {
+                    return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: orientation == Orientation.portrait ? 2 : 3,
+                          crossAxisSpacing: 0,
+                          mainAxisSpacing: 0,
+                        ),
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (_, index) {
+                          Review currentReview = snapshot.data![index];
 
-                        return FutureBuilder(
-                          future: getBookByName(request, currentReview.fields.bookName),
-                          builder: (context, AsyncSnapshot<Buku?> bookSnapshot) {
-                            Widget bookImageWidget = Container();
+                          return FutureBuilder(
+                            future: getBookByName(request, currentReview.fields.bookName),
+                            builder: (context, AsyncSnapshot<Buku?> bookSnapshot) {
+                              Widget bookImageWidget = Container();
 
-                            if (bookSnapshot.connectionState == ConnectionState.done) {
-                              if (bookSnapshot.hasError) {
-                                bookImageWidget = Text('Error loading book information.');
-                              } else if (bookSnapshot.hasData && bookSnapshot.data != null) {
-                                String? imageUrl = bookSnapshot.data!.fields.gambar;
-                                if (imageUrl.isNotEmpty) {
-                                  bookImageWidget = Image.network(
-                                    imageUrl,
-                                    width: 120,
-                                    height: 180,
-                                  );
+                              if (bookSnapshot.connectionState == ConnectionState.done) {
+                                if (bookSnapshot.hasError) {
+                                  bookImageWidget = Text('Error loading book information.');
+                                } else if (bookSnapshot.hasData && bookSnapshot.data != null) {
+                                  String? imageUrl = bookSnapshot.data!.fields.gambar;
+                                  if (imageUrl.isNotEmpty) {
+                                    bookImageWidget = Image.network(
+                                      imageUrl,
+                                      width: 120,
+                                      height: 180,
+                                    );
+                                  }
                                 }
                               }
-                            }
 
-                            return Material(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: InkWell(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        child: bookImageWidget,
+                              return Material(
+                                child: InkWell(
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      gradient: LinearGradient(
+                                      colors: [
+                                        Color.fromARGB(255, 255, 255, 255),
+                                        Color.fromARGB(
+                                            255, 235, 255, 235),
+                                        ],
+                                        begin: Alignment.topRight,
+                                        end: Alignment.bottomLeft,
                                       ),
                                     ),
-                                  ],
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Center(
+                                          child: Container(
+                                            child: bookImageWidget,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ],
+                              );
+                            },
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },

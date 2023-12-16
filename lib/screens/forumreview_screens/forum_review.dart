@@ -33,7 +33,8 @@ class ReviewPageState extends State<ReviewPage> {
       tabs = [
         TheirReviews(),
         SearchPage(),
-        const LoginPage(),
+        // ignore: prefer_const_constructors
+        LoginPage(),
       ];
     }
 
@@ -65,6 +66,7 @@ class ReviewPageState extends State<ReviewPage> {
       drawer: const LeftDrawer(),
       body: tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: const Color(0xFF377C35),
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,

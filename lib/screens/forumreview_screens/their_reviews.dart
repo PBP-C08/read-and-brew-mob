@@ -13,6 +13,7 @@ class TheirReviews extends StatefulWidget {
 // ignore: constant_identifier_names
 const List<DropdownMenuItem<String>> sorting_option = [
     DropdownMenuItem(value: "Sort by Book Name A-Z", child: Text("Sort by Book Name A-Z")),
+    DropdownMenuItem(value: "Sort by Username A-Z", child: Text("Sort by Username A-Z")),
     DropdownMenuItem(value: "Sort by Rating (Ascending)", child: Text("Sort by Rating (Ascending)")),
     DropdownMenuItem(value: "Sort by Rating (Descending)", child: Text("Sort by Rating (Descending)")),
   ];
@@ -56,6 +57,8 @@ class _TheirReviewState extends State<TheirReviews> {
     switch (sortingOption) {
       case "Sort by Book Name A-Z":
         return sortReviewsByName(reviews);
+      case "Sort by Username A-Z":
+        return sortReviewsByUsername(reviews);
       case "Sort by Rating (Ascending)":
         return sortReviewsByRatingAscending(reviews);
       case "Sort by Rating (Descending)":
@@ -70,6 +73,19 @@ class _TheirReviewState extends State<TheirReviews> {
       int comparing = a.fields.bookName.compareTo(b.fields.bookName);
       if (comparing == 0) {
         return a.fields.rating.compareTo(b.fields.rating);
+      } else {
+        return comparing;
+      }
+    });
+
+    return reviews;
+  }
+
+  List<Review> sortReviewsByUsername(List<Review> reviews) {
+    reviews.sort((a, b) {
+      int comparing = a.fields.username.compareTo(b.fields.username);
+      if (comparing == 0) {
+        return a.fields.bookName.compareTo(b.fields.bookName);
       } else {
         return comparing;
       }
@@ -176,7 +192,7 @@ class _TheirReviewState extends State<TheirReviews> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              elevation: 10,
+                              // elevation: 10,
                               child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -187,7 +203,30 @@ class _TheirReviewState extends State<TheirReviews> {
                                   );
                                 },
                                 child: Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                    colors: [
+                                      Colors.white,
+                                      Color.fromARGB(
+                                          255, 235, 255, 235),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    border: Border.all(
+                                      color: Color(0xFF377C35),
+                                      width: 1,
+                                    ),
+                                    borderRadius:
+                                        BorderRadius.circular(24),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        offset: Offset(3, 4),
+                                        color: Colors.grey
+                                      )
+                                    ],
+                                  ),
+                                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                   padding: const EdgeInsets.all(20.0),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
