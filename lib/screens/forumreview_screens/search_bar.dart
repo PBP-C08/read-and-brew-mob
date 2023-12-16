@@ -82,7 +82,7 @@ class SearchPageState extends State<SearchPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    elevation: 10,
+                    // elevation: 10,
                     child: InkWell(
                       onTap: () {
                         Navigator.push(
@@ -94,7 +94,30 @@ class SearchPageState extends State<SearchPage> {
                         );
                       },
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                          colors: [
+                            Colors.white,
+                            Color.fromARGB(
+                                255, 235, 255, 235),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          border: Border.all(
+                            color: Color(0xFF377C35),
+                            width: 1,
+                          ),
+                          borderRadius:
+                              BorderRadius.circular(24),
+                          boxShadow: const [
+                            BoxShadow(
+                              offset: Offset(3, 4),
+                              color: Colors.grey
+                            )
+                          ],
+                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                         padding: const EdgeInsets.all(20.0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,

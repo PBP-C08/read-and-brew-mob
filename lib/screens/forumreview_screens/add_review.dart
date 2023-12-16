@@ -77,19 +77,38 @@ class _AddReviewState extends State<AddReview> {
 
     return Center(
         child: Material(
-        elevation: 8.0, // Adjust the elevation as needed
+        // elevation: 8.0, // Adjust the elevation as needed
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
         // color: Color(0xFF377C35),
         child: Padding(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(2.0),
         child:  Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white
+           decoration: BoxDecoration(
+            gradient: const LinearGradient(
+            colors: [
+              Colors.white,
+              Color.fromARGB(
+                  255, 235, 255, 235),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            border: Border.all(
+              color: Color(0xFF377C35),
+              width: 1,
+            ),
+            borderRadius:
+                BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(
+                // offset: Offset(4, 8),
+                color: Colors.grey
+              )
+            ],
           ),
-          width: MediaQuery.of(context).size.width * 0.8,
+          width: MediaQuery.of(context).size.width * 0.9,
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
               width: screenSize.width * 0.9, // Sets the container width to 80% of the screen width
