@@ -3,8 +3,8 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/models/forumreview_models/review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/list_gambar.dart';
 import 'package:read_and_brew/screens/forumreview_screens/review_details.dart';
-import 'package:read_and_brew/screens/forumreview_screens/their_reviews.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -200,9 +200,7 @@ class _SearchBarPageState extends State<SearchBarPage> {
           ),
         ],
       ),
-      body: filteredItems.isEmpty
-          ? TheirReviews()
-          : widget.builder(selectedBookName, selectedUsername, filteredItems),
+      body: filteredItems.isEmpty ? const ListGambar() : widget.builder(selectedBookName, selectedUsername, filteredItems),
     );
   }
 }

@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Container(
               width: 300, // Set your desired width
               height: 300, // Set your desired height
-              child: Image.asset('images/splash.png'),
+              child: Image.asset('assets/images/splash.png'),
             ),
           ),
         ],

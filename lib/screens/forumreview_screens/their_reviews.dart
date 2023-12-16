@@ -10,15 +10,15 @@ class TheirReviews extends StatefulWidget {
   _TheirReviewState createState() => _TheirReviewState();
 }
 
-enum SortingOption {
-  none,
-  byNameAZ,
-  byRatingAscending,
-  byRatingDescending,
-}
+// ignore: constant_identifier_names
+const List<DropdownMenuItem<String>> sorting_option = [
+    DropdownMenuItem(value: "Sort by Book Name A-Z", child: Text("Sort by Book Name A-Z")),
+    DropdownMenuItem(value: "Sort by Rating (Ascending)", child: Text("Sort by Rating (Ascending)")),
+    DropdownMenuItem(value: "Sort by Rating (Descending)", child: Text("Sort by Rating (Descending)")),
+  ];
 
 class _TheirReviewState extends State<TheirReviews> {
-  SortingOption _selectedSortingOption = SortingOption.none;
+  String _selectedSortingOption = ''; 
 
   Future<List<Review>> fetchAllReview(request) async {
     // TODO: Replace the URL with your API endpoint
@@ -52,16 +52,16 @@ class _TheirReviewState extends State<TheirReviews> {
     return null;
   }
 
-  List<Review> sortReviews(List<Review> reviews, SortingOption sortingOption) {
+  List<Review> sortReviews(List<Review> reviews, String sortingOption) {
     switch (sortingOption) {
-      case SortingOption.none:
-        return reviews;
-      case SortingOption.byNameAZ:
+      case "Sort by Book Name A-Z":
         return sortReviewsByName(reviews);
-      case SortingOption.byRatingAscending:
+      case "Sort by Rating (Ascending)":
         return sortReviewsByRatingAscending(reviews);
-      case SortingOption.byRatingDescending:
+      case "Sort by Rating (Descending)":
         return sortReviewsByRatingDescending(reviews);
+      default:
+        return reviews;
     }
   }
 
@@ -73,14 +73,13 @@ class _TheirReviewState extends State<TheirReviews> {
       } else {
         return comparing;
       }
-    }
-  );
+    });
 
-  return reviews;
+    return reviews;
   }
 
   List<Review> sortReviewsByRatingAscending(List<Review> reviews) {
-    reviews.sort((a, b){
+    reviews.sort((a, b) {
       int comparing = a.fields.rating.compareTo(b.fields.rating);
       if (comparing == 0) {
         return a.fields.bookName.compareTo(b.fields.bookName);
@@ -144,8 +143,8 @@ class _TheirReviewState extends State<TheirReviews> {
                   List<Review> sortedReviews = sortReviews(snapshot.data!, _selectedSortingOption);
 
                   return ListView.builder(
-                    shrinkWrap: true,  
-                    physics: const NeverScrollableScrollPhysics(),  
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: sortedReviews.length,
                     itemBuilder: (_, index) {
                       Review currentReview = sortedReviews[index];
@@ -250,53 +249,44 @@ class _TheirReviewState extends State<TheirReviews> {
     );
   }
 
-   Widget _buildSortingDropdownButton() {
+  Widget _buildSortingDropdownButton() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InputDecorator(
         decoration: const InputDecoration(
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(4.0))),
+            borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          ),
           contentPadding: EdgeInsets.all(10),
         ),
-        child: Theme(                           
-          data: Theme.of(context).copyWith(     
-            splashColor: Colors.transparent,    
-            highlightColor: Colors.transparent, 
-            hoverColor: Colors.transparent,     
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            hoverColor: Colors.transparent,
           ),
           child: DropdownButtonHideUnderline(
-            child:DropdownButton<SortingOption>(
+            child: DropdownButton<String>( 
               icon: const Icon(Icons.sort),
               isExpanded: true,
               isDense: true,
-              focusColor: Colors.transparent,
-              value: _selectedSortingOption,
-              onChanged: (SortingOption? newValue) {
-                setState(() {
-                  if (newValue != null) {
+              value: _selectedSortingOption.isEmpty ? null : _selectedSortingOption,
+              onChanged: (String? newValue) { 
+                if (newValue != null && newValue != _selectedSortingOption) {
+                  setState(() {
                     _selectedSortingOption = newValue;
-                  }
-                });
+                  });
+                }
               },
-              items: const [
-                DropdownMenuItem(
-                  value: SortingOption.none,
-                  child: Text('Sort by'),
-                ),
-                DropdownMenuItem(
-                  value: SortingOption.byNameAZ,
-                  child: Text('Sort by Name (A-Z)'),
-                ),
-                DropdownMenuItem(
-                  value: SortingOption.byRatingAscending,
-                  child: Text('Sort by Rating (Ascending)'),
-                ),
-                DropdownMenuItem(
-                  value: SortingOption.byRatingDescending,
-                  child: Text('Sort by Rating (Descending)'),
-                ),
-              ],
+              hint: const Text(
+                    "Sort by",
+                  ),
+              items: sorting_option.map((item) {
+                      return DropdownMenuItem<String>(
+                        value: item.value,
+                        child: Text(item.value.toString()),
+                      );
+                    }).toList(),
             ),
           ),
         ),
