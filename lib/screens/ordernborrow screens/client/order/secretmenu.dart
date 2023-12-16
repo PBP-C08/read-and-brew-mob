@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -169,9 +171,10 @@ class _SecretMenuState extends State<SecretMenu> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order - Secret Menu'),
-        backgroundColor: Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: const Text('Order - Secret Menu',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
       drawer: const OnBDrawer(),
       body: SizedBox(
