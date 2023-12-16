@@ -70,19 +70,25 @@ class MenuWidget extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    Expanded(
+                        child: Icon(
                       item.icon,
                       color: Color(0xFF377C35),
                       size: 40.0,
-                    ),
+                    )),
                     const Padding(padding: EdgeInsets.all(3)),
-                    Text(
-                      item.name,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
+                    Flexible(
+                      // Add this
+                      child: Text(
+                        overflow: TextOverflow.ellipsis,
+                        item.name,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
                           color: Color(0xFF377C35),
                           fontSize: 15.0,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),

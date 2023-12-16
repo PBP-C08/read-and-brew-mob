@@ -148,6 +148,10 @@ class _BooklistPageState extends State<BooklistPage> {
                           }).toList();
                         });
                       },
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                      ),
                       decoration: InputDecoration(
                         labelText: "Search",
                         hintText: "Search",
@@ -168,7 +172,12 @@ class _BooklistPageState extends State<BooklistPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: DropdownButtonFormField<String>(
+                      isExpanded: true,
                       menuMaxHeight: 300,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 15.0,
+                      ),
                       decoration: InputDecoration(
                         labelText: "Kategori",
                         hintText: "Kategori",
@@ -233,69 +242,66 @@ class _BooklistPageState extends State<BooklistPage> {
                               ),
                               itemCount: _list_show?.length,
                               itemBuilder: (context, index) {
-                                return Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white,
-                                          Color.fromARGB(255, 235, 255, 235),
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      border: Border.all(
-                                        color: Color(0xFF377C35),
-                                        width: 1,
-                                      ),
-                                      borderRadius: BorderRadius.circular(24),
-                                    ),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(24),
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BookDetailPage(
-                                                _list_show![index].pk,
-                                                _list_show![index]
-                                                    .fields
-                                                    .gambar,
-                                                _list_show![index].fields.judul,
-                                                _list_show![index]
-                                                    .fields
-                                                    .rating,
-                                                _list_show![index]
-                                                    .fields
-                                                    .kategori,
-                                                _list_show![index]
-                                                    .fields
-                                                    .penulis,
-                                              ),
+                                return Material(
+                                    borderRadius: BorderRadius.circular(24),
+                                    elevation: 4,
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BookDetailPage(
+                                              _list_show![index].pk,
+                                              _list_show![index].fields.gambar,
+                                              _list_show![index].fields.judul,
+                                              _list_show![index].fields.rating,
+                                              _list_show![index]
+                                                  .fields
+                                                  .kategori,
+                                              _list_show![index].fields.penulis,
                                             ),
-                                          );
-                                        },
+                                          ),
+                                        );
+                                      },
+                                      child: IntrinsicHeight(
                                         child: Container(
-                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white,
+                                                Color.fromARGB(
+                                                    255, 235, 255, 235),
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                            border: Border.all(
+                                              color: Color(0xFF377C35),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(24),
+                                          ),
+                                          padding: const EdgeInsets.all(12),
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              Image.network(
+                                              Expanded(
+                                                  child: Image.network(
                                                 _list_show![index]
                                                     .fields
                                                     .gambar,
+                                                fit: BoxFit.cover,
                                                 errorBuilder: (BuildContext
                                                         context,
                                                     Object exception,
                                                     StackTrace? stackTrace) {
                                                   return Icon(Icons.error);
                                                 },
-                                                width: 200,
-                                                height: 200,
-                                              ),
+                                              )),
                                               const SizedBox(height: 8),
                                               Text(
                                                 _list_show![index].fields.judul,
@@ -303,35 +309,43 @@ class _BooklistPageState extends State<BooklistPage> {
                                                 overflow: TextOverflow.ellipsis,
                                                 style: const TextStyle(
                                                     color: Colors.black,
-                                                    fontSize: 15.0,
+                                                    fontSize: 13.0,
                                                     fontWeight:
                                                         FontWeight.bold),
                                               ),
                                               const SizedBox(height: 8),
-                                              RatingBar.builder(
-                                                initialRating:
-                                                    _list_show![index]
-                                                        .fields
-                                                        .rating
-                                                        .toDouble(),
-                                                minRating: 0,
-                                                direction: Axis.horizontal,
-                                                itemCount: 5,
-                                                itemSize: 20,
-                                                itemPadding:
-                                                    EdgeInsets.symmetric(
-                                                        horizontal: 4.0),
-                                                itemBuilder: (context, _) =>
-                                                    Icon(
-                                                  Icons.star,
-                                                  color: Colors.amber,
-                                                ),
-                                                ignoreGestures: true,
-                                                onRatingUpdate:
-                                                    (double value) {},
+                                              LayoutBuilder(
+                                                builder:
+                                                    (context, constraints) {
+                                                  return RatingBar.builder(
+                                                    initialRating:
+                                                        _list_show![index]
+                                                            .fields
+                                                            .rating
+                                                            .toDouble(),
+                                                    minRating: 0,
+                                                    direction: Axis.horizontal,
+                                                    itemCount: 5,
+                                                    itemSize:
+                                                        constraints.maxWidth /
+                                                            12,
+                                                    itemPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 4.0),
+                                                    itemBuilder: (context, _) =>
+                                                        Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                    ),
+                                                    ignoreGestures: true,
+                                                    onRatingUpdate:
+                                                        (double value) {},
+                                                  );
+                                                },
                                               ),
                                               const SizedBox(height: 8),
                                               RichText(
+                                                overflow: TextOverflow.ellipsis,
                                                 textAlign: TextAlign.center,
                                                 text: TextSpan(
                                                   style: DefaultTextStyle.of(
@@ -342,7 +356,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                                       text: 'Kategori: ',
                                                       style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 12.0,
+                                                        fontSize: 10.0,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -353,7 +367,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                                           .kategori,
                                                       style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 12.0,
+                                                        fontSize: 10.0,
                                                         fontWeight:
                                                             FontWeight.normal,
                                                       ),
@@ -363,6 +377,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                               ),
                                               const SizedBox(height: 8),
                                               RichText(
+                                                overflow: TextOverflow.ellipsis,
                                                 textAlign: TextAlign.center,
                                                 text: TextSpan(
                                                   style: DefaultTextStyle.of(
@@ -373,7 +388,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                                       text: 'Penulis: ',
                                                       style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 12.0,
+                                                        fontSize: 10.0,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -384,7 +399,7 @@ class _BooklistPageState extends State<BooklistPage> {
                                                           .penulis,
                                                       style: TextStyle(
                                                         color: Colors.black,
-                                                        fontSize: 12.0,
+                                                        fontSize: 10.0,
                                                         fontWeight:
                                                             FontWeight.normal,
                                                       ),
