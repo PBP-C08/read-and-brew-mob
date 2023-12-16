@@ -47,10 +47,8 @@ class _AddReviewState extends State<AddReview> {
   }
   final _formKey = GlobalKey<FormState>();
 
-  int index_rating = 0;
-  int index_item = 0;
+  String _selectedRating = "";
   
-
   TextEditingController _username = TextEditingController();
   TextEditingController _bookname = TextEditingController();
   TextEditingController _rating = TextEditingController();
@@ -58,8 +56,6 @@ class _AddReviewState extends State<AddReview> {
 
   List<DropdownMenuItem<String>> dropDownItems = [];
   List<DropdownMenuItem<String>> dropDownRating = const [
-    DropdownMenuItem(
-        value: "~~Rate The Book~~", child: Text("~~Rate The Book~~")),
     DropdownMenuItem(value: "1", child: Text("1")),
     DropdownMenuItem(value: "2", child: Text("2")),
     DropdownMenuItem(value: "3", child: Text("3")),
@@ -209,26 +205,15 @@ class _AddReviewState extends State<AddReview> {
                             decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.transparent))),
-                            value: dropDownRating[index_rating].value,
+                            value: _selectedRating.isEmpty ? null : _selectedRating,
                             onChanged: (String? value) {
                               setState(() {
-                                if (value == "~~Rate The Book~~") {
-                                  index_rating = 0;
-                                } else {
-                                  index_rating = int.tryParse(value!)!;
-                                }
-
-                                if (value != "~~Rate The Book~~") {
-                                  _rating.text = value!;
-                                } else {
-                                  _rating.text = "";
-                                }
+                                _selectedRating = value!;
                               });
                             },
-                            validator: (value) => value == "~~Rate The Book~~" ? 'Rate the book!' : null,
+                            validator: (value) => value == null ? 'Rate the book!' : null,
                             hint: const Text(
-                              "Rate The Book",
-                              style: TextStyle(color: Colors.blue),
+                              "~~Rate The Book~~",
                             ),
                             items: dropDownRating.map((item) {
                               return DropdownMenuItem<String>(
