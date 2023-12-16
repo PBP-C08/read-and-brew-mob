@@ -334,7 +334,7 @@ class _BorrowedHistoryPageState extends State<BorrowedHistoryPage> {
                         )),
                     subtitle: Text(snapshot.data![index].fields.kategori),
                     trailing: RatingBar.builder(
-                      initialRating: snapshot.data![index].fields.rating,
+                      initialRating: snapshot.data![index].fields.rating.toDouble(),
                       minRating: 0,
                       direction: Axis.horizontal,
                       itemCount: 5,
