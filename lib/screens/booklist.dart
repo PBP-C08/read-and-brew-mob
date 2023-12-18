@@ -81,6 +81,9 @@ class _BooklistPageState extends State<BooklistPage> {
                 color: Color(0xFF377C35), fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
           actions: user_status == "E"
               ? [
                   IconButton(

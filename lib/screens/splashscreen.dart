@@ -36,11 +36,12 @@ class _SplashScreenState extends State<SplashScreen> {
         gradient: LinearGradient(
           colors: [
             Colors.white,
-            Color.fromARGB(255, 219, 255, 218),
+            Colors.white,
+            Color.fromARGB(255, 172, 255, 169),
             Color.fromARGB(255, 172, 255, 169)
           ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
       child: Column(

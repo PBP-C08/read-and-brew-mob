@@ -29,6 +29,7 @@ class MenuWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(24), // Set border radius
         ),
         child: Material(
+          color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           child: InkWell(
             // Area responsive terhadap sentuhan

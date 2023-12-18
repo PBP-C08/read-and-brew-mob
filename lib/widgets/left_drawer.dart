@@ -14,9 +14,10 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: MediaQuery.of(context).size.width * 0.8,
       child: ListView(
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             // TODO: Bagian drawer headerb
             decoration: BoxDecoration(
               border: Border(
@@ -27,38 +28,47 @@ class LeftDrawer extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Image(
-                  image: AssetImage('assets/images/logo.png'),
-                  width: 55,
-                  height: 55,
+                Expanded(
+                  child: Image(
+                    image: AssetImage('assets/images/logo.png'),
+                    width: 55,
+                    height: 55,
+                  ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
                 Text(
                   'Read and Brew',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30 *
+                        MediaQuery.of(context).size.width /
+                        400, // Adjust the font size based on the screen width
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
-                Text("Library Cafe",
-                    // TODO: Tambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                    )),
+                Text(
+                  "Library Cafe",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15 *
+                        MediaQuery.of(context).size.width /
+                        400, // Adjust the font size based on the screen width
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
           ),
           // TODO: Bagian routing
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: const Icon(
               Icons.home_outlined,
             ),
-            title: const Text('Home Page'),
+            title: Text('Home Page'),
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
@@ -69,8 +79,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: const Icon(
-              Icons.checklist,
+              Icons.book_rounded,
             ),
             title: const Text('Book List'),
             // Bagian redirection ke BookFormPage
@@ -86,8 +98,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: const Icon(
-              Icons.track_changes,
+              Icons.add_task,
             ),
             title: const Text('Book Tracker'),
             // Bagian redirection ke BookFormPage
@@ -103,8 +117,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: const Icon(
-              Icons.reviews,
+              Icons.rate_review,
             ),
             title: const Text('Forum Review'),
             // Bagian redirection ke BookFormPage
@@ -120,6 +136,8 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: Icon(user_status == "E" && user_id != 0
                 ? Icons.home_repair_service
                 : Icons.restaurant_menu),
@@ -151,8 +169,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Colors.black,
+            iconColor: Colors.black,
             leading: const Icon(
-              Icons.request_page,
+              Icons.note_add,
             ),
             title: const Text('Book Request'),
             // Bagian redirection ke BookFormPage
