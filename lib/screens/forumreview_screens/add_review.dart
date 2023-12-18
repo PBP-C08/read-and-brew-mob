@@ -5,7 +5,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/buku.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'dart:convert' as convert;
 
 
 class AddReview extends StatefulWidget {
@@ -45,9 +44,8 @@ class _AddReviewState extends State<AddReview> {
     }
     return list_item;
   }
-  final _formKey = GlobalKey<FormState>();
 
-  String _selectedRating = "";
+  final _formKey = GlobalKey<FormState>();
   
   TextEditingController _username = TextEditingController();
   TextEditingController _bookname = TextEditingController();
@@ -107,15 +105,15 @@ class _AddReviewState extends State<AddReview> {
           width: MediaQuery.of(context).size.width * 0.9,
           padding: const EdgeInsets.all(16.0),
           child: SizedBox(
-              width: screenSize.width * 0.9, // Sets the container width to 80% of the screen width
-              child: SingleChildScrollView( // Allows for scrolling when keyboard is displayed
+              width: screenSize.width * 0.9, 
+              child: SingleChildScrollView( 
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center, // Center the column's children vertically
-                    crossAxisAlignment: CrossAxisAlignment.center, // Center the column's children vertically
+                    mainAxisAlignment: MainAxisAlignment.center, 
+                    crossAxisAlignment: CrossAxisAlignment.center, 
                     children: [
-                      SizedBox(height: screenSize.height * 0.05), // This creates space at the top of the column
+                      SizedBox(height: screenSize.height * 0.05), 
                       const Center(child: Text(
                           'Add a Review',
                           style: TextStyle(
@@ -205,10 +203,10 @@ class _AddReviewState extends State<AddReview> {
                             decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.transparent))),
-                            value: _selectedRating.isEmpty ? null : _selectedRating,
+                            value: _rating.text.isEmpty ? null : _rating.text,
                             onChanged: (String? value) {
                               setState(() {
-                                _selectedRating = value!;
+                                _rating.text = value!;
                               });
                             },
                             validator: (value) => value == null ? 'Rate the book!' : null,
@@ -268,7 +266,7 @@ class _AddReviewState extends State<AddReview> {
                             // gunakan URL http://10.0.2.2/
                             final response = await request.postJson(
                                 "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/reviewmodul/add-review-flutter/",
-                                convert.jsonEncode(<String, String>{
+                                jsonEncode(<String, String>{
                                   'username': _username.text.toString(),
                                   'bookname': _bookname.text.toString(),
                                   'rating': _rating.text.toString(),
@@ -294,12 +292,6 @@ class _AddReviewState extends State<AddReview> {
                                   );
                                 },
                               );
-                              // if (!context.mounted) return;
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => const LoginPage()),
-                              // );
                             } else {
                               if (!context.mounted) return;
                               showDialog(
@@ -327,17 +319,6 @@ class _AddReviewState extends State<AddReview> {
                         ),
                       ),
                       SizedBox(height: screenSize.height * 0.05)
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     if (!context.mounted) return;
-                      //       Navigator.pushReplacement(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //             builder: (context) => const LoginPage()),
-                      //       );
-                      //   },
-                      //   child: const Text('Back'),
-                      // )
                     ],
                   ),
                 ),

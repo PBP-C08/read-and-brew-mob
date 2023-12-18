@@ -164,7 +164,7 @@ class MyHomePage extends StatelessWidget {
                                   // Set the width as per your requirement
                                   height:
                                       85, // Set the height as per your requirement
-                                  child: Image.asset('images/homepageart.png'),
+                                  child: Image.asset('assets/images/homepageart.png'),
                                 ),
                               ),
                               Align(
