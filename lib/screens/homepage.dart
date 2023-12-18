@@ -164,13 +164,17 @@ class MyHomePage extends StatelessWidget {
                                   // Set the width as per your requirement
                                   height:
                                       85, // Set the height as per your requirement
-                                  child: Image.asset('assets/images/homepageart.png'),
+                                  child: Image.asset(
+                                      'assets/images/homepageart.png'),
                                 ),
                               ),
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  'Taste Our Finest\nFoods and\nBeverages',
+                                  (user_status == "M" && user_id != 0) ||
+                                          user_id == 0
+                                      ? 'Taste Our Finest\nFoods and\nBeverages'
+                                      : 'Check out\nour inventory',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
