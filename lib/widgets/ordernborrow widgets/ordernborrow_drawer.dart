@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:read_and_brew/screens/booklist.dart';
-import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/bookrequest.dart';
+import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
+import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrow/books.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/borrowpage.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/tracker.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 
 class OnBDrawer extends StatelessWidget {
   const OnBDrawer({super.key});
@@ -37,27 +39,26 @@ class OnBDrawer extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 36, 81, 35),
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
                 Text("Library Cafe",
-                    // TODO: Tambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 36, 81, 35),
                     )),
               ],
             ),
           ),
-          // TODO: Bagian routing
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.home_outlined,
             ),
             title: const Text('Home Page'),
-            // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
                   context,
@@ -67,54 +68,98 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: const Icon(
-              Icons.restaurant,
-            ),
-            title: const Text('Food'),
-            // Bagian redirection ke BookFormPage
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: const Icon(Icons.restaurant_menu),
+            title: const Text('Order'),
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderPage(),
+                  ));
+            },
+          ),
+          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: const Icon(
+              Icons.menu_book,
+            ),
+            title: const Text('Borrow'),
+            onTap: () {
+              indexBorrow = 0;
+              judul_found = '';
+              kategori_found = '';
+              sort_found = '';
+              order_found = '';
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BorrowPage(),
+                  ));
+            },
+          ),
+          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: const Icon(
+              Icons.book_rounded,
+            ),
+            title: const Text('Book List'),
+            onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => FoodMenu()),
+                MaterialPageRoute(builder: (context) => BooklistPage()),
               );
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.local_cafe,
+              Icons.add_task,
             ),
-            title: const Text('Drinks'),
-            // Bagian redirection ke BookFormPage
+            title: const Text('Book Tracker'),
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => DrinkMenu()),
+                MaterialPageRoute(builder: (context) => BookTrackerPage()),
               );
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.receipt_long,
+              Icons.rate_review,
             ),
-            title: const Text('Order Summary'),
-            // Bagian redirection ke BookFormPage
+            title: const Text('Forum Review'),
             onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const OrderPage()),
+                MaterialPageRoute(builder: (context) => const ReviewPage()),
               );
+            },
+          ),
+          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: const Icon(
+              Icons.note_add,
+            ),
+            title: const Text('Book Request'),
+            onTap: () {
+              if (user_status == 'E' || user_status == 'M')
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RequestBukuPage()));
+              else
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content:
+                      Text("Anda harus login untuk mengakses halaman ini!"),
+                ));
             },
           ),
         ],

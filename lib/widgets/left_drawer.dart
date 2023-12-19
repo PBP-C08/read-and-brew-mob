@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-// TODO: Impor halaman BookFormPage jika sudah dibuat
 import 'package:read_and_brew/screens/booklist.dart';
 import 'package:read_and_brew/screens/bookrequest.dart';
-import 'package:read_and_brew/screens/forum_review.dart';
+import 'package:read_and_brew/screens/forumreview_screens/forum_review.dart';
 import 'package:read_and_brew/screens/homepage.dart';
 import 'package:read_and_brew/screens/login.dart';
+import 'package:read_and_brew/screens/ordernborrow%20screens/client/orderpage.dart';
 import 'package:read_and_brew/screens/ordernborrow%20screens/employee/inventory.dart';
 import 'package:read_and_brew/screens/tracker.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -15,9 +14,10 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: MediaQuery.of(context).size.width * 0.8,
       child: ListView(
         children: [
-          const DrawerHeader(
+          DrawerHeader(
             // TODO: Bagian drawer headerb
             decoration: BoxDecoration(
               border: Border(
@@ -28,38 +28,47 @@ class LeftDrawer extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Image(
-                  image: AssetImage('assets/images/logo.png'),
-                  width: 55,
-                  height: 55,
+                Expanded(
+                  child: Image(
+                    image: AssetImage('assets/images/logo.png'),
+                    width: 55,
+                    height: 55,
+                  ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
                 Text(
                   'Read and Brew',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 30 *
+                        MediaQuery.of(context).size.width /
+                        400, // Adjust the font size based on the screen width
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 36, 81, 35),
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
-                Text("Library Cafe",
-                    // TODO: Tambahkan gaya teks dengan center alignment, font ukuran 15, warna putih, dan weight biasa
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                    )),
+                Text(
+                  "Library Cafe",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15 *
+                        MediaQuery.of(context).size.width /
+                        400, // Adjust the font size based on the screen width
+                    color: Color.fromARGB(255, 36, 81, 35),
+                  ),
+                ),
               ],
             ),
           ),
           // TODO: Bagian routing
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.home_outlined,
             ),
-            title: const Text('Home Page'),
+            title: Text('Home Page'),
             // Bagian redirection ke MyHomePage
             onTap: () {
               Navigator.pushReplacement(
@@ -70,8 +79,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.checklist,
+              Icons.book_rounded,
             ),
             title: const Text('Book List'),
             // Bagian redirection ke BookFormPage
@@ -82,14 +93,15 @@ class LeftDrawer extends StatelessWidget {
               */
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => BooklistPage("", "", "", "")),
+                MaterialPageRoute(builder: (context) => BooklistPage()),
               );
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.track_changes,
+              Icons.add_task,
             ),
             title: const Text('Book Tracker'),
             // Bagian redirection ke BookFormPage
@@ -105,8 +117,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.reviews,
+              Icons.rate_review,
             ),
             title: const Text('Forum Review'),
             // Bagian redirection ke BookFormPage
@@ -122,39 +136,10 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(user_status == "E" && user_id != 0
-                ? Icons.home_repair_service
-                : Icons.restaurant_menu),
-            title: Text(user_status == "E" && user_id != 0
-                ? 'Inventory'
-                : 'Order & Borrow'),
-            onTap: () {
-              if (user_id == 0) {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FoodMenu(),
-                    ));
-              } else {
-                if (user_status == "M") {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FoodMenu(),
-                      ));
-                } else if (user_status == "E") {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => InventoryPage(),
-                      ));
-                }
-              }
-            },
-          ),
-          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.request_page,
+              Icons.note_add,
             ),
             title: const Text('Book Request'),
             // Bagian redirection ke BookFormPage
@@ -173,6 +158,39 @@ class LeftDrawer extends StatelessWidget {
                   content:
                       Text("Anda harus login untuk mengakses halaman ini!"),
                 ));
+            },
+          ),
+          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: Icon(user_status == "E" && user_id != 0
+                ? Icons.home_repair_service
+                : Icons.restaurant_menu),
+            title: Text(user_status == "E" && user_id != 0
+                ? 'Inventory'
+                : 'Order & Borrow'),
+            onTap: () {
+              if (user_id == 0) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OrderPage(),
+                    ));
+              } else {
+                if (user_status == "M") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderPage(),
+                      ));
+                } else if (user_status == "E") {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InventoryPage(),
+                      ));
+                }
+              }
             },
           ),
         ],

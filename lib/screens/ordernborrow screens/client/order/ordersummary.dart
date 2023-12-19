@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -5,29 +7,24 @@ import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/models/ordernborrow%20models/Order.dart';
-import 'package:read_and_brew/models/ordernborrow%20models/OrderMember.dart';
-import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
-import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
 
-class OrderPage extends StatefulWidget {
-  const OrderPage({Key? key}) : super(key: key);
+class OrderSummaryPage extends StatefulWidget {
+  const OrderSummaryPage({Key? key}) : super(key: key);
 
   @override
-  _OrderPageState createState() => _OrderPageState();
+  _OrderSummaryPageState createState() => _OrderSummaryPageState();
 }
 
-class _OrderPageState extends State<OrderPage> {
-  int _currentIndex = 2;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
+class _OrderSummaryPageState extends State<OrderSummaryPage> {
+  late Future<List<Order>> futureOrder;
+
+  @override
+  void initState() {
+    super.initState();
+    futureOrder = fetchOrder();
+  }
 
   Future<List<Order>> fetchOrder() async {
     var url = Uri.parse(
@@ -46,6 +43,13 @@ class _OrderPageState extends State<OrderPage> {
       }
     }
     return listOrder;
+  }
+
+  Future<void> refreshOrderData() async {
+    final newOrderData = await fetchOrder();
+    setState(() {
+      futureOrder = Future.value(newOrderData);
+    });
   }
 
   Future<bool> _showPaymentConfirmationDialog(
@@ -83,11 +87,7 @@ class _OrderPageState extends State<OrderPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
-      );
-      // ignore: use_build_context_synchronously
+      refreshOrderData();
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -139,7 +139,7 @@ class _OrderPageState extends State<OrderPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("Amount: ${item.fields.amount}"),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _amountController,
                   keyboardType: TextInputType.number,
@@ -187,10 +187,8 @@ class _OrderPageState extends State<OrderPage> {
                       }));
 
                   if (response['status'] == 'success') {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => OrderPage()),
-                    );
+                    Navigator.pop(context);
+                    refreshOrderData();
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -261,11 +259,7 @@ class _OrderPageState extends State<OrderPage> {
     );
 
     if (response['status'] == 'success') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderPage()),
-      );
-      // ignore: use_build_context_synchronously
+      refreshOrderData();
       await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -296,29 +290,16 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Summary'),
-        backgroundColor: const Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: const Text('Order Summary',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(
-        future: fetchOrder(),
+        future: futureOrder,
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -390,7 +371,7 @@ class _OrderPageState extends State<OrderPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Spacer(), // This will push the IconButton to the right
+                                    const Spacer(),
                                     ElevatedButton(
                                       onPressed: () {
                                         _showConfirmEditDialog(
@@ -402,7 +383,7 @@ class _OrderPageState extends State<OrderPage> {
                                       ),
                                       child: const Text("Edit"),
                                     ),
-                                    Spacer(), // This will push the IconButton to the right
+                                    const Spacer(),
                                     IconButton(
                                       icon: const Icon(
                                         Icons.delete,
@@ -460,21 +441,6 @@ class _OrderPageState extends State<OrderPage> {
               );
             }
           }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-          );
         },
       ),
     );

@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/screens/homepage.dart';
+import 'package:read_and_brew/screens/splashscreen.dart';
+import 'package:read_and_brew/screens/tracker.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      BookService.deleteOldBooks();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Provider(
@@ -24,7 +36,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
             useMaterial3: true,
           ),
-          home: MyHomePage()),
+          home: SplashScreen()),
     );
   }
 }
