@@ -27,7 +27,11 @@ class _DetailPageState extends State<DetailPage> {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.requestBuku.fields.judul),
+        title: Text(
+          widget.requestBuku.fields.judul,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: Color(0xFF377C35),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

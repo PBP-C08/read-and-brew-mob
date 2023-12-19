@@ -23,7 +23,7 @@ class BookDetailPage extends StatelessWidget {
     final request = context.watch<CookieRequest>();
     return Scaffold(
         appBar: AppBar(
-          foregroundColor: Colors.black,
+          foregroundColor: Color(0xFF377C35),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),

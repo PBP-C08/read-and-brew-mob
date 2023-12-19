@@ -13,9 +13,11 @@ class ReviewDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Review Details"),
-        backgroundColor: Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: Text(
+          'Review Details',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: Color(0xFF377C35),
       ),
       body: SingleChildScrollView(
           child: Container(

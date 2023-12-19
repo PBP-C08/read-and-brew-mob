@@ -40,8 +40,7 @@ class ReviewPageState extends State<ReviewPage> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Color(0xFF377C35),
-          foregroundColor: Colors.white,
+          foregroundColor: Color(0xFF377C35),
           actions: [
             if(_currentIndex==3)...{
                 IconButton(
@@ -59,9 +58,8 @@ class ReviewPageState extends State<ReviewPage> {
                 ),
             }
           ],
-          title: const Center(
-            child: Text("Forum Reviews", style: TextStyle(color: Colors.white)),
-          )),
+            title: Text("Forum Reviews", style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
       
       drawer: const LeftDrawer(),
       body: tabs[_currentIndex],

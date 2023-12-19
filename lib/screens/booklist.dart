@@ -80,7 +80,6 @@ class _BooklistPageState extends State<BooklistPage> {
             style: TextStyle(
                 color: Color(0xFF377C35), fontWeight: FontWeight.bold),
           ),
-          centerTitle: true,
           backgroundColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
@@ -247,7 +246,7 @@ class _BooklistPageState extends State<BooklistPage> {
                               itemBuilder: (context, index) {
                                 return Material(
                                     borderRadius: BorderRadius.circular(24),
-                                    elevation: 4,
+                                    elevation: 1,
                                     color: Colors.transparent,
                                     child: InkWell(
                                       onTap: () {

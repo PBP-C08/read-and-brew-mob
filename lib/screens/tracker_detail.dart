@@ -293,6 +293,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                     ),
+                    user_status != 'M' ? SizedBox(height: 24) : Container(),
                     user_status == 'M'
                       ? Column(
                           children: [

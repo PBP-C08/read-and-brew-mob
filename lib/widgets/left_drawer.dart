@@ -44,7 +44,7 @@ class LeftDrawer extends StatelessWidget {
                         MediaQuery.of(context).size.width /
                         400, // Adjust the font size based on the screen width
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 36, 81, 35),
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
@@ -55,7 +55,7 @@ class LeftDrawer extends StatelessWidget {
                     fontSize: 15 *
                         MediaQuery.of(context).size.width /
                         400, // Adjust the font size based on the screen width
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 36, 81, 35),
                   ),
                 ),
               ],
@@ -63,8 +63,8 @@ class LeftDrawer extends StatelessWidget {
           ),
           // TODO: Bagian routing
           ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.home_outlined,
             ),
@@ -79,8 +79,8 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.book_rounded,
             ),
@@ -98,8 +98,8 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.add_task,
             ),
@@ -117,8 +117,8 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.rate_review,
             ),
@@ -136,8 +136,33 @@ class LeftDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
+            leading: const Icon(
+              Icons.note_add,
+            ),
+            title: const Text('Book Request'),
+            // Bagian redirection ke BookFormPage
+            onTap: () {
+              /*
+              TODO: Buatlah routing ke BookFormPage di sini,
+              setelah halaman BookFormPage sudah dibuat.
+              */
+              if (user_status == 'E' || user_status == 'M')
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RequestBukuPage()));
+              else
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content:
+                      Text("Anda harus login untuk mengakses halaman ini!"),
+                ));
+            },
+          ),
+          ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: Icon(user_status == "E" && user_id != 0
                 ? Icons.home_repair_service
                 : Icons.restaurant_menu),
@@ -166,31 +191,6 @@ class LeftDrawer extends StatelessWidget {
                       ));
                 }
               }
-            },
-          ),
-          ListTile(
-            textColor: Colors.black,
-            iconColor: Colors.black,
-            leading: const Icon(
-              Icons.note_add,
-            ),
-            title: const Text('Book Request'),
-            // Bagian redirection ke BookFormPage
-            onTap: () {
-              /*
-              TODO: Buatlah routing ke BookFormPage di sini,
-              setelah halaman BookFormPage sudah dibuat.
-              */
-              if (user_status == 'E' || user_status == 'M')
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const RequestBukuPage()));
-              else
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content:
-                      Text("Anda harus login untuk mengakses halaman ini!"),
-                ));
             },
           ),
         ],

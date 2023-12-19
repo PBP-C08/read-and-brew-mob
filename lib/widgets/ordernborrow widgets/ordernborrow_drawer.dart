@@ -39,7 +39,7 @@ class OnBDrawer extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color.fromARGB(255, 36, 81, 35),
                   ),
                 ),
                 Padding(padding: EdgeInsets.all(2.5)),
@@ -47,12 +47,14 @@ class OnBDrawer extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 15,
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 36, 81, 35),
                     )),
               ],
             ),
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.home_outlined,
             ),
@@ -66,6 +68,8 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(Icons.restaurant_menu),
             title: const Text('Order'),
             onTap: () {
@@ -77,6 +81,8 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
               Icons.menu_book,
             ),
@@ -95,8 +101,10 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.checklist,
+              Icons.book_rounded,
             ),
             title: const Text('Book List'),
             onTap: () {
@@ -107,8 +115,10 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.track_changes,
+              Icons.add_task,
             ),
             title: const Text('Book Tracker'),
             onTap: () {
@@ -119,8 +129,10 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.reviews,
+              Icons.rate_review,
             ),
             title: const Text('Forum Review'),
             onTap: () {
@@ -131,8 +143,10 @@ class OnBDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            textColor: Color.fromARGB(255, 36, 81, 35),
+            iconColor: Color.fromARGB(255, 36, 81, 35),
             leading: const Icon(
-              Icons.request_page,
+              Icons.note_add,
             ),
             title: const Text('Book Request'),
             onTap: () {
