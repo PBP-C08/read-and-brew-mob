@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
-import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -20,19 +15,6 @@ class FoodMenu extends StatefulWidget {
 }
 
 class _FoodMenuState extends State<FoodMenu> {
-  int _currentIndex = 0;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
-  final List<Widget> _pagesMember = [
-    FoodMenu(),
-    DrinkMenu(),
-    SecretMenu(),
-    OrderMemberPage(),
-  ];
-
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
@@ -41,7 +23,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Bagel with Cream Cheese",
         "price": 2.99,
         "description":
-            "A freshly baked bagel served with a generous portion of cream cheese."
+            "A freshly baked bagel served with a generous portion of cream cheese.",
+        "picture":
+            "https://media.istockphoto.com/id/511742246/sv/foto/bagel-with-cream-cheese.jpg?s=612x612&w=0&k=20&c=fOI0U-WcNVhleIAAMmzEwgZKlDVNEOkBEf7eYjl4jck="
       }
     },
     {
@@ -51,7 +35,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Egg and Cheese Sandwich",
         "price": 4.49,
         "description":
-            "A breakfast classic - scrambled eggs and melted cheese on a toasted bun."
+            "A breakfast classic - scrambled eggs and melted cheese on a toasted bun.",
+        "picture":
+            "https://media.istockphoto.com/id/1187305370/photo/egg-cheese-sandwich.jpg?s=612x612&w=0&k=20&c=o_we1N6rRQmU9bHM42qJQOmXR7iWQPIEAY__DMV4dEg="
       }
     },
     {
@@ -60,7 +46,9 @@ class _FoodMenuState extends State<FoodMenu> {
       "fields": {
         "name": "Cinnamon Roll",
         "price": 3.49,
-        "description": "A sweet and gooey cinnamon roll with icing on top."
+        "description": "A sweet and gooey cinnamon roll with icing on top.",
+        "picture":
+            "https://media.istockphoto.com/id/459034145/photo/homemade-cinnamon-roll-pastry.jpg?s=612x612&w=0&k=20&c=9aSSi1AxAs9q9NrhbGwlOIqMjk1FIN0Dgb4P9rcF4JY="
       }
     },
     {
@@ -69,7 +57,9 @@ class _FoodMenuState extends State<FoodMenu> {
       "fields": {
         "name": "Chocolate Croissant",
         "price": 2.99,
-        "description": "A buttery and flaky croissant mixed with chocolate."
+        "description": "A buttery and flaky croissant mixed with chocolate.",
+        "picture":
+            "https://media.istockphoto.com/id/1269391551/photo/yummy-freshly-croissant-sliced-almonds-with-chocolate-filling-cut-close-up.jpg?s=612x612&w=0&k=20&c=mLjaw4cpk1aw_d1F9_oNVeybXMZcCcXjKpkibY1F9GU="
       }
     },
     {
@@ -79,7 +69,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "New York Style Pizza",
         "price": 9.99,
         "description":
-            "A classic thin-crust pizza with your choice of toppings, just like in the Big Apple."
+            "A classic thin-crust pizza with your choice of toppings, just like in the Big Apple.",
+        "picture":
+            "https://st2.depositphotos.com/1692343/5636/i/450/depositphotos_56360353-stock-photo-hot-homemade-pepperoni-pizza.jpg"
       }
     },
     {
@@ -89,7 +81,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Chicago Deep Dish Pizza",
         "price": 12.99,
         "description":
-            "A thick and cheesy deep-dish pizza, a Windy City specialty."
+            "A thick and cheesy deep-dish pizza, a Windy City specialty.",
+        "picture":
+            "https://media.istockphoto.com/id/466204117/id/foto/chicago-style-deep-dish-cheese-pizza.jpg?s=612x612&w=0&k=20&c=CwaQfXcfVAwCl0-WP2ysRlHVd9xVl9F8taCWQlKtDTI="
       }
     },
     {
@@ -99,7 +93,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Caprese Panini",
         "price": 7.99,
         "description":
-            "Fresh mozzarella, ripe tomatoes, and basil pesto on grilled ciabatta bread."
+            "Fresh mozzarella, ripe tomatoes, and basil pesto on grilled ciabatta bread.",
+        "picture":
+            "https://media.istockphoto.com/id/930271208/photo/healthy-grilled-basil-mozzarella-caprese-panini.jpg?s=612x612&w=0&k=20&c=6B176_LanoK6okEUU_MCfD49L1W5_dhbFijiJx3FzrM="
       }
     },
     {
@@ -109,7 +105,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Chicken Quesadilla",
         "price": 8.49,
         "description":
-            "Sliced chicken, cheese, and vegetables folded in a tortilla and grilled."
+            "Sliced chicken, cheese, and vegetables folded in a tortilla and grilled.",
+        "picture":
+            "https://st2.depositphotos.com/1326558/7214/i/450/depositphotos_72142323-stock-photo-mexican-quesadilla-wraps.jpg"
       }
     },
     {
@@ -119,7 +117,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Spinach and Feta Quiche",
         "price": 6.99,
         "description":
-            "A savory pastry filled with spinach, feta cheese, and eggs."
+            "A savory pastry filled with spinach, feta cheese, and eggs.",
+        "picture":
+            "https://media.istockphoto.com/id/535719897/photo/pie-with-spinach-and-feta-cheese.jpg?s=612x612&w=0&k=20&c=pXhqZdXZvI3TqCe8nOUxDyqL85Mr-Z8_BYApjzuhSYg="
       }
     },
     {
@@ -129,7 +129,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Avocado Toast",
         "price": 5.99,
         "description":
-            "Sliced avocado on toasted artisan bread, topped with seasoning."
+            "Sliced avocado on toasted artisan bread, topped with seasoning.",
+        "picture":
+            "https://media.istockphoto.com/id/1214212184/photo/avocado-and-poached-egg-toast-on-rye-bread-top-view.jpg?s=612x612&w=0&k=20&c=BhHMua211VCgMHZBaphoYY3WjWVG9ZkMbfJQgsPbzVs="
       }
     },
     {
@@ -138,7 +140,9 @@ class _FoodMenuState extends State<FoodMenu> {
       "fields": {
         "name": "Muffin",
         "price": 2.49,
-        "description": "A freshly baked muffin in your choice of flavor."
+        "description": "A freshly baked muffin in your choice of flavor.",
+        "picture":
+            "https://media.istockphoto.com/id/516688047/photo/homemade-autumn-pumpkin-muffin.jpg?s=612x612&w=0&k=20&c=wbzrNN3oX-F4Q1rZJAeDLH9EKJfnHk9yyaJqIJbkV_U="
       }
     },
     {
@@ -148,7 +152,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Blueberry Scone",
         "price": 2.79,
         "description":
-            "A tender and crumbly scone filled with juicy blueberries."
+            "A tender and crumbly scone filled with juicy blueberries.",
+        "picture":
+            "https://media.istockphoto.com/id/1438178299/photo/homemade-berry-scones.jpg?s=612x612&w=0&k=20&c=APpHucIYD5f03YgUPHJuigcyaW5nSAYlOH8KfoXTPDw="
       }
     },
     {
@@ -158,7 +164,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Breakfast Burrito",
         "price": 6.49,
         "description":
-            "A hearty breakfast burrito filled with eggs, sausage, cheese, and vegetables."
+            "A hearty breakfast burrito filled with eggs, sausage, cheese, and vegetables.",
+        "picture":
+            "https://media.istockphoto.com/id/1303481589/photo/sausage-and-egg-breakfast-burrito.jpg?s=612x612&w=0&k=20&c=I7U70VnoMB35GVZjT3zO9auDEAmh8X_xRJXATvbJ4Fk="
       }
     },
     {
@@ -168,7 +176,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Fruit Parfait",
         "price": 4.99,
         "description":
-            "A delicious parfait made with yogurt, granola, and a mix of fresh fruits."
+            "A delicious parfait made with yogurt, granola, and a mix of fresh fruits.",
+        "picture":
+            "https://media.istockphoto.com/id/639376412/photo/blueberry-raspberry-parfaits-in-mason-jars-still-life-against-wood.jpg?s=612x612&w=0&k=20&c=3eBFSWTyRnAsa0MPlsLbjaZAQQZJIao8zmc_9oKy-po="
       }
     },
     {
@@ -178,7 +188,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Quiche Lorraine",
         "price": 6.99,
         "description":
-            "A classic quiche filled with bacon, Swiss cheese, and a savory custard."
+            "A classic quiche filled with bacon, Swiss cheese, and a savory custard.",
+        "picture":
+            "https://media.istockphoto.com/id/469583525/id/foto/quiche-lorraine.jpg?s=612x612&w=0&k=20&c=oQSOOwMV0Apgy6OQdllc53V3II3N-0FpLQaAnQ8WSCo="
       }
     },
     {
@@ -188,7 +200,9 @@ class _FoodMenuState extends State<FoodMenu> {
         "name": "Veggie Wrap",
         "price": 5.99,
         "description":
-            "A delicious wrap filled with assorted vegetables and a flavorful dressing."
+            "A delicious wrap filled with assorted vegetables and a flavorful dressing.",
+        "picture":
+            "https://media.istockphoto.com/id/941025092/photo/chicken-wraps.jpg?s=612x612&w=0&k=20&c=MVwZVtHifhEhbkxVyYDxbEo8El7NInTsa7TW_qv8I0k="
       }
     }
   ];
@@ -246,49 +260,19 @@ class _FoodMenuState extends State<FoodMenu> {
     double _price = 0.0;
     int _amount = 0;
 
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
-
-    if (user_id != 0) {
-      bottomNavBarItems = [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.restaurant),
-          label: 'Food',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.local_cafe),
-          label: 'Drinks',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.lock),
-          label: 'Secret Menu',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Order Summary',
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Food'),
-        backgroundColor: Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: user_id == 0
+            ? const Text('Order & Borrow - Food',
+                style: TextStyle(fontWeight: FontWeight.bold))
+            : const Text('Order - Food',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
-      drawer: const LeftDrawer(),
+      drawer: user_id != 0 && user_status == "M"
+          ? const OnBDrawer()
+          : const LeftDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -301,10 +285,24 @@ class _FoodMenuState extends State<FoodMenu> {
                 titleGap: 20,
                 bgColor: Colors.white,
                 screenWidth: 600,
+                action: Center(
+                  child: FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        menuItem['picture'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
                 title: Text(
                   menuItem['name'],
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 21),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 21,
+                  ),
                 ),
                 subTitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,7 +397,7 @@ class _FoodMenuState extends State<FoodMenu> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
-                            minimumSize: Size(200, 50),
+                            minimumSize: const Size(200, 50),
                           ),
                           child: const Text(
                             'Order',
@@ -417,29 +415,6 @@ class _FoodMenuState extends State<FoodMenu> {
             },
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (user_id == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => _pagesMember[_currentIndex]),
-            );
-          }
-        },
       ),
     );
   }

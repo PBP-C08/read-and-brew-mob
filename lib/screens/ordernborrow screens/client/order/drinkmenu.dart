@@ -3,14 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/secretmenu.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
-import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -20,19 +15,6 @@ class DrinkMenu extends StatefulWidget {
 }
 
 class _DrinkMenuState extends State<DrinkMenu> {
-  int _currentIndex = 1;
-  final List<Widget> _pages = [
-    FoodMenu(),
-    DrinkMenu(),
-    OrderPage(),
-  ];
-
-  final List<Widget> _pagesMember = [
-    FoodMenu(),
-    DrinkMenu(),
-    SecretMenu(),
-    OrderMemberPage(),
-  ];
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
@@ -41,7 +23,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Latte",
         "price": 3.99,
         "description":
-            "Espresso with creamy steamed milk and a hint of vanilla."
+            "Espresso with creamy steamed milk and a hint of vanilla.",
+        "picture":
+            "https://media.istockphoto.com/id/482528386/photo/cup-of-heart-latte-art.jpg?s=612x612&w=0&k=20&c=SfcHG-rkmGSvnm-AOsWDj63fH046qPPMMKsC5_cw-EI="
       }
     },
     {
@@ -51,7 +35,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Cappuccino",
         "price": 4.49,
         "description":
-            "Espresso topped with frothy milk and a sprinkle of cocoa."
+            "Espresso topped with frothy milk and a sprinkle of cocoa.",
+        "picture":
+            "https://media.istockphoto.com/id/173245886/id/foto/cappuccino.jpg?s=612x612&w=0&k=20&c=2Cw2XvVc4FEMIYDypViuKHPLE65np0iEScaZcI6o80U="
       }
     },
     {
@@ -61,7 +47,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Mocha",
         "price": 4.99,
         "description":
-            "Rich espresso with velvety steamed milk, cocoa, and whipped cream."
+            "Rich espresso with velvety steamed milk, cocoa, and whipped cream.",
+        "picture":
+            "https://media.istockphoto.com/id/953747804/photo/iced-mocha-coffee-with-whip-cream-summer-drinking-times-coffee-beans-rustic-textured-wooden.jpg?s=612x612&w=0&k=20&c=2PXJdteWQ9K5OPfARixdMt4XOJr7NqU-QlFVjwyMCFs="
       }
     },
     {
@@ -71,7 +59,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Iced Coffee",
         "price": 3.49,
         "description":
-            "Chilled coffee brewed to perfection, served with ice cubes."
+            "Chilled coffee brewed to perfection, served with ice cubes.",
+        "picture":
+            "https://media.istockphoto.com/id/1366850534/photo/glass-of-a-iced-coffee-with-cream-milk-cold-brew-coffee-drink-with-ice.jpg?s=612x612&w=0&k=20&c=1ZN8z8n-Yo2LpN7gBPGw3fw8QDLAWfsA0vbkeV1z8dg="
       }
     },
     {
@@ -81,7 +71,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Espresso",
         "price": 2.49,
         "description":
-            "A shot of intense, concentrated coffee to awaken your senses."
+            "A shot of intense, concentrated coffee to awaken your senses.",
+        "picture":
+            "https://media.istockphoto.com/id/1302454454/photo/espresso-coffee-with-coffee-beans-in-the-morning-background.jpg?s=612x612&w=0&k=20&c=OMh6AjTjOSYINI6U-4nGea9_wrycorw2rWq0H3EEjrY="
       }
     },
     {
@@ -91,7 +83,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Chai Latte",
         "price": 4.99,
         "description":
-            "Spiced black tea combined with frothy milk for a delightful balance."
+            "Spiced black tea combined with frothy milk for a delightful balance.",
+        "picture":
+            "https://media.istockphoto.com/id/1221489771/photo/chai-latte-in-glass-with-milk.jpg?s=612x612&w=0&k=20&c=zsUZOKNQDM6u1vn8hM62HVzYn7QrEAN7OPymyAx6yo0="
       }
     },
     {
@@ -101,7 +95,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Caramel Macchiato",
         "price": 4.99,
         "description":
-            "Espresso with steamed milk, caramel, and a caramel drizzle."
+            "Espresso with steamed milk, caramel, and a caramel drizzle.",
+        "picture":
+            "https://st3.depositphotos.com/6676810/14547/i/450/depositphotos_145473173-stock-photo-ice-caramel-macchato.jpg"
       }
     },
     {
@@ -111,7 +107,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Iced Tea",
         "price": 3.29,
         "description":
-            "Chilled tea infused with fruit essence, served over ice."
+            "Chilled tea infused with fruit essence, served over ice.",
+        "picture":
+            "https://media.istockphoto.com/id/497897321/photo/homemade-iced-tea-with-lemons.jpg?s=612x612&w=0&k=20&c=IYx_qxksqCK1_P_VgETpOka838u1kBqwP4N99lXB2uU="
       }
     },
     {
@@ -121,7 +119,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Hot Chocolate",
         "price": 3.99,
         "description":
-            "Silky hot cocoa topped with whipped cream and chocolate shavings."
+            "Silky hot cocoa topped with whipped cream and chocolate shavings.",
+        "picture":
+            "https://media.istockphoto.com/id/1320380734/photo/homemade-warm-hot-chocolate.jpg?s=612x612&w=0&k=20&c=DYi2DzE8KDjFAndmesptb5R5fxKRuGXdya60lFZKha4="
       }
     },
     {
@@ -130,7 +130,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
       "fields": {
         "name": "Fruit Smoothie",
         "price": 4.49,
-        "description": "A refreshing blend of fresh fruits, yogurt, and ice."
+        "description": "A refreshing blend of fresh fruits, yogurt, and ice.",
+        "picture":
+            "https://media.istockphoto.com/id/1081369140/photo/healthy-appetizing-red-smoothie-dessert-in-glasses.jpg?s=612x612&w=0&k=20&c=ayAj4LQwwNIdY3aJ7fmzzG4HP_vtGboSeiP-FFO6Wm8="
       }
     },
     {
@@ -140,7 +142,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Café Americano",
         "price": 2.99,
         "description":
-            "Espresso with hot water, delivering a bold and robust flavor."
+            "Espresso with hot water, delivering a bold and robust flavor.",
+        "picture":
+            "https://media.istockphoto.com/id/1030018926/photo/coffee-americano-it-made-from-espresso-and-hot-water-uk.jpg?s=612x612&w=0&k=20&c=trsNtjalA6r9eGka845eO1nYOP0yogvLWqBAg-jsBlM="
       }
     },
     {
@@ -150,7 +154,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Matcha Latte",
         "price": 4.99,
         "description":
-            "Green tea powder mixed with creamy steamed milk, for a vibrant experience."
+            "Green tea powder mixed with creamy steamed milk, for a vibrant experience.",
+        "picture":
+            "https://media.istockphoto.com/id/1325991061/photo/matcha-latte-green-milk-foam-cup-on-wood-table-at-cafe-trendy-powered-tea-trend-from-japan.jpg?s=612x612&w=0&k=20&c=a7cV9mdPwPj93BrxoFrJXEdA71RsOnXIOzVF90CYPsQ="
       }
     },
     {
@@ -160,7 +166,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Iced Latte",
         "price": 4.29,
         "description":
-            "Chilled espresso and milk served over ice, the perfect cool-down."
+            "Chilled espresso and milk served over ice, the perfect cool-down.",
+        "picture":
+            "https://media.istockphoto.com/id/1218361895/photo/two-glasses-of-iced-coffee-on-a-light-concrete-table.jpg?s=612x612&w=0&k=20&c=WOCjzlBhEhrav2BKk7x1TJeFy4WF2_60KVyVkY6OtGI="
       }
     },
     {
@@ -170,7 +178,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "White Chocolate Mocha",
         "price": 4.99,
         "description":
-            "Espresso with white chocolate and whipped cream, pure indulgence."
+            "Espresso with white chocolate and whipped cream, pure indulgence.",
+        "picture":
+            "https://media.istockphoto.com/id/1330584216/photo/white-chocolate-latte-topped-with-whipped-cream-and-cocoa-powder.jpg?s=612x612&w=0&k=20&c=hm9PSljnkxP-gHsB-3OSbObAHxyvA-qQ6l7WEBU7eUo="
       }
     },
     {
@@ -179,7 +189,10 @@ class _DrinkMenuState extends State<DrinkMenu> {
       "fields": {
         "name": "Decaf Coffee",
         "price": 3.49,
-        "description": "A soothing cup of coffee with minimal caffeine content."
+        "description":
+            "A soothing cup of coffee with minimal caffeine content.",
+        "picture":
+            "https://media.istockphoto.com/id/1299044033/photo/coffee-cup-and-coffee-beans-on-wooden-table.jpg?s=612x612&w=0&k=20&c=FhIX03NoGHbpPpgbXd1H2BxQbQaEau7Ma6-VtrQTCks="
       }
     },
     {
@@ -189,7 +202,9 @@ class _DrinkMenuState extends State<DrinkMenu> {
         "name": "Hazelnut Latte",
         "price": 4.79,
         "description":
-            "Espresso with steamed milk and a rich hazelnut flavor, a delightful treat."
+            "Espresso with steamed milk and a rich hazelnut flavor, a delightful treat.",
+        "picture":
+            "https://media.istockphoto.com/id/1247810487/photo/diverse-keto-dishes.jpg?s=612x612&w=0&k=20&c=pbUTkBk2O2pAhAlSoLLQK6ZgYnvGBceo2gYpDOVBmEM="
       }
     }
   ];
@@ -247,49 +262,19 @@ class _DrinkMenuState extends State<DrinkMenu> {
     double _price = 0.0;
     int _amount = 0;
 
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
-
-    if (user_id != 0) {
-      bottomNavBarItems = [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.restaurant),
-          label: 'Food',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.local_cafe),
-          label: 'Drinks',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.lock),
-          label: 'Secret Menu',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Order Summary',
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Drinks'),
-        backgroundColor: Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: user_id == 0
+            ? const Text('Order & Borrow - Drinks',
+                style: TextStyle(fontWeight: FontWeight.bold))
+            : const Text('Order - Drinks',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
-      drawer: LeftDrawer(),
+      drawer: user_id != 0 && user_status == "M"
+          ? const OnBDrawer()
+          : const LeftDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -302,6 +287,18 @@ class _DrinkMenuState extends State<DrinkMenu> {
                 titleGap: 20,
                 bgColor: Colors.white,
                 screenWidth: 600,
+                action: Center(
+                  child: FractionallySizedBox(
+                    widthFactor: 0.8,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Image.network(
+                        menuItem['picture'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
                 title: Text(
                   menuItem['name'],
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
@@ -424,29 +421,6 @@ class _DrinkMenuState extends State<DrinkMenu> {
             },
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          if (user_id == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => _pages[_currentIndex]),
-            );
-          } else {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => _pagesMember[_currentIndex]),
-            );
-          }
-        },
       ),
     );
   }

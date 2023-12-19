@@ -50,9 +50,11 @@ Future<List<RequestBuku>> fetchProduct() async {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Requests'),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: Text(
+          'Your Requests',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: Color(0xFF377C35),
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder(

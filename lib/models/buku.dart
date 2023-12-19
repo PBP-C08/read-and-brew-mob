@@ -32,6 +32,11 @@ class Buku {
         "pk": pk,
         "fields": fields.toJson(),
       };
+
+  @override
+  String toString() {
+    return 'id: $pk, judul: ${fields.judul}, author: ${fields.penulis}, kategori: ${fields.kategori}';
+  }
 }
 
 class Fields {

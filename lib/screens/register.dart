@@ -44,7 +44,12 @@ class _RegisterFormPageState extends State<RegisterFormPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
         body: SingleChildScrollView(
             child: Container(
                 padding:

@@ -1,16 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:read_and_brew/screens/login.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/drinkmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/foodmenu.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordermembersummary.dart';
-import 'package:read_and_brew/screens/ordernborrow%20screens/client/order/ordersummary.dart';
-import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/widgets/ordernborrow%20widgets/ordernborrow_drawer.dart';
 import 'package:responsive_card/responsive_card.dart';
-import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
@@ -20,14 +15,6 @@ class SecretMenu extends StatefulWidget {
 }
 
 class _SecretMenuState extends State<SecretMenu> {
-  int _currentIndex = 2;
-  final List<Widget> _pagesMember = [
-    FoodMenu(),
-    DrinkMenu(),
-    SecretMenu(),
-    OrderMemberPage(),
-  ];
-
   final List<Map<String, dynamic>> menuItems = [
     {
       "pk": 1,
@@ -182,49 +169,14 @@ class _SecretMenuState extends State<SecretMenu> {
     double _price = 0.0;
     int _amount = 0;
 
-    List<BottomNavigationBarItem> bottomNavBarItems = [
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.restaurant),
-        label: 'Food',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.local_cafe),
-        label: 'Drinks',
-      ),
-      const BottomNavigationBarItem(
-        icon: Icon(Icons.receipt_long),
-        label: 'Order Summary',
-      ),
-    ];
-
-    if (user_id != 0) {
-      bottomNavBarItems = [
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.restaurant),
-          label: 'Food',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.local_cafe),
-          label: 'Drinks',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.lock),
-          label: 'Secret Menu',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.receipt_long),
-          label: 'Order Summary',
-        ),
-      ];
-    }
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order & Borrow - Secret Menu'),
-        backgroundColor: Color(0xFF377C35),
-        foregroundColor: Colors.white,
+        title: const Text('Order - Secret Menu',
+            style: TextStyle(fontWeight: FontWeight.bold)),
+        foregroundColor: const Color(0xFF377C35),
+        backgroundColor: Colors.white,
       ),
-      drawer: const LeftDrawer(),
+      drawer: const OnBDrawer(),
       body: SizedBox(
         width: 600,
         child: ListView(
@@ -348,22 +300,6 @@ class _SecretMenuState extends State<SecretMenu> {
             },
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: bottomNavBarItems,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: const Color(0xFF377C35),
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => _pagesMember[_currentIndex]),
-          );
-        },
       ),
     );
   }
