@@ -36,6 +36,7 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
+            backgroundColor: Colors.transparent,
             iconTheme: IconThemeData(color: Color(0xFF377C35)),
             actions: [
               IconButton(
