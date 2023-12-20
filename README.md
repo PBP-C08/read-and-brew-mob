@@ -1,4 +1,5 @@
-GitHub Action: [![Build status](https://build.appcenter.ms/v0.1/apps/659c6b85-39b2-42e4-80d8-3e641654113a/branches/main/badge)](https://appcenter.ms)
+[![Build status](https://build.appcenter.ms/v0.1/apps/659c6b85-39b2-42e4-80d8-3e641654113a/branches/main/badge)](https://appcenter.ms)
+
 C08 Public page: [link](https://install.appcenter.ms/users/fikrirmdhna/apps/read-and-brew-mob/distribution_groups/c08)
 # Read & Brew 📚☕️
 
