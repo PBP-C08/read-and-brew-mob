@@ -6,9 +6,14 @@ buildscript {
     }
 
     dependencies {
+        implementation 'com.android.support:multidex:1.0.3'
         classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
+}
+
+defaultConfig {
+    multiDexEnabled true
 }
 
 allprojects {
