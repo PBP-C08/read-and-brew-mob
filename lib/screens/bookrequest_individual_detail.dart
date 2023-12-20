@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/requestbuku.dart';
-import 'package:read_and_brew/screens/booklist_detail.dart';
-import 'package:read_and_brew/screens/bookrequest.dart';
-import 'package:read_and_brew/screens/bookrequest_individual.dart';
-import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'dart:convert' as convert;
 
 class IndividualDetailPage extends StatefulWidget {
   final RequestBuku requestBuku;
+  final VoidCallback onRefresh;
 
-  const IndividualDetailPage({Key? key, required this.requestBuku}) : super(key: key);
+  const IndividualDetailPage({
+    Key? key,
+    required this.requestBuku,
+    required this.onRefresh,
+  }) : super(key: key);
 
   @override
   _IndividualDetailPageState createState() => _IndividualDetailPageState();
@@ -53,7 +53,6 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                 widget.requestBuku.fields.gambar,
                 errorBuilder: (BuildContext context, Object exception,
                     StackTrace? stackTrace) {
-                  // You can return any widget here. For example, let's return an Icon.
                   return Icon(Icons.error);
                 },
                 width: 200,
@@ -61,51 +60,50 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
               ),
             ),
             SizedBox(height: 8),
-              Center(
-                child: RichText(
-                  text: TextSpan(
-                    text: 'Kategori: ',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: widget.requestBuku.fields.kategori,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  text: 'Kategori: ',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: widget.requestBuku.fields.kategori,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ],
                 ),
               ),
+            ),
             SizedBox(height: 8),
-                    Center(
-                      child: RichText(
-                        text: TextSpan(
-                          text: 'Penulis: ',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                          children: <TextSpan>[
-                            TextSpan(
-                              text: widget.requestBuku.fields.penulis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
+            Center(
+              child: RichText(
+                text: TextSpan(
+                  text: 'Penulis: ',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: widget.requestBuku.fields.penulis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
+                  ],
+                ),
+              ),
+            ),
             Center(
               child: Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.thumb_up,
@@ -122,12 +120,12 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                   ),
                 ],
               ),
-              ),
+            ),
             SizedBox(height: 8),
             if (user_status == 'M')...[
               Center(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center, // Add this line
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () async {
@@ -139,7 +137,7 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                         );
                         if (response['status'] == 'success') {
                           setState(() {
-                            widget.requestBuku.fields.like++; // Update the like value
+                            widget.requestBuku.fields.like++;
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -165,7 +163,8 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
                         child: Text(
                           'Like',
                           style: TextStyle(fontSize: 14, color: Colors.white),
@@ -178,7 +177,6 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                           "https://readandbrew-c08-tk.pbp.cs.ui.ac.id/bookrequest/delete_request_flutter",
                           jsonEncode(<String, String>{
                             "id": widget.requestBuku.pk.toString(),
-                            // TODO: Sesuaikan field data sesuai dengan aplikasimu
                           }),
                         );
                         if (response['status'] == 'success') {
@@ -189,10 +187,8 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                               ),
                             ),
                           );
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RequestBukuIndividualPage()));
+                          widget.onRefresh();
+                          Navigator.pop(context);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -210,7 +206,8 @@ class _IndividualDetailPageState extends State<IndividualDetailPage> {
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 16),
                         child: Text(
                           'Delete',
                           style: TextStyle(fontSize: 14, color: Colors.white),

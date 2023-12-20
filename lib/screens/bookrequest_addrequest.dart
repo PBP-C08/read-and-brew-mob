@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:read_and_brew/screens/bookrequest_individual.dart';
 import 'package:read_and_brew/screens/login.dart';
 
 class AddRequestPage extends StatefulWidget {
@@ -161,7 +160,7 @@ class _AddRequestPageState extends State<AddRequestPage> {
                     if (response['status'] == 'success') {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(response['messages']),
+                          content: Text("Berhasil menambahkan request buku ${_judul}"),
                         ),
                       );
 
