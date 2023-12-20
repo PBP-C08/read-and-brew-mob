@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:read_and_brew/models/requestbuku.dart';
 import 'package:read_and_brew/screens/booklist_detail.dart';
-import 'package:read_and_brew/screens/bookrequest.dart';
+import 'package:read_and_brew/screens/bookrequest_all.dart';
 import 'package:read_and_brew/widgets/left_drawer.dart';
 import 'package:read_and_brew/screens/login.dart';
 import 'dart:convert' as convert;
@@ -28,7 +28,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.requestBuku.fields.judul,
+          "Detail Buku",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         foregroundColor: Color(0xFF377C35),
@@ -37,7 +37,17 @@ class _DetailPageState extends State<DetailPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          
           children: [
+            Center(
+              child: Text(
+                widget.requestBuku.fields.judul,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
             Center(
               child: Image.network(
                 widget.requestBuku.fields.gambar,
@@ -51,34 +61,68 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ),
             SizedBox(height: 8),
-            Center(
-              child: Text(
-                'Kategori: ${widget.requestBuku.fields.kategori}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Kategori: ',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: widget.requestBuku.fields.kategori,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
             SizedBox(height: 8),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          text: 'Penulis: ',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: widget.requestBuku.fields.penulis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
             Center(
-              child: Text(
-                'Penulis: ${widget.requestBuku.fields.penulis}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.thumb_up,
+                    color: Color.fromARGB(255, 1, 97, 16),
+                    size: 18.0,
+                  ),
+                  SizedBox(width: 4),
+                  Text(
+                    widget.requestBuku.fields.like.toString(),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Center(
-              child: Text(
-                'Like: ${widget.requestBuku.fields.like}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
               ),
-            ),
             SizedBox(height: 8),
             if (user_status == 'M')...[
               Center(
@@ -150,7 +194,7 @@ class _DetailPageState extends State<DetailPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
+                                builder: (context) => const RequestBukuAllPage()));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -161,7 +205,7 @@ class _DetailPageState extends State<DetailPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
+                                builder: (context) => const RequestBukuAllPage()));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -199,7 +243,7 @@ class _DetailPageState extends State<DetailPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
+                                builder: (context) => const RequestBukuAllPage()));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
@@ -210,7 +254,7 @@ class _DetailPageState extends State<DetailPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RequestBukuPage()));
+                                builder: (context) => const RequestBukuAllPage()));
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
